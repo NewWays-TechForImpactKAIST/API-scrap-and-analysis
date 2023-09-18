@@ -3,7 +3,7 @@
 import requests
 from mykey import serviceKey
 
-url = 'http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPoelpcddRegistSttusInfoInqire'
+url = 'http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire'
 params ={'serviceKey' : serviceKey,\
          'pageNo' : '1', 'numOfRows' : '10', 'sgId' : '20220601', 'sgTypecode' : '4', 'sggName' : '', 'sdName' : '', 'jdName' : ''}
 
