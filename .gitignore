@@ -222,3 +222,5 @@ pyrightconfig.json
 
 /mykey.py
 __pycache__
+/credentials.json
+/token.json
