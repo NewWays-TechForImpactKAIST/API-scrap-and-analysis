@@ -6,7 +6,7 @@ import pandas as pd
 from configurations.secrets import OpenDataPortalSecrets
 
 base_url = 'http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire'
-params ={'serviceKey' : serviceKey,\
+params ={'serviceKey' : OpenDataPortalSecrets.service_key,\
          'pageNo' : '1', 'numOfRows' : '10', 'sgId' : '20230405', 'sgTypecode' : '2', 'sdName' : '전라북도', 'sggName' : '전주시을', 'jdName' : ''}
 page_no = 1
 num_of_rows = 10000
