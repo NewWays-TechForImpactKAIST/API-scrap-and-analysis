@@ -30,11 +30,9 @@ for profile in profiles:
         # print('이름:', name)
         # print('프로필 페이지 URL:', profile_url)
         # print('---')
-        response = requests.get(profile_url, verify=False)
-        soup = BeautifulSoup(response.text, 'html.parser')
         # "소속정당" 정보 추출
-        party_info = soup.find('em', text='소속정당 : ')
-        party = party_info.find_next('span').text if party_info else '정당 정보 없음'
+        party_info = profile_soup.find('em', text='소속정당 : ')
+        party = party_info.find_next('span').string if party_info else '정당 정보 없음'
 
         print('이름:', name)
         print('정당:', party)

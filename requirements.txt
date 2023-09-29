@@ -1,0 +1,12 @@
+# 이 파일은 프로젝트의 의존성 패키지 목록을 정의합니다.
+# 아래의 패키지 목록은 pip로 설치될 것입니다.
+
+# Python 버전 요구 사항
+# >=3.10.7 (gspread)
+
+# 프로젝트에 필요한 패키지들
+requests
+bs4
+pandas
+gspread
+pymongo

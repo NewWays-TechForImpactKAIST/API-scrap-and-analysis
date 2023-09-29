@@ -27,17 +27,17 @@ def google_authorization():
     creds = None
 
     # 이미 저장된 인증 정보가 있는지 확인
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists('../_data/token.json'):
+        creds = Credentials.from_authorized_user_file('../_data/token.json', SCOPES)
     
     # 인증 정보가 없거나 비정상적인 경우 인증 재요청
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow= InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+            flow= InstalledAppFlow.from_client_secrets_file('../_data/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
-        with open('token.json', 'w') as token:
+        with open('../_data/token.json', 'w') as token:
             token.write(creds.to_json())
 
     return gspread.authorize(creds)
@@ -172,4 +172,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-

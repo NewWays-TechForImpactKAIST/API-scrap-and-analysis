@@ -1,7 +1,7 @@
 # coding=utf-8
 # Source : https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15000897
 import requests
-from mykey import serviceKey
+from techforimpact._data.mykey import serviceKey
 import xml.etree.ElementTree as ET
 import argparse
 

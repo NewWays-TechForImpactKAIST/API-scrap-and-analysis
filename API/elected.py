@@ -1,13 +1,14 @@
 # coding=utf-8
-# Source : https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15000908
-import requests
+# Source : https://www.data.go.kr/data/15000864/openapi.do#/tab_layer_detail_function
+import os, requests, sys
 import xml.etree.ElementTree as ET
 import pandas as pd
+sys.path.append('../_data')
+from mykey import serviceKey
 
-from mykey import serviceKey  # Assuming you have a file named mykey.py with your serviceKey
-
-# Define the URL and other parameters
-base_url = 'http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire'
+base_url = 'http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire'
+params ={'serviceKey' : serviceKey,\
+         'pageNo' : '1', 'numOfRows' : '10', 'sgId' : '20230405', 'sgTypecode' : '2', 'sdName' : '전라북도', 'sggName' : '전주시을', 'jdName' : ''}
 page_no = 1
 num_of_rows = 10000
 
@@ -53,7 +54,7 @@ for sgId in parliamentVote:
             edu = item.find('edu').text
             career1 = item.find('career1').text
             career2 = item.find('career2').text
-            status = item.find('status').text
+            # status = item.find('status').text
 
             data_list.append({
                 'sgId': sgId,
@@ -74,14 +75,17 @@ for sgId in parliamentVote:
                 'edu': edu,
                 'career1': career1,
                 'career2': career2,
-                'status': status
+                # 'status': status
             })
 
 # Create a DataFrame from the collected data
 df = pd.DataFrame(data_list)
 
 # Save the DataFrame to an Excel file
-excel_file = '[후보][구시군의회의원].xlsx'
-df.to_excel(excel_file, index=False)
+directory_path = os.path.join('..', 'output')
+if not os.path.exists(directory_path):
+    os.makedirs(directory_path)
+excel_file = '[당선][구시군의회의원].xlsx'
+df.to_excel(os.path.join(directory_path, excel_file), index=False)
 
 print(f'Data has been saved to {excel_file}')
