@@ -3,8 +3,7 @@
 import os, requests, sys
 import xml.etree.ElementTree as ET
 import pandas as pd
-sys.path.append('../_data')
-from mykey import serviceKey
+from configurations.secrets import OpenDataPortalSecrets
 
 base_url = 'http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire'
 params ={'serviceKey' : serviceKey,\
@@ -18,7 +17,7 @@ data_list = []
 for sgId in parliamentVote:
     for code in sgCodes:
         params = {
-            'serviceKey': serviceKey,
+            'serviceKey': OpenDataPortalSecrets.service_key,
             'pageNo': str(page_no),
             'numOfRows': str(num_of_rows),
             'sgId': str(sgId),

@@ -21,7 +21,7 @@ HEADERS = {
 def google_authorization():
     '''Google Sheets API 활용을 위한 인증 정보 요청
     credentials.json 파일을 토대로 인증을 요청하되, token.json 파일이 존재할 경우 거기에 저장된 정보 활용
-    
+    :todo: credentials.json 파일, token.json 파일 값을 환경변수로 설정
     :return: gspread.client.Client 인스턴스'''
 
     creds = None
