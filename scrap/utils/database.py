@@ -1,11 +1,13 @@
 from db.client import client
 from configurations.secrets import MongoDBSecrets
-from scrap.utils.types import ScrapResult
+from scrap.utils.types import CouncilType, Councilor, ScrapResult
 import dataclasses
 import json
 
 # Note: MongoDB는 데이터베이스가 존재하지 않으면 자동으로 생성합니다.
-db = client[MongoDBSecrets.database_name]
+# MongoDB 데이터베이스는 하나 이상의 컬렉션으로 구성됩니다.
+# 컬렉션은 하나 이상의 문서로 구성됩니다.
+db = client[str(MongoDBSecrets.database_name)]
 
 def save_to_database(record: ScrapResult):
     """
@@ -18,11 +20,11 @@ def save_to_database(record: ScrapResult):
     try:
         # MongoDB는 JSON을 저장할 수 있습니다.
         # JSON 형태로 변환한 후, MongoDB에 저장합니다.
-        serialized_record = json.dumps(dataclasses.asdict(record), ensure_ascii=False)
-        
-        db[record.council_type].find_one_and_update(
+        # serialized_record = json.dumps(dataclasses.asdict(record), ensure_ascii=False)
+        collection = db[str(record.council_type)]
+        collection.find_one_and_update(
             {"councilId": record.council_id},
-            {"$set": json.loads(serialized_record)},
+            {"$set": dataclasses.asdict(record)},
             upsert=True
         )
         return True
@@ -32,11 +34,11 @@ def save_to_database(record: ScrapResult):
 
 if __name__  == "__main__":
     test_record = (ScrapResult(
-        council_id="test",
-        council_type="local_council",
+        council_id="test-test",
+        council_type=CouncilType.LOCAL_COUNCIL,
         councilors=[
-            {"name": "김철수", "party": "국민의힘"},
-            {"name": "김영희", "party": "더불어민주당"},
+            Councilor(name="김철수", party="국민의힘"),
+            Councilor(name="김영희", party="더불어민주당"),
         ]
     ))
-    save_to_database(test_record)
+    print(save_to_database(test_record))
