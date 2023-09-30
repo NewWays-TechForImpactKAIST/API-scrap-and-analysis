@@ -9,7 +9,7 @@ from scrap.local_councils.seoul import *
 # 구글로부터 권한을 요청할 어플리케이션 목록
 # 변경 시 token.json 삭제 후 재인증 필요
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-
+BASE_DIR = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
 def google_authorization():
     '''Google Sheets API 활용을 위한 인증 정보 요청
     credentials.json 파일을 토대로 인증을 요청하되, token.json 파일이 존재할 경우 거기에 저장된 정보 활용
@@ -17,19 +17,19 @@ def google_authorization():
     :return: gspread.client.Client 인스턴스'''
 
     creds = None
-
+    token_json_path = os.path.join(BASE_DIR, '_data', 'token.json')
     # 이미 저장된 인증 정보가 있는지 확인
-    if os.path.exists('../../_data/token.json'):
-        creds = Credentials.from_authorized_user_file('../../_data/token.json', SCOPES)
+    if os.path.exists(token_json_path):
+        creds = Credentials.from_authorized_user_file(token_json_path, SCOPES)
     
     # 인증 정보가 없거나 비정상적인 경우 인증 재요청
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow= InstalledAppFlow.from_client_secrets_file('../../_data/credentials.json', SCOPES)
+            flow= InstalledAppFlow.from_client_secrets_file(os.path.join(BASE_DIR, '_data', 'credentials.json'), SCOPES)
             creds = flow.run_local_server(port=0)
-        with open('../../_data/token.json', 'w') as token:
+        with open(token_json_path, 'w') as token:
             token.write(creds.to_json())
 
     return gspread.authorize(creds)
