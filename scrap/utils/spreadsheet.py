@@ -1,10 +1,11 @@
-import os
+import os, sys
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 import gspread
 
 from scrap.local_councils.seoul import *
+from scrap.local_councils import *
 
 # 구글로부터 권한을 요청할 어플리케이션 목록
 # 변경 시 token.json 삭제 후 재인증 필요
@@ -48,7 +49,18 @@ def main() -> None:
     print(scrap_junggu(data[1]['상세약력 링크']))
     print(scrap_gwangjingu(data[4]['상세약력 링크']))
     print(scrap_dongdaemungu(data[5]['상세약력 링크']))
-
+    for n in range (65, 70):
+        function_name = f"scrap_{n}"
+        if hasattr(sys.modules[__name__], function_name):
+            function_to_call = getattr(sys.modules[__name__], function_name)
+            print(function_to_call)
+            if n in [66]:
+                result = function_to_call() # 스프레드시트 링크 터짐
+            else:
+                result = function_to_call(data[n - 1]['상세약력 링크'])
+            print(result)
+        else:
+            print(f"함수 {function_name}를 찾을 수 없습니다.")
 
 if __name__ == '__main__':
     main()

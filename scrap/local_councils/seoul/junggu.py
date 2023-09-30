@@ -18,7 +18,8 @@ def scrap_junggu(url = 'https://02jgnew.council.or.kr/kr/member/active') -> Scra
     base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
 
     for profile in parliment_soup.find_all('div', class_='profile'):
-        name = profile.find('em', class_='name').text
+        name_tag = profile.find("em", class_="name")
+        name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
         party = '정당 정보 없음'
 
         # 프로필보기 링크 가져오기
