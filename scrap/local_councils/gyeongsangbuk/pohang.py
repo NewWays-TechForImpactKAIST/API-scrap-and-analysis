@@ -5,7 +5,7 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 import re
 
-def scrap_andong(url = 'https://council.andong.go.kr/kr/member/name.do') -> ScrapResult:
+def scrap_pohang(url = 'https://council.pohang.go.kr/content/member/memberName.html') -> ScrapResult:
     '''대전시 동구 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
@@ -16,11 +16,11 @@ def scrap_andong(url = 'https://council.andong.go.kr/kr/member/name.do') -> Scra
     councilors: List[Councilor] = []
 
     for profile in soup.find_all('div', class_='profile'):
-        name_tag = profile.find("em", class_="name")
+        name_tag = profile.find("dd", class_="name")
         name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
 
         party = "정당 정보 없음"
-        party_info = profile.find("em", string="소속정당")
+        party_info = profile.find("span", string="정")
         if party_info:
             party = party_info.find_next("span").get_text(strip=True)
         councilors.append(Councilor(name=name, party=party))
