@@ -49,13 +49,13 @@ def main() -> None:
     print(scrap_junggu(data[1]['상세약력 링크']))
     print(scrap_gwangjingu(data[4]['상세약력 링크']))
     print(scrap_dongdaemungu(data[5]['상세약력 링크']))
-    for n in range (65, 70):
+    for n in range (65, 75):
         function_name = f"scrap_{n}"
         if hasattr(sys.modules[__name__], function_name):
             function_to_call = getattr(sys.modules[__name__], function_name)
             print(function_to_call)
-            if n in [66]:
-                result = function_to_call() # 스프레드시트 링크 터짐
+            if n in [66, 70, 74]:
+                result = function_to_call() # 스프레드시트 링크 터짐 (울산 울주군처럼 애먼데 링크인 경우도 있다)
             else:
                 result = function_to_call(data[n - 1]['상세약력 링크'])
             print(result)

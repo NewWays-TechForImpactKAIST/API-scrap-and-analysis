@@ -13,8 +13,8 @@ def scrap_gwangjingu(url = "https://council.gwangjin.go.kr/kr/member/active") ->
     councilors: List[Councilor] = []
 
     for profile in soup.find_all('div', class_='profile'):
-        name_tag = profile.find("div", class_="name")
-        name = name_tag.find_next('strong').string(strip=True) if name_tag else "이름 정보 없음"
+        name_tag = profile.find("div", class_="name").find_next('strong')
+        name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
         party = '정당 정보 없음'
 
         party_info = profile.find('em', string = '소속정당')
