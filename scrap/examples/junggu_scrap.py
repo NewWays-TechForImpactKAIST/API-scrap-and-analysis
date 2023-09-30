@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+서울특별시 중구 의회 홈페이지에서 의원 정보를 추출하는 예제 코드입니다.
+"""
 import requests
 from bs4 import BeautifulSoup
 

@@ -5,8 +5,9 @@
 # >=3.10.7 (gspread)
 
 # 프로젝트에 필요한 패키지들
-requests
-bs4
-pandas
-gspread
-pymongo
+requests==2.31.0
+bs4==0.0.1
+pandas==2.1.1
+gspread==5.11.2
+pymongo==4.5.0
+python-dotenv==1.0.0

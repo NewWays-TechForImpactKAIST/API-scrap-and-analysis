@@ -1,7 +1,7 @@
 # coding=utf-8
 # Source : https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15000897
 import requests
-from techforimpact._data.mykey import serviceKey
+from configurations.secrets import OpenDataPortalSecrets
 import xml.etree.ElementTree as ET
 import argparse
 
@@ -15,7 +15,7 @@ else:
     print("sgTypecode를 입력하면 해당 sgTypecode와 일치하는 sgId 값을 출력합니다. 여러 개 입력하고 싶으면 ,로 구분해 주세요.")
 
 url = 'http://apis.data.go.kr/9760000/CommonCodeService/getCommonSgCodeList'
-params ={'serviceKey' : serviceKey,\
+params ={'serviceKey' : OpenDataPortalSecrets.service_key,\
          'pageNo' : '1', 'numOfRows' : '1000'}
 
 response = requests.get(url, params=params)

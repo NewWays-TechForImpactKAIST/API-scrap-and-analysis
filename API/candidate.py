@@ -3,8 +3,7 @@
 import os, requests, sys
 import xml.etree.ElementTree as ET
 import pandas as pd
-sys.path.append('../_data')
-from mykey import serviceKey
+from configurations.secrets import OpenDataPortalSecrets
 
 # Define the URL and other parameters
 base_url = 'http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire'
@@ -17,7 +16,7 @@ data_list = []
 for sgId in parliamentVote:
     for code in sgCodes:
         params = {
-            'serviceKey': serviceKey,
+            'serviceKey': OpenDataPortalSecrets.service_key,
             'pageNo': str(page_no),
             'numOfRows': str(num_of_rows),
             'sgId': str(sgId),
