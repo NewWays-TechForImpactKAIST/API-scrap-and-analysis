@@ -4,3 +4,4 @@
 from .andong import scrap_andong
 from .pohang import scrap_pohang
 from .gyeongju import scrap_gyeongju
+from .gimcheon import scrap_gimcheon
