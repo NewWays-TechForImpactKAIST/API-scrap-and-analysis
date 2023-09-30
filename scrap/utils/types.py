@@ -14,6 +14,10 @@ class CouncilType(str, Enum):
     """
     기초의회
     """
+    METRO_COUNCIL = "metropolitan_council"
+    """
+    광역의회
+    """
     def __str__(self):
         """
         JSON으로 직렬화하기 위해 문자열로 변환하는 함수를 오버라이드합니다.
