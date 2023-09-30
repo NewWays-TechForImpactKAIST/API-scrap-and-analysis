@@ -14,8 +14,9 @@ def scrap_pohang(url = 'https://council.pohang.go.kr/content/member/memberName.h
     
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
+    mlist = soup.find_all('ul', class_='mlist')[0]
 
-    for profile in soup.find_all('div', class_='profile'):
+    for profile in mlist.find_all('li'):
         name_tag = profile.find("dd", class_="name")
         name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
 
@@ -26,10 +27,10 @@ def scrap_pohang(url = 'https://council.pohang.go.kr/content/member/memberName.h
         councilors.append(Councilor(name=name, party=party))
 
     return ScrapResult(
-        council_id="andong",
+        council_id="pohang",
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=councilors
     )
 
 if __name__ == '__main__':
-    print(scrap_andong())
+    print(scrap_pohang())

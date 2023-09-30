@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from typing import List
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
+
 import re
 
 def scrap_andong(url = 'https://council.andong.go.kr/kr/member/name.do') -> ScrapResult:
