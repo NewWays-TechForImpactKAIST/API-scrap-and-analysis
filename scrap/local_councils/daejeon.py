@@ -28,9 +28,7 @@ def scrap_65(url = 'https://council.donggu.go.kr/kr/member/active') -> ScrapResu
         if profile_link:
             data_uid = profile_link.get('data-uid')
             if data_uid:
-                profile_url = base_url + f'/kr/member/profile_popup?uid={data_uid}'  # 예시 URL
-                print(profile_url)
-
+                profile_url = base_url + f'/kr/member/profile_popup?uid={data_uid}'
                 profile_soup = get_soup(profile_url, verify=False)
                 party_info = profile_soup.find('strong', string='정      당')
                 if party_info and (party_span := party_info.find_next('span')) is not None:
