@@ -5,3 +5,6 @@ from .andong import scrap_andong
 from .pohang import scrap_pohang
 from .gyeongju import scrap_gyeongju
 from .gimcheon import scrap_gimcheon
+from .sangju import scrap_sangju
+from .moongyeong import scrap_moongyeong
+from .yaecheon import scrap_yaecheon
