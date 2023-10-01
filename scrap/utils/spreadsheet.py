@@ -6,6 +6,7 @@ import gspread
 
 from scrap.local_councils.seoul import *
 from scrap.local_councils import *
+from requests.exceptions import Timeout
 
 # 구글로부터 권한을 요청할 어플리케이션 목록
 # 변경 시 token.json 삭제 후 재인증 필요
@@ -62,5 +63,26 @@ def main() -> None:
         else:
             print(f"함수 {function_name}를 찾을 수 없습니다.")
 
+    ## 아래 테스트를 위해서는 위 프린트문을 모두 주석처리해 주세요.
+    # error_times = 0
+    # parse_error_times = 0
+    # timeouts = 0
+    # N = 226
+    # for n in range (N):
+    #     encoding = 'euc-kr' if n in [5, 12, 15, 30, 111, 153, 156, 162, 166, 180, 196, 201] else 'utf-8'
+    #     try:
+    #         result = str(scrap_basic(data[n]['상세약력 링크'], f'district-{n}', encoding))
+    #         if '정보 없음' in result:
+    #             print("정보 없음이 포함되어 있습니다.")
+    #             parse_error_times += 1
+    #         print(result)
+    #     except Timeout:
+    #         print(f"Request to {data[n]['상세약력 링크']} timed out.")
+    #         timeouts += 1
+    #     except Exception as e:
+    #         print(f"An error occurred for district-{n}: {str(e)}")
+    #         error_times += 1
+    #         continue  # 에러가 발생하면 다음 반복으로 넘어감
+    # print(f"| 총 실행 횟수: {N} | 에러 횟수: {error_times} | 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |")
 if __name__ == '__main__':
     main()
