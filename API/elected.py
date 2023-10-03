@@ -5,13 +5,14 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 from configurations.secrets import OpenDataPortalSecrets
 
+BASE_DIR = os.path.join(os.path.dirname(__file__), os.pardir)
 base_url = 'http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire'
 params ={'serviceKey' : OpenDataPortalSecrets.service_key,\
          'pageNo' : '1', 'numOfRows' : '10', 'sgId' : '20230405', 'sgTypecode' : '2', 'sdName' : '전라북도', 'sggName' : '전주시을', 'jdName' : ''}
 page_no = 1
 num_of_rows = 10000
 
-parliamentVote = [20220601, 20230405]
+parliamentVote = [20200415, 20210407, 20220601, 20230405]
 sgCodes = input("Input the number of sgTypecode: ").split(',')
 data_list = []
 for sgId in parliamentVote:
@@ -81,7 +82,7 @@ for sgId in parliamentVote:
 df = pd.DataFrame(data_list)
 
 # Save the DataFrame to an Excel file
-directory_path = os.path.join('..', 'output')
+directory_path = os.path.join(BASE_DIR, 'output')
 if not os.path.exists(directory_path):
     os.makedirs(directory_path)
 excel_file = '[당선][구시군의회의원].xlsx'

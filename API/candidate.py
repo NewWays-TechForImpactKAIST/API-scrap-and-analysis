@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 from configurations.secrets import OpenDataPortalSecrets
 
-# Define the URL and other parameters
+BASE_DIR = os.path.join(os.path.dirname(__file__), os.pardir)
 base_url = 'http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire'
 page_no = 1
 num_of_rows = 10000
@@ -80,7 +80,7 @@ for sgId in parliamentVote:
 df = pd.DataFrame(data_list)
 
 # Save the DataFrame to an Excel file
-directory_path = os.path.join('..', 'output')
+directory_path = os.path.join(BASE_DIR, 'output')
 if not os.path.exists(directory_path):
     os.makedirs(directory_path)
 excel_file = '[후보][구시군의회의원].xlsx'

@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 
 # SSL 인증서 검증 경고 무시
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning) # type: ignore
+# 충청북도 보은군, 강진시에서 타임아웃이
+timeout_time = 60
 
 def get_soup(url: str, additional_headers={}, verify=True, encoding="utf-8") -> BeautifulSoup:
     """
@@ -24,6 +26,6 @@ def get_soup(url: str, additional_headers={}, verify=True, encoding="utf-8") -> 
     }
     http_headers.update(additional_headers)
     
-    response = requests.get(url, verify=verify, headers=http_headers)
+    response = requests.get(url, verify=verify, headers=http_headers, timeout=timeout_time)
     response.encoding = encoding
     return BeautifulSoup(response.text, 'html.parser')
