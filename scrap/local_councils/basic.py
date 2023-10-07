@@ -1,6 +1,5 @@
 from urllib.parse import urlparse
 
-from typing import List
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 import re
@@ -9,93 +8,102 @@ regex_pattern = re.compile(r'정\s*\S*\s*당', re.IGNORECASE)  # Case-insensitiv
 party_keywords = ['국민의힘', '더불어민주당', '정의당', '진보당', '기본소득당', '시대전환', '한국의희망', '무소속'] # 이상 원내정당.
 # 원외정당의 경우, 나무위키 피셜이지만 현재는 지방의회 진출당이 없다. 사실 당 이름이 매번 바뀌므로 다른 어프로치를 찾아야 할 듯.. 
 
-def scrap_basic(url = 'https://www.yscl.go.kr/kr/member/name.do', council_id = "seoul-yongsangu", encoding = None) -> ScrapResult:
-    '''의원 상세약력 스크랩
+pf_elt = [None, 'div']
+pf_cls = [None, 'profile']
+pf_memlistelt = [None, None]
 
+name_elt = [None, 'em']
+name_cls = [None, 'name']
+name_wrapelt= [None, None]
+name_wrapcls = [None, None]
+
+pty_elt = [None, 'em']
+pty_cls = [None, None]
+pty_wrapelt = [None, None]
+pty_wrapcls = [None, None]
+
+def get_profiles(soup, element, class_, memberlistelement):
+    # 의원 목록 사이트에서 의원 프로필을 가져옴
+    if memberlistelement is not None:
+        soup = soup.find_all(memberlistelement, class_='memberList')[0]
+    return soup.find_all(element, class_)
+
+def get_name(profile, element, class_, wrapper_element, wrapper_class_):
+    # 의원 프로필에서 의원 이름을 가져옴
+    if wrapper_element is not None:
+        profile = profile.find_all(wrapper_element, class_=wrapper_class_)[0]
+    name_tag = profile.find(element, class_)
+    name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
+    if len(name) > 10: # strong태그 등 많은 걸 name 태그 안에 포함하는 경우. 은평구 등.
+        name = name_tag.strong.get_text(strip=True) if name_tag.strong else "이름 정보 없음"
+    name = name.split('(')[0].split(':')[-1] # 이름 뒷 한자이름, 앞 '이   름:' 제거 
+
+    # 수식어가 이름 뒤에 붙어있는 경우
+    while len(name) > 5:
+        if name[-3:] in ['부의장']: # 119 등.
+            name = name[:-3].strip()
+        else:
+            break
+    while len(name) > 4:
+        if name[-2:] in ['의원', '의장']: # 강서구 등.
+            name = name[:-2].strip()
+        else:
+            break # 4자 이름 고려.
+    return name
+
+def extract_party(string):
+    for keyword in party_keywords:
+        if keyword in string:
+            return keyword
+    return None
+
+def get_party(profile, element, class_, wrapper_element, wrapper_class_, party_in_main_page, url):
+    # 의원 프로필에서 의원이 몸담는 정당 이름을 가져옴
+    if not party_in_main_page:
+        parsed_url = urlparse(url)
+        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+        # 프로필보기 링크 가져오기
+        profile_link = profile.find('a', class_='start')
+        profile_url = base_url + profile_link['href']
+        profile = get_soup(profile_url, verify=False)
+    party_pulp_list = list(filter(lambda x: regex_pattern.search(str(x)), profile.find_all(element, class_)))
+    party_pulp = party_pulp_list[0]
+    party_string = party_pulp.get_text(strip=True)
+    party_string = party_string.split(' ')[-1].strip()
+    while True:
+        if (party := extract_party(party_string)) is not None:
+            return party
+        if (party_span := party_pulp.find_next('span')) is not None:
+            party_string = party_span.text.split(' ')[-1]
+        else:
+            return "정당 정보 파싱 불가"
+
+def scrap_basic(url, cid, encoding = 'utf-8') -> ScrapResult:
+    '''의원 상세약력 스크랩
     :param url: 의원 목록 사이트 url
+    :param n: 의회 id
+    :param encoding: 받아온 soup 인코딩
     :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
     '''
-    soup = get_soup(url, verify=False)
-    if encoding:
-        soup = get_soup(url, verify=False, encoding=encoding)
-    party_in_soup = any(keyword in soup.text for keyword in party_keywords)
-    parsed_url = urlparse(url)
-    base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
-    councilors: List[Councilor] = []
-    profiles = soup.find_all("div", class_="profile")
-    if profiles == []:
-        profiles = soup.find_all("div", class_="card_area")
-    if profiles == []:
-        profiles = soup.find_all("dl")
-    if profiles == []: # 강서구
-        profiles = soup.find_all("div", class_='memberbox')
-    if profiles == []: # 마포구
-        memberlist = soup.find_all("ul", class_='memberList')
-        profiles = memberlist[0].find_all('div', class_='wrap')
-    print(council_id, '에는,', len(profiles), '명의 의원이 있습니다.') # 디버깅용. 
+    soup = get_soup(url, verify=False, encoding=encoding)
+    councilors: list[Councilor] = []
+    party_in_main_page = any(keyword in soup.text for keyword in party_keywords)
+    
+    profiles = get_profiles(soup, pf_elt[cid - 1], pf_cls[cid - 1], pf_memlistelt[cid - 1])
+    print(cid, '번째 의회에는,', len(profiles), '명의 의원이 있습니다.') # 디버깅용. 
+
     for profile in profiles:
-        name_tag = profile.find(class_="name")
-        if name_tag is None:
-            name_tag = profile.find("dt")
-        if name_tag is None and (wrapper := profile.find_all("div", class_='right')) != []: # 마포구
-            name_tag = wrapper[0].find('h4')
-        if name_tag is None and (wrapper := profile.find_all("li", class_='first-child')) != []: # 강서구
-            name_tag = wrapper[0].find('span')
-        name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
-        if len(name) > 10: # strong태그 등 많은 걸 name 태그 안에 포함하는 경우. 은평구 등.
-            name = name_tag.strong.get_text(strip=True) if name_tag else "이름 정보 없음"
-        name = name.split('(')[0] # 뒷 한자이름 제거 
-        if name[-2:] == '의원': # 의원이라는 글자가 이름 앞에 붙어있는 경우. 강서구 등.
-            name = name[:-2].strip()
-        
-        party = "정당 정보 없음"
-        if party_in_soup:
-            party_info = list(filter(lambda x: regex_pattern.search(str(x)), profile.find_all("li")))
-            if party_info is None:
-                party_info = list(filter(lambda x: regex_pattern.search(str(x)), profile.find_all("dd")))
-            if party_info is None:
-                party_info = list(filter(lambda x: regex_pattern.search(str(x)), profile.find_all("em")))
-            if party_info is None:
-                pass
-            else:
-                party = party_info[0].get_text(strip=True).split(' ')[-1].strip()
-                if party in party_keywords:
-                    pass
-                else:
-                    party = "정당 정보 없음"
-                    if (party_span := party_info[0].find_next('span')) is not None:
-                        party = party_span.text.split(' ')[-1]
-                        while not any(keyword in party for keyword in party_keywords):
-                            party_span = party_span.find_next('span')
-                            party = party_span.text.split(' ')[-1]
-                        party = party.strip()
-                    else:
-                        pass
-        else:
-            # 프로필보기 링크 가져오기
-            profile_link = profile.find('a', class_='start')
-            if profile_link:
-                profile_url = base_url + profile_link['href']
-                profile_soup = get_soup(profile_url, verify=False)
-                party_info = profile_soup.find('em', string=regex_pattern)
-                if party_info and (party_span := party_info.find_next('span')) is not None:
-                    party = party_span.text.split(' ')[-1]
+        name = get_name(profile, name_elt[cid - 1], name_cls[cid - 1], name_wrapelt[cid - 1], name_wrapcls[cid - 1])
+        party = get_party(profile, pty_elt[cid - 1], pty_cls[cid - 1], pty_wrapelt[cid - 1], pty_wrapcls[cid - 1], party_in_main_page, url)
+            
 
         councilors.append(Councilor(name=name, party=party))
 
     return ScrapResult(
-        council_id,
+        council_id=cid,
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=councilors
     )
 
 if __name__ == '__main__':
-    # print(scrap_basic('https://council.jongno.go.kr/council/councilAsemby/list/orgnztList.do?menuNo=400020', 'seoul-jongrogu')) # 여러 링크를 돌아야 되는 듯하다. 하나로는 불가능해 보임.
-    print(scrap_basic('https://council.nowon.kr/kr/member/active.do', 'seoul-nowongu'))
-    print(scrap_basic('https://council.ep.go.kr/kr/member/name.do', 'seoul-eunpyeonggu'))
-    print(scrap_basic('https://www.sdmcouncil.go.kr/source/korean/square/ascending.html', 'seoul-seodaemungu', 'euc-kr'))
-    print(scrap_basic('https://council.mapo.seoul.kr/kr/member/active.do', 'seoul-mapogu'))
-    # 양천구는 패스
-    print(scrap_basic('https://gsc.gangseo.seoul.kr/member/org.asp', 'seoul-gangseogu', 'euc-kr'))
-    # 구로구는 링크 터짐
-    print(scrap_basic('https://www.ydpc.go.kr/kr/member/active.do', 'seoul-yeongdeungpogu'))
+    print(scrap_basic('https://02jgnew.council.or.kr/kr/member/active', '2')) # 서울 중구
