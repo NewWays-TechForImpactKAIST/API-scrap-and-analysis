@@ -6,7 +6,7 @@ import re
 
 regex_pattern = re.compile(r'정\s*\S*\s*당', re.IGNORECASE)  # Case-insensitive
 party_keywords = ['국민의힘', '더불어민주당', '정의당', '진보당', '기본소득당', '시대전환', '한국의희망', '무소속'] # 이상 원내정당.
-# 원외정당의 경우, 나무위키 피셜이지만 현재는 지방의회 진출당이 없다. 사실 당 이름이 매번 바뀌므로 다른 어프로치를 찾아야 할 듯.. 
+# 원외정당의 경우, 나무위키 피셜이지만 현재는 지방의회 진출당이 없다. 사실 당 이름이 매번 바뀌므로 다른 어프로치를 찾아야 할 듯.. => getPartyList() 참고.
 
 pf_elt = [None, 'div']
 pf_cls = [None, 'profile']
