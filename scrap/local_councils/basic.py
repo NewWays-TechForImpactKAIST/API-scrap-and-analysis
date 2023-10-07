@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 import re
+import requests
 
 regex_pattern = re.compile(r'정\s*\S*\s*당', re.IGNORECASE)  # Case-insensitive
 party_keywords = ['국민의힘', '더불어민주당', '정의당', '진보당', '기본소득당', '시대전환', '한국의희망', '무소속'] # 이상 원내정당.
@@ -27,6 +28,12 @@ def get_profiles(soup, element, class_, memberlistelement):
     if memberlistelement is not None:
         soup = soup.find_all(memberlistelement, class_='memberList')[0]
     return soup.find_all(element, class_)
+
+def getDataFromAPI(url_format, data_uid, name_id, party_id) -> Councilor:
+    # API로부터 의원 정보를 가져옴
+    url = url_format.format(data_uid)
+    result = requests.get(url).json()
+    return Councilor(name=result[name_id] if result[name_id] else '이름 정보 없음', party=result[party_id] if result[party_id] else '정당 정보 없음')
 
 def get_name(profile, element, class_, wrapper_element, wrapper_class_):
     # 의원 프로필에서 의원 이름을 가져옴
