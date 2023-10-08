@@ -2,26 +2,27 @@ from urllib.parse import urlparse
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
+from scrap.utils.utils import getPartyList
 import re
 import requests
 
 regex_pattern = re.compile(r'정\s*\S*\s*당', re.IGNORECASE)  # Case-insensitive
-party_keywords = ['국민의힘', '더불어민주당', '정의당', '진보당', '기본소득당', '시대전환', '한국의희망', '무소속'] # 이상 원내정당.
-# 원외정당의 경우, 나무위키 피셜이지만 현재는 지방의회 진출당이 없다. 사실 당 이름이 매번 바뀌므로 다른 어프로치를 찾아야 할 듯.. => getPartyList() 참고.
+party_keywords = getPartyList()
+party_keywords.append('무소속')
 
-pf_elt = [None, 'div']
-pf_cls = [None, 'profile']
-pf_memlistelt = [None, None]
+pf_elt = [None, 'div', 'div']
+pf_cls = [None, 'profile', 'profile']
+pf_memlistelt = [None, None, None]
 
-name_elt = [None, 'em']
-name_cls = [None, 'name']
-name_wrapelt= [None, None]
-name_wrapcls = [None, None]
+name_elt = [None, 'em', 'em']
+name_cls = [None, 'name', 'name']
+name_wrapelt= [None, None, None]
+name_wrapcls = [None, None, None]
 
-pty_elt = [None, 'em']
-pty_cls = [None, None]
-pty_wrapelt = [None, None]
-pty_wrapcls = [None, None]
+pty_elt = [None, 'em', 'em']
+pty_cls = [None, None, None]
+pty_wrapelt = [None, None, None]
+pty_wrapcls = [None, None, None]
 
 def get_profiles(soup, element, class_, memberlistelement):
     # 의원 목록 사이트에서 의원 프로필을 가져옴
@@ -107,10 +108,10 @@ def scrap_basic(url, cid, encoding = 'utf-8') -> ScrapResult:
         councilors.append(Councilor(name=name, party=party))
 
     return ScrapResult(
-        council_id=cid,
+        council_id=str(cid),
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=councilors
     )
 
 if __name__ == '__main__':
-    print(scrap_basic('https://02jgnew.council.or.kr/kr/member/active', '2')) # 서울 중구
+    print(scrap_basic('https://www.yscl.go.kr/kr/member/name.do', 3)) # 서울 용산구 
