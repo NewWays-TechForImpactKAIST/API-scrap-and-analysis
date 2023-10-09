@@ -48,3 +48,22 @@ class ScrapResult:
     """
 
 
+class ScrapBasicArgument:
+    '''
+    scrap_basic에 쓸 argument입니다
+    '''
+    def __init__(self, pf_elt=None, pf_cls=None, pf_memlistelt=None,
+                 name_elt=None, name_cls=None, name_wrapelt=None,
+                 name_wrapcls=None, pty_elt=None, pty_cls=None,
+                 pty_wrapelt=None, pty_wrapcls=None):
+        self.pf_elt = pf_elt
+        self.pf_cls = pf_cls
+        self.pf_memlistelt = pf_memlistelt
+        self.name_elt = name_elt
+        self.name_cls = name_cls
+        self.name_wrapelt = name_wrapelt
+        self.name_wrapcls = name_wrapcls
+        self.pty_elt = pty_elt
+        self.pty_cls = pty_cls
+        self.pty_wrapelt = pty_wrapelt
+        self.pty_wrapcls = pty_wrapcls
