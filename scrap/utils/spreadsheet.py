@@ -61,6 +61,12 @@ def main() -> None:
         # 62 : TODO! /common/selectCouncilMemberProfile.json 을 어떻게 얻을지..
         # 63 : TODO! 홈페이지 터짐
         # 64 : TODO! /common/selectCouncilMemberProfile.json 을 어떻게 얻을지..
+        # 대전
+        65 : ScrapBasicArgument(pf_elt='dl', pf_cls='profile', name_elt='strong', name_cls='name', pty_elt='strong'),
+        66 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='em'),
+        67 : ScrapBasicArgument(pf_memlistelt='section', pf_memlistcls='member', pf_elt='dl', name_elt='dd', name_cls='name', pty_elt='dd'),
+        68 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        69 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
         # 강원
         113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name', pty_elt='li'),
         115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='li'),
@@ -77,7 +83,7 @@ def main() -> None:
     timeouts = 0
     N = 226
     # for n in range (113, 169):
-    for n in [62]:
+    for n in range(57,70):
         encoding = 'euc-kr' if n in euc_kr else 'utf-8'
         try:
             if n in special_functions:

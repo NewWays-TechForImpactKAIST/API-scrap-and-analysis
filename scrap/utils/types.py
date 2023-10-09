@@ -56,6 +56,7 @@ class ScrapBasicArgument:
                 pf_elt: str | None = None, 
                 pf_cls: str | None = None, 
                 pf_memlistelt: str | None = None, 
+                pf_memlistcls: str | None = None, 
                 name_elt: str | None = None, 
                 name_cls: str | None = None, 
                 name_wrapelt: str | None = None, 
@@ -71,6 +72,7 @@ class ScrapBasicArgument:
             - pf_elt (str | None): pf의 요소 이름. 일반적으로 'div'입니다.
             - pf_cls (str | None): pf의 클래스 이름. 일반적으로 'profile'입니다.
             - pf_memlistelt (str | None): pf 멤버 목록 요소 이름.
+            - pf_memlistelt (str | None): pf 멤버 목록 클래스 이름.
             - name_elt (str | None): 이름 요소의 이름. 존재한다면 일반적으로 'em'입니다.
             - name_cls (str | None): 이름 요소의 클래스 이름. 일반적으로 'name'입니다.
             - name_wrapelt (str | None): 이름 래퍼 요소의 이름.
@@ -83,6 +85,7 @@ class ScrapBasicArgument:
         self.pf_elt = pf_elt
         self.pf_cls = pf_cls
         self.pf_memlistelt = pf_memlistelt
+        self.pf_memlistcls = pf_memlistcls
         self.name_elt = name_elt
         self.name_cls = name_cls
         self.name_wrapelt = name_wrapelt

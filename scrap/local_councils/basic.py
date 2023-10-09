@@ -10,10 +10,10 @@ regex_pattern = re.compile(r'정\s*\S*\s*당', re.IGNORECASE)  # Case-insensitiv
 party_keywords = getPartyList()
 party_keywords.append('무소속')
 
-def get_profiles(soup, element, class_, memberlistelement):
+def get_profiles(soup, element, class_, memberlistelement, memberlistclass_):
     # 의원 목록 사이트에서 의원 프로필을 가져옴
     if memberlistelement is not None:
-        soup = soup.find_all(memberlistelement, class_='memberList')[0]
+        soup = soup.find_all(memberlistelement, class_=memberlistclass_)[0]
     return soup.find_all(element, class_)
 
 def getDataFromAPI(url_format, data_uid, name_id, party_id) -> Councilor:
@@ -89,7 +89,7 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding = 'utf-8') -> Scrap
     councilors: list[Councilor] = []
     party_in_main_page = any(keyword in soup.text for keyword in party_keywords)
     
-    profiles = get_profiles(soup, args.pf_elt, args.pf_cls, args.pf_memlistelt)
+    profiles = get_profiles(soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls)
     print(cid, '번째 의회에는,', len(profiles), '명의 의원이 있습니다.') # 디버깅용. 
 
     for profile in profiles:
