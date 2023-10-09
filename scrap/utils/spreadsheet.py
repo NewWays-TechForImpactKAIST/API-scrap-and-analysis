@@ -41,48 +41,46 @@ def main() -> None:
     client: gspread.client.Client = google_authorization()
 
     # 스프레드시트 열기
-    spreadsheet: gspread.Spreadsheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1Eq2x7xZCw_5ng2GdHDnpUIhhwbmOAKEl4abX09JLyuA/edit#gid=1044938838')
-    worksheet: gspread.Worksheet = spreadsheet.get_worksheet(1)  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
+    link = 'https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905' # T4I-의회목록
+    spreadsheet: gspread.Spreadsheet = client.open_by_url(link)
+    worksheet: gspread.Worksheet = spreadsheet.get_worksheet(0)  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
+    euc_kr = [6, 13, 16, 31, 112, 154, 157, 163, 167, 181, 197, 202]
+    args = {
+        2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
+        3 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
+        113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
+        115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
+    }
 
     # 데이터 가져오기
     data: list[dict] = worksheet.get_all_records()
+    # for n in range (1, 56):
+    #     function_name = f"scrap_{n}"
+    #     if hasattr(sys.modules[__name__], function_name):
+    #         function_to_call = getattr(sys.modules[__name__], function_name)
+    #         print(function_to_call)
+    #         result = function_to_call(data[n - 1]['상세약력 링크'])
 
-    print(scrap_junggu(data[1]['상세약력 링크']))
-    print(scrap_gwangjingu(data[4]['상세약력 링크']))
-    print(scrap_dongdaemungu(data[5]['상세약력 링크']))
-    for n in range (65, 75):
-        function_name = f"scrap_{n}"
-        if hasattr(sys.modules[__name__], function_name):
-            function_to_call = getattr(sys.modules[__name__], function_name)
-            print(function_to_call)
-            if n in [66, 70, 74]:
-                result = function_to_call() # 스프레드시트 링크 터짐 (울산 울주군처럼 애먼데 링크인 경우도 있다)
-            else:
-                result = function_to_call(data[n - 1]['상세약력 링크'])
+    error_times = 0
+    parse_error_times = 0
+    timeouts = 0
+    N = 226
+    # for n in range (113, 169):
+    for n in [113, 115]:
+        encoding = 'euc-kr' if n in euc_kr else 'utf-8'
+        try:
+            result = str(scrap_basic(data[n - 1]['상세약력 링크'], n, args[n], encoding).councilors)
+            if '정보 없음' in result:
+                print("정보 없음이 포함되어 있습니다.")
+                parse_error_times += 1
             print(result)
-        else:
-            print(f"함수 {function_name}를 찾을 수 없습니다.")
-
-    ## 아래 테스트를 위해서는 위 프린트문을 모두 주석처리해 주세요.
-    # error_times = 0
-    # parse_error_times = 0
-    # timeouts = 0
-    # N = 226
-    # for n in range (N):
-    #     encoding = 'euc-kr' if n in [5, 12, 15, 30, 111, 153, 156, 162, 166, 180, 196, 201] else 'utf-8'
-    #     try:
-    #         result = str(scrap_basic(data[n]['상세약력 링크'], f'district-{n}', encoding))
-    #         if '정보 없음' in result:
-    #             print("정보 없음이 포함되어 있습니다.")
-    #             parse_error_times += 1
-    #         print(result)
-    #     except Timeout:
-    #         print(f"Request to {data[n]['상세약력 링크']} timed out.")
-    #         timeouts += 1
-    #     except Exception as e:
-    #         print(f"An error occurred for district-{n}: {str(e)}")
-    #         error_times += 1
-    #         continue  # 에러가 발생하면 다음 반복으로 넘어감
-    # print(f"| 총 실행 횟수: {N} | 에러 횟수: {error_times} | 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |")
+        except Timeout:
+            print(f"Request to {data[n - 1]['상세약력 링크']} timed out.")
+            timeouts += 1
+        except Exception as e:
+            print(f"An error occurred for district-{n}: {str(e)}")
+            error_times += 1
+            continue  # 에러가 발생하면 다음 반복으로 넘어감
+    print(f"| 총 실행 횟수: {N} | 에러 횟수: {error_times} | 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |")
 if __name__ == '__main__':
     main()

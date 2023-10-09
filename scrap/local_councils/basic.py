@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
+from scrap.utils.types import CouncilType, Councilor, ScrapResult, ScrapBasicArgument
 from scrap.utils.requests import get_soup
 from scrap.utils.utils import getPartyList
 import re
@@ -9,20 +9,6 @@ import requests
 regex_pattern = re.compile(r'정\s*\S*\s*당', re.IGNORECASE)  # Case-insensitive
 party_keywords = getPartyList()
 party_keywords.append('무소속')
-
-pf_elt = [None, 'div', 'div']
-pf_cls = [None, 'profile', 'profile']
-pf_memlistelt = [None, None, None]
-
-name_elt = [None, 'em', 'em']
-name_cls = [None, 'name', 'name']
-name_wrapelt= [None, None, None]
-name_wrapcls = [None, None, None]
-
-pty_elt = [None, 'em', 'em']
-pty_cls = [None, None, None]
-pty_wrapelt = [None, None, None]
-pty_wrapcls = [None, None, None]
 
 def get_profiles(soup, element, class_, memberlistelement):
     # 의원 목록 사이트에서 의원 프로필을 가져옴
@@ -71,7 +57,7 @@ def get_party(profile, element, class_, wrapper_element, wrapper_class_, party_i
         parsed_url = urlparse(url)
         base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
         # 프로필보기 링크 가져오기
-        profile_link = profile.find('a', class_='start')
+        profile_link = profile.find(wrapper_element, class_=wrapper_class_)
         profile_url = base_url + profile_link['href']
         profile = get_soup(profile_url, verify=False)
     party_pulp_list = list(filter(lambda x: regex_pattern.search(str(x)), profile.find_all(element, class_)))
@@ -86,7 +72,7 @@ def get_party(profile, element, class_, wrapper_element, wrapper_class_, party_i
         else:
             return "정당 정보 파싱 불가"
 
-def scrap_basic(url, cid, encoding = 'utf-8') -> ScrapResult:
+def scrap_basic(url, cid, args: ScrapBasicArgument, encoding = 'utf-8') -> ScrapResult:
     '''의원 상세약력 스크랩
     :param url: 의원 목록 사이트 url
     :param n: 의회 id
@@ -97,12 +83,12 @@ def scrap_basic(url, cid, encoding = 'utf-8') -> ScrapResult:
     councilors: list[Councilor] = []
     party_in_main_page = any(keyword in soup.text for keyword in party_keywords)
     
-    profiles = get_profiles(soup, pf_elt[cid - 1], pf_cls[cid - 1], pf_memlistelt[cid - 1])
+    profiles = get_profiles(soup, args.pf_elt, args.pf_cls, args.pf_memlistelt)
     print(cid, '번째 의회에는,', len(profiles), '명의 의원이 있습니다.') # 디버깅용. 
 
     for profile in profiles:
-        name = get_name(profile, name_elt[cid - 1], name_cls[cid - 1], name_wrapelt[cid - 1], name_wrapcls[cid - 1])
-        party = get_party(profile, pty_elt[cid - 1], pty_cls[cid - 1], pty_wrapelt[cid - 1], pty_wrapcls[cid - 1], party_in_main_page, url)
+        name = get_name(profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls)
+        party = get_party(profile, args.pty_elt, args.pty_cls, args.pty_wrapelt, args.pty_wrapcls, party_in_main_page, url)
             
 
         councilors.append(Councilor(name=name, party=party))
@@ -114,4 +100,5 @@ def scrap_basic(url, cid, encoding = 'utf-8') -> ScrapResult:
     )
 
 if __name__ == '__main__':
-    print(scrap_basic('https://www.yscl.go.kr/kr/member/name.do', 3)) # 서울 용산구 
+    args3 = ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em',name_cls='name',pty_elt='em')
+    print(scrap_basic('https://www.yscl.go.kr/kr/member/name.do', 3, args3)) # 서울 용산구 
