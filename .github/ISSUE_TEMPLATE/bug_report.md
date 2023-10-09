@@ -1,38 +1,39 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: 버그 세부 사항을 입력해 주세요.
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## 버그 설명
+버그가 무엇인지 명확하고 간결하게 설명합니다.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## 재현 방법
+버그를 재현하는 단계를 설명해 주세요:
+1. '...'로 이동
+2. '....'를 클릭
+3. '....'까지 아래로 스크롤
+4. 오류 발생
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## 예상된 결과
+정상적인 경우 예상되는 상황에 대해 명확하고 간결하게 설명합니다.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## 스크린샷
+해당되는 경우 문제를 설명하는 데 도움이 되는 스크린샷을 추가하세요.
 
-**Desktop (please complete the following information):**
+## 문제 발생 환경
+**데스크탑 (다음 정보를 입력해 주세요):**
  - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+ - 브라우저 [e.g. chrome, safari]
+ - 버전 [e.g. 22]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
+**모바일 (다음 정보를 입력해 주세요):**
+ - 기기명: [e.g. iPhone6]
  - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+ - 브라우저 [e.g. chrome, safari]
+ - 버전 [e.g. 22]
 
-**Additional context**
-Add any other context about the problem here.
+## 추가 정보
+문제에 대한 추가적인 정보가 있다면 입력해 주세요.
