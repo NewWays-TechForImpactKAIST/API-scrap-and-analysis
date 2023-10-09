@@ -48,11 +48,13 @@ def main() -> None:
     euc_kr = [6, 13, 16, 31, 112, 154, 157, 163, 167, 181, 197, 202]
     special_functions = list(range(1, 57)) + [57]
     args = {
-        2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
-        3 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
-        57 : ScrapBasicArgument(pf_elt='div', pf_cls='box', name_elt='p', name_cls='mem_tit2',pty_elt='p', pty_cls='mem_tit2'),
-        113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
-        115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
+        2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        3 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        57 : ScrapBasicArgument(pf_elt='div', pf_cls='box', name_elt='p', name_cls='mem_tit2', pty_elt='p', pty_cls='mem_tit2'),
+        58 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        59 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='em'),
+        113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name', pty_elt='li'),
+        115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='li'),
         # TODO : 정당이 주석처리되어 있어서 soup가 인식을 못함.
         116 : ScrapBasicArgument(pf_elt='div', pf_cls='memberName', name_cls='name',pty_elt='dd'),
     }
@@ -66,7 +68,7 @@ def main() -> None:
     timeouts = 0
     N = 226
     # for n in range (113, 169):
-    for n in [57]:
+    for n in [59]:
         encoding = 'euc-kr' if n in euc_kr else 'utf-8'
         try:
             if n in special_functions:
