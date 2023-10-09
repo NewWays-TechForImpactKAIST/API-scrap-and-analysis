@@ -209,7 +209,7 @@ def scrap_57(url, args) -> ScrapResult:
         name = get_name(profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls)
 
         party = '정당 정보 없음'
-        party_pulp = profile.find(args.pty_elt, class_=args.pty_cls)
+        party_pulp = find(profile, args.pty_elt, class_=args.pty_cls)
         if party_pulp is None: raise AssertionError('[incheon.py] 정당정보 실패')
         party_string = party_pulp.get_text(strip=True)
         party_string = party_string.split(' ')[-1].strip()
@@ -217,8 +217,8 @@ def scrap_57(url, args) -> ScrapResult:
             party = extract_party(party_string)
             if party is not None:
                 break
-            if (party_span := party_pulp.find_next('span')) is not None:
-                party_string = party_span.text.split(' ')[-1]
+            if (party_pulp := party_pulp.find_next('span')) is not None:
+                party_string = party_pulp.text.split(' ')[-1]
             else:
                 raise RuntimeError("[incheon.py] 정당 정보 파싱 불가")
 

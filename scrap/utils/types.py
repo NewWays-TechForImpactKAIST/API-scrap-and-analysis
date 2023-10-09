@@ -64,7 +64,8 @@ class ScrapBasicArgument:
                 pty_elt: str | None = None, 
                 pty_cls: str | None = None, 
                 pty_wrapelt: str | None = None, 
-                pty_wrapcls: str | None = None):
+                pty_wrapcls: str | None = None,
+                pty_wraptxt: str | None = None):
         """
         ScrapBasicArgument 클래스의 생성자입니다.
 
@@ -81,6 +82,7 @@ class ScrapBasicArgument:
             - pty_cls (str | None): 속성 요소의 클래스 이름.
             - pty_wrapelt (str | None): 속성 래퍼 요소의 이름. 존재한다면 일반적으로 'a'입니다.
             - pty_wrapcls (str | None): 속성 래퍼 요소의 클래스 이름. 존재한다면 일반적으로 'start'입니다.
+            - pty_wraptxt (str | None): 속성 래퍼 요소의 텍스트.
         """
         self.pf_elt = pf_elt
         self.pf_cls = pf_cls
@@ -94,3 +96,4 @@ class ScrapBasicArgument:
         self.pty_cls = pty_cls
         self.pty_wrapelt = pty_wrapelt
         self.pty_wrapcls = pty_wrapcls
+        self.pty_wraptxt = pty_wraptxt
