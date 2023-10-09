@@ -46,12 +46,20 @@ def main() -> None:
     worksheet: gspread.Worksheet = spreadsheet.get_worksheet(0)  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
     euc_kr = [6, 13, 16, 31, 112, 154, 157, 163, 167, 181, 197, 202]
     args = {
+        2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
+        3 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
         113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
         115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
     }
 
     # 데이터 가져오기
     data: list[dict] = worksheet.get_all_records()
+    # for n in range (1, 56):
+    #     function_name = f"scrap_{n}"
+    #     if hasattr(sys.modules[__name__], function_name):
+    #         function_to_call = getattr(sys.modules[__name__], function_name)
+    #         print(function_to_call)
+    #         result = function_to_call(data[n - 1]['상세약력 링크'])
 
     error_times = 0
     parse_error_times = 0
