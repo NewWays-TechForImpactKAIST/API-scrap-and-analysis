@@ -11,7 +11,7 @@ def scrap_national_council(cd: int) -> ScrapResult:
 	_data 폴더에 assembly_api_key.json 파일을 만들어야 하며,
 	해당 JSON은 {"key":"(Open API에서 발급받은 인증키)"} 꼴을 가져야 한다.
 	https://open.assembly.go.kr/portal/data/service/selectAPIServicePage.do/OBL7NF0011935G18076#none
-	
+
 	:param cd: 국회의원 대수. 제20대 국회의원을 스크랩하고자 하면 20
 	:return: 국회의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
 	'''
