@@ -111,6 +111,14 @@ def main() -> None:
         104 : ScrapBasicArgument(pf_elt='div', pf_cls='text_box', name_elt='h3', name_cls='h0', pty_wrapelt='a', pty_wraptxt='누리집', pty_elt='li'),
         105 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
         # 강원
+        # 106 : TODO! 정당정보 없음
+        # TODO! 107이 get_soup에서 실패 중 - HTTPSConnectionPool(host='council.wonju.go.kr', port=443): Max retries exceeded with url: /content/member/memberName.html (Caused by SSLError(SSLError(1, '[SSL: DH_KEY_TOO_SMALL] dh key too small (_ssl.c:1007)')))
+        107 : ScrapBasicArgument(pf_memlistelt='div', pf_memlistcls='content', pf_elt='dl', name_elt='dd', name_cls='name', pty_elt='span'),
+        108 : ScrapBasicArgument(pf_elt='dl', pf_cls='profile', name_elt='strong', pty_elt='li'),
+        109 : ScrapBasicArgument(pf_memlistelt='section', pf_memlistcls='memberName', pf_elt='dl', name_elt='dd', name_cls='name', pty_elt='span'),
+        110 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        # 111 : TODO! 정당 없고 홈페이지는 깨짐 
+        112 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
         113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name', pty_elt='li'),
         115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='li'),
         # TODO : 정당이 주석처리되어 있어서 soup가 인식을 못함.
@@ -126,7 +134,7 @@ def main() -> None:
     timeouts = 0
     N = 226
     # for n in range (113, 169):
-    for n in range(57, 106):
+    for n in range(107, 108):
         encoding = 'euc-kr' if n in euc_kr else 'utf-8'
         try:
             if n in special_functions:
