@@ -31,7 +31,6 @@ def get_name(profile, element, class_, wrapper_element, wrapper_class_):
     if len(name) > 10: # strong태그 등 많은 걸 name 태그 안에 포함하는 경우. 은평구 등.
         name = name_tag.strong.get_text(strip=True) if name_tag.strong else "이름 정보 없음"
     name = name.split('(')[0].split(':')[-1] # 이름 뒷 한자이름, 앞 '이   름:' 제거 
-
     # 수식어가 이름 뒤에 붙어있는 경우
     while len(name) > 5:
         if name[-3:] in ['부의장']: # 119 등.
@@ -41,6 +40,12 @@ def get_name(profile, element, class_, wrapper_element, wrapper_class_):
     while len(name) > 4:
         if name[-2:] in ['의원', '의장']: # 강서구 등.
             name = name[:-2].strip()
+        elif any(keyword in name for keyword in party_keywords): 
+            # 인천 서구 등. 정당 키워드는 제거해야 함 
+            for keyword in party_keywords:
+                if keyword in name:
+                    name = name.replace(keyword, '').strip()
+                    break
         else:
             break # 4자 이름 고려.
     return name
@@ -61,6 +66,7 @@ def get_party(profile, element, class_, wrapper_element, wrapper_class_, party_i
         profile_url = base_url + profile_link['href']
         profile = get_soup(profile_url, verify=False)
     party_pulp_list = list(filter(lambda x: regex_pattern.search(str(x)), profile.find_all(element, class_)))
+    if party_pulp_list == []: raise RuntimeError('[basic.py] 정당정보 regex 실패')
     party_pulp = party_pulp_list[0]
     party_string = party_pulp.get_text(strip=True)
     party_string = party_string.split(' ')[-1].strip()
@@ -70,7 +76,7 @@ def get_party(profile, element, class_, wrapper_element, wrapper_class_, party_i
         if (party_span := party_pulp.find_next('span')) is not None:
             party_string = party_span.text.split(' ')[-1]
         else:
-            return "정당 정보 파싱 불가"
+            return "[basic.py] 정당 정보 파싱 불가"
 
 def scrap_basic(url, cid, args: ScrapBasicArgument, encoding = 'utf-8') -> ScrapResult:
     '''의원 상세약력 스크랩
@@ -89,7 +95,6 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding = 'utf-8') -> Scrap
     for profile in profiles:
         name = get_name(profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls)
         party = get_party(profile, args.pty_elt, args.pty_cls, args.pty_wrapelt, args.pty_wrapcls, party_in_main_page, url)
-            
 
         councilors.append(Councilor(name=name, party=party))
 
