@@ -5,6 +5,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 import gspread
 
 from scrap.local_councils.seoul import *
+from scrap.local_councils.incheon import *
 from scrap.local_councils import *
 from requests.exceptions import Timeout
 
@@ -45,31 +46,41 @@ def main() -> None:
     spreadsheet: gspread.Spreadsheet = client.open_by_url(link)
     worksheet: gspread.Worksheet = spreadsheet.get_worksheet(0)  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
     euc_kr = [6, 13, 16, 31, 112, 154, 157, 163, 167, 181, 197, 202]
+    special_functions = list(range(1, 57)) + [57]
     args = {
-        2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
-        3 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name',pty_elt='em'),
-        113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
-        115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name',pty_elt='li'),
+        2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        3 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        57 : ScrapBasicArgument(pf_elt='div', pf_cls='box', name_elt='p', name_cls='mem_tit2', pty_elt='p', pty_cls='mem_tit2'),
+        58 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        59 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='em'),
+        113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name', pty_elt='li'),
+        115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='li'),
+        # TODO : 정당이 주석처리되어 있어서 soup가 인식을 못함.
+        116 : ScrapBasicArgument(pf_elt='div', pf_cls='memberName', name_cls='name',pty_elt='dd'),
     }
 
     # 데이터 가져오기
     data: list[dict] = worksheet.get_all_records()
-    # for n in range (1, 56):
-    #     function_name = f"scrap_{n}"
-    #     if hasattr(sys.modules[__name__], function_name):
-    #         function_to_call = getattr(sys.modules[__name__], function_name)
-    #         print(function_to_call)
-    #         result = function_to_call(data[n - 1]['상세약력 링크'])
+    result: str = ''
 
     error_times = 0
     parse_error_times = 0
     timeouts = 0
     N = 226
     # for n in range (113, 169):
-    for n in [113, 115]:
+    for n in [59]:
         encoding = 'euc-kr' if n in euc_kr else 'utf-8'
         try:
-            result = str(scrap_basic(data[n - 1]['상세약력 링크'], n, args[n], encoding).councilors)
+            if n in special_functions:
+                function_name = f"scrap_{n}"
+                if hasattr(sys.modules[__name__], function_name):
+                    function_to_call = getattr(sys.modules[__name__], function_name)
+                    if n < 57:
+                        result = str(function_to_call(data[n - 1]['상세약력 링크']).councilors)
+                    else:
+                        result = str(function_to_call(data[n - 1]['상세약력 링크'], args=args[n]).councilors)
+            else:
+                result = str(scrap_basic(data[n - 1]['상세약력 링크'], n, args[n], encoding).councilors)
             if '정보 없음' in result:
                 print("정보 없음이 포함되어 있습니다.")
                 parse_error_times += 1
@@ -78,7 +89,7 @@ def main() -> None:
             print(f"Request to {data[n - 1]['상세약력 링크']} timed out.")
             timeouts += 1
         except Exception as e:
-            print(f"An error occurred for district-{n}: {str(e)}")
+            print(f"오류 : [district-{n}] {str(e)}")
             error_times += 1
             continue  # 에러가 발생하면 다음 반복으로 넘어감
     print(f"| 총 실행 횟수: {N} | 에러 횟수: {error_times} | 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |")
