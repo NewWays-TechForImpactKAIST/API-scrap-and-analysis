@@ -46,7 +46,8 @@ def main() -> None:
     link = 'https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905' # T4I-의회목록
     spreadsheet: gspread.Spreadsheet = client.open_by_url(link)
     worksheet: gspread.Worksheet = spreadsheet.get_worksheet(0)  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
-    euc_kr = [6, 13, 16, 31, 112, 154, 157, 163, 167, 181, 197, 202]
+    # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기. 
+    euc_kr = [6, 13, 16, 31, 72, 112, 154, 157, 163, 167, 181, 197, 202]
     special_functions = list(range(1, 57)) + [57]
     args = {
         2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
@@ -67,6 +68,12 @@ def main() -> None:
         67 : ScrapBasicArgument(pf_memlistelt='section', pf_memlistcls='member', pf_elt='dl', name_elt='dd', name_cls='name', pty_elt='dd'),
         68 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
         69 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        # 울산
+        70 : ScrapBasicArgument(pf_memlistelt='section', pf_memlistcls='memberName', pf_elt='dl', name_elt='dd', name_cls='name', pty_elt='dd'),
+        71 : ScrapBasicArgument(pf_memlistelt='section', pf_memlistcls='memberName', pf_elt='dl', name_elt='dd', name_cls='name', pty_elt='dd'),
+        72 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='li', name_cls='name', pty_elt='li'),
+        73 : ScrapBasicArgument(pf_elt='dl', pf_cls='profile', name_elt='strong', name_cls='name', pty_elt='li'),
+        74 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_wrapelt='a', pty_wrapcls='start', pty_elt='li'),
         # 강원
         113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name', pty_elt='li'),
         115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='li'),
@@ -83,7 +90,7 @@ def main() -> None:
     timeouts = 0
     N = 226
     # for n in range (113, 169):
-    for n in range(57,70):
+    for n in range(71, 72):
         encoding = 'euc-kr' if n in euc_kr else 'utf-8'
         try:
             if n in special_functions:

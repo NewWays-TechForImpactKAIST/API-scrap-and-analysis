@@ -13,7 +13,10 @@ party_keywords.append('무소속')
 def get_profiles(soup, element, class_, memberlistelement, memberlistclass_):
     # 의원 목록 사이트에서 의원 프로필을 가져옴
     if memberlistelement is not None:
-        soup = soup.find_all(memberlistelement, class_=memberlistclass_)[0]
+        try:
+            soup = soup.find_all(memberlistelement, class_=memberlistclass_)[0]
+        except Exception:
+            raise RuntimeError('[basic.py] 의원 목록 사이트에서 의원 프로필을 가져오는데 실패했습니다.') 
     return soup.find_all(element, class_)
 
 def getDataFromAPI(url_format, data_uid, name_id, party_id) -> Councilor:
@@ -28,7 +31,9 @@ def get_name(profile, element, class_, wrapper_element, wrapper_class_):
         profile = profile.find_all(wrapper_element, class_=wrapper_class_)[0]
     name_tag = profile.find(element, class_)
     name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
-    if len(name) > 10: # strong태그 등 많은 걸 name 태그 안에 포함하는 경우. 은평구 등.
+    # strong태그 등 많은 걸 name 태그 안에 포함하는 경우. 은평구 등.
+    # 울산 동구의 이름름(한자자)(의장) 은 10자를 넘는다. 15가 좋은 기준.
+    if len(name) > 15:
         name = name_tag.strong.get_text(strip=True) if name_tag.strong else "이름 정보 없음"
     name = name.split('(')[0].split(':')[-1] # 이름 뒷 한자이름, 앞 '이   름:' 제거 
     # 수식어가 이름 뒤에 붙어있는 경우
@@ -88,7 +93,7 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding = 'utf-8') -> Scrap
     soup = get_soup(url, verify=False, encoding=encoding)
     councilors: list[Councilor] = []
     party_in_main_page = any(keyword in soup.text for keyword in party_keywords)
-    
+    print(soup)
     profiles = get_profiles(soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls)
     print(cid, '번째 의회에는,', len(profiles), '명의 의원이 있습니다.') # 디버깅용. 
 
