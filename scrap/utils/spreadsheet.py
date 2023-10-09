@@ -6,6 +6,7 @@ import gspread
 
 from scrap.local_councils.seoul import *
 from scrap.local_councils.incheon import *
+from scrap.local_councils.gwangju import *
 from scrap.local_councils import *
 from requests.exceptions import Timeout
 
@@ -50,9 +51,17 @@ def main() -> None:
     args = {
         2 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
         3 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        # 인천
         57 : ScrapBasicArgument(pf_elt='div', pf_cls='box', name_elt='p', name_cls='mem_tit2', pty_elt='p', pty_cls='mem_tit2'),
         58 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
         59 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='em'),
+        # 광주
+        60 : ScrapBasicArgument(pf_elt='div', pf_cls='content', name_elt='h5', pty_wrapelt='a', pty_elt='li'),
+        61 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='em', name_cls='name', pty_elt='em'),
+        # 62 : TODO! /common/selectCouncilMemberProfile.json 을 어떻게 얻을지..
+        # 63 : TODO! 홈페이지 터짐
+        # 64 : TODO! /common/selectCouncilMemberProfile.json 을 어떻게 얻을지..
+        # 강원
         113 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_cls='name', pty_elt='li'),
         115 : ScrapBasicArgument(pf_elt='div', pf_cls='profile', name_elt='div', name_cls='name', pty_elt='li'),
         # TODO : 정당이 주석처리되어 있어서 soup가 인식을 못함.
@@ -68,7 +77,7 @@ def main() -> None:
     timeouts = 0
     N = 226
     # for n in range (113, 169):
-    for n in [59]:
+    for n in [62]:
         encoding = 'euc-kr' if n in euc_kr else 'utf-8'
         try:
             if n in special_functions:

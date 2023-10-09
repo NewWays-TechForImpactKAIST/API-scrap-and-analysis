@@ -1,5 +1,5 @@
-from urllib.parse import urlparse
-
+"""인천광역시를 스크랩. 50-57번째 의회까지 있음.
+"""
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 from scrap.local_councils.basic import *
@@ -193,7 +193,7 @@ def scrap_56(url='https://www.gyeyang.go.kr/open_content/council/member/present/
     )
 
 def scrap_57(url, args) -> ScrapResult:
-    """인천시 계양구 페이지에서 의원 상세약력 스크랩
+    """인천시 서구 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
     :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체

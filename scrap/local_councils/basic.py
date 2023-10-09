@@ -69,12 +69,12 @@ def get_party(profile, element, class_, wrapper_element, wrapper_class_, party_i
     if party_pulp_list == []: raise RuntimeError('[basic.py] 정당정보 regex 실패')
     party_pulp = party_pulp_list[0]
     party_string = party_pulp.get_text(strip=True)
-    party_string = party_string.split(' ')[-1].strip()
+    party_string = party_string.strip().split(' ')[-1]
     while True:
         if (party := extract_party(party_string)) is not None:
             return party
         if (party_pulp := party_pulp.find_next('span')) is not None:
-            party_string = party_pulp.text.split(' ')[-1]
+            party_string = party_pulp.text.strip().split(' ')[-1]
         else:
             return "[basic.py] 정당 정보 파싱 불가"
 
