@@ -12,6 +12,7 @@ class CouncilType(str, Enum):
     """
     LOCAL_COUNCIL = "local_council" 
     NATIONAL_COUNCIL = "national_council"
+    METROPOLITAN_COUNCIL = "metropolitan_council"
     """
     기초의회
     """
