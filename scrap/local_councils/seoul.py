@@ -1,5 +1,4 @@
 from urllib.parse import urlparse
-import re
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
