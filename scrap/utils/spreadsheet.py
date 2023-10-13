@@ -544,7 +544,13 @@ def main() -> None:
             name_cls="name",
             pty_elt="span",
         ),
-        # TODO: 148 사이트 접속 불가
+        148: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="col",
+            name_elt="strong",
+            name_cls="ui-list__title",
+            pty_elt="li",
+        ),
         149: ScrapBasicArgument(
             pf_elt="dl",
             pf_cls="profile",
