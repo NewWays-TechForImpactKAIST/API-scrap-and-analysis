@@ -57,23 +57,26 @@ class ScrapResult:
 
 
 class ScrapBasicArgument:
-    '''
+    """
     scrap_basic에 쓸 argument입니다
-    '''
-    def __init__(self, 
-                pf_elt: str | None = None, 
-                pf_cls: str | None = None, 
-                pf_memlistelt: str | None = None, 
-                pf_memlistcls: str | None = None, 
-                name_elt: str | None = None, 
-                name_cls: str | None = None, 
-                name_wrapelt: str | None = None, 
-                name_wrapcls: str | None = None, 
-                pty_elt: str | None = None, 
-                pty_cls: str | None = None, 
-                pty_wrapelt: str | None = None, 
-                pty_wrapcls: str | None = None,
-                pty_wraptxt: str | None = None):
+    """
+
+    def __init__(
+        self,
+        pf_elt: str | None = None,
+        pf_cls: str | None = None,
+        pf_memlistelt: str | None = None,
+        pf_memlistcls: str | None = None,
+        name_elt: str | None = None,
+        name_cls: str | None = None,
+        name_wrapelt: str | None = None,
+        name_wrapcls: str | None = None,
+        pty_elt: str | None = None,
+        pty_cls: str | None = None,
+        pty_wrapelt: str | None = None,
+        pty_wrapcls: str | None = None,
+        pty_wraptxt: str | None = None,
+    ):
         """
         ScrapBasicArgument 클래스의 생성자입니다.
 

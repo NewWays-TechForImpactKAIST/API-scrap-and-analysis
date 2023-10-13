@@ -4,6 +4,7 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 from scrap.local_councils.basic import *
 
+
 def scrap_50(url="https://www.icjg.go.kr/council/cnmi0101c") -> ScrapResult:
     """인천시 중구 페이지에서 의원 상세약력 스크랩
 
@@ -205,6 +206,7 @@ def scrap_56(
         councilors=councilors,
     )
 
+
 def scrap_57(url, args) -> ScrapResult:
     """인천시 서구 페이지에서 의원 상세약력 스크랩
 
@@ -215,23 +217,28 @@ def scrap_57(url, args) -> ScrapResult:
     councilors: list[Councilor] = []
     cid = 57
 
-    profiles = get_profiles(soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls)
-    print(cid, '번째 의회에는,', len(profiles), '명의 의원이 있습니다.') # 디버깅용. 
+    profiles = get_profiles(
+        soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
+    )
+    print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
-        name = get_name(profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls)
+        name = get_name(
+            profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls
+        )
 
-        party = '정당 정보 없음'
+        party = "정당 정보 없음"
         party_pulp = find(profile, args.pty_elt, class_=args.pty_cls)
-        if party_pulp is None: raise AssertionError('[incheon.py] 정당정보 실패')
+        if party_pulp is None:
+            raise AssertionError("[incheon.py] 정당정보 실패")
         party_string = party_pulp.get_text(strip=True)
-        party_string = party_string.split(' ')[-1].strip()
+        party_string = party_string.split(" ")[-1].strip()
         while True:
             party = extract_party(party_string)
             if party is not None:
                 break
-            if (party_pulp := party_pulp.find_next('span')) is not None:
-                party_string = party_pulp.text.split(' ')[-1]
+            if (party_pulp := party_pulp.find_next("span")) is not None:
+                party_string = party_pulp.text.split(" ")[-1]
             else:
                 raise RuntimeError("[incheon.py] 정당 정보 파싱 불가")
 
@@ -240,8 +247,9 @@ def scrap_57(url, args) -> ScrapResult:
     return ScrapResult(
         council_id=str(cid),
         council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors
+        councilors=councilors,
     )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     print(scrap_56())

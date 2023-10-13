@@ -4,7 +4,9 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 
 
-def scrap_1(url = 'https://bookcouncil.jongno.go.kr/record/recordView.do?key=99784f935fce5c1d7c8c08c2f9e35dda1c0a6128428ecb1a87f87ee2b4e82890ffcf12563e01473f') -> ScrapResult:
+def scrap_1(
+    url="https://bookcouncil.jongno.go.kr/record/recordView.do?key=99784f935fce5c1d7c8c08c2f9e35dda1c0a6128428ecb1a87f87ee2b4e82890ffcf12563e01473f",
+) -> ScrapResult:
     """서울시 종로구 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
@@ -13,14 +15,14 @@ def scrap_1(url = 'https://bookcouncil.jongno.go.kr/record/recordView.do?key=997
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
-    for profile in soup.find_all('div', class_='pop_profile'):
+    for profile in soup.find_all("div", class_="pop_profile"):
         info = profile.find("div", class_="info")
         data_ul = info.find("ul", class_="detail")
         data_lis = data_ul.find_all("li")
         name = data_lis[0].find("span").get_text(strip=True)
         party = data_lis[2].find("span").get_text(strip=True)
         name = name if name else "이름 정보 없음"
-        party = party if party else '정당 정보 없음'
+        party = party if party else "정당 정보 없음"
 
         councilors.append(Councilor(name=name, party=party))
 
