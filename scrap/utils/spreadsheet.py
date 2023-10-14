@@ -8,6 +8,9 @@ from scrap.local_councils.seoul import *
 from scrap.local_councils.incheon import *
 from scrap.local_councils.gwangju import *
 from scrap.local_councils.gyeonggi import *
+from scrap.local_councils.gangwon import *
+from scrap.local_councils.chungcheong import *
+from scrap.local_councils.jeolla import *
 from scrap.local_councils import *
 from requests.exceptions import Timeout
 
@@ -55,8 +58,13 @@ def main() -> None:
         0
     )  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
     # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
-    euc_kr = [6, 13, 16, 31, 72, 88, 112, 154, 157, 163, 167, 181, 197, 202]
-    special_functions = list(range(1, 57)) + [57, 88, 103]
+    euc_kr = [6, 13, 16, 31, 72, 88, 112, 134, 154, 157, 163, 165, 167, 181, 197, 202]
+    special_functions = (
+        list(range(1, 57))
+        + [57, 88, 103]
+        + list(range(113, 127))
+        + [132, 134, 140, 142, 154, 155, 156, 157, 160, 161, 162, 163, 164, 165, 167]
+    )
     args = {
         2: ScrapBasicArgument(
             pf_elt="div", pf_cls="profile", name_elt="em", name_cls="name", pty_elt="em"
@@ -406,6 +414,211 @@ def main() -> None:
         116: ScrapBasicArgument(
             pf_elt="div", pf_cls="memberName", name_cls="name", pty_elt="dd"
         ),
+        127: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="em",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        128: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="em",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        129: ScrapBasicArgument(
+            pf_memlistelt="ul",
+            pf_memlistcls="memberList",
+            pf_elt="div",
+            pf_cls="right",
+            name_elt="h5",
+            pty_elt="span",
+        ),
+        130: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="parliament_text",
+            name_elt="h3",
+            name_cls="h0",
+            pty_elt="span",
+        ),
+        131: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="em",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        133: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="div",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        135: ScrapBasicArgument(
+            pf_elt="dl",
+            name_elt="dd",
+            name_cls="name",
+            pty_elt="span",
+            pty_cls="itemContent",
+        ),
+        136: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="info",
+            name_elt="div",
+            name_cls="tit",
+            pty_elt="li",
+        ),
+        137: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="em",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        138: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="item",
+            name_elt="h5",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        # TODO: 139 크롤링 실패
+        # HTTPSConnectionPool(host='www.scc.go.kr', port=443): Max retries exceeded with url: /index.php?MenuID=48 (Caused by SSLError(SSLError(1, '[SSL: DH_KEY_TOO_SMALL] dh key too small (_ssl.c:1007)')))
+        139: ScrapBasicArgument(
+            pf_elt="ul",
+            pf_cls="assembly_list",
+            name_elt="div",
+            name_cls="names",
+            pty_elt="li",
+        ),
+        141: ScrapBasicArgument(
+            pf_elt="dl",
+            name_elt="dd",
+            name_cls="name",
+            pty_elt="span",
+            pty_cls="itemContent",
+        ),
+        143: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="card--body",
+            name_elt="strong",
+            name_cls="ui-list__title",
+            pty_elt="li",
+        ),
+        # TODO: 144 크롤링 실패
+        # HTTPSConnectionPool(host='council.dangjin.go.kr', port=443): Max retries exceeded with url: /content/member/member.html (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1007)')))
+        144: ScrapBasicArgument(
+            pf_memlistelt="ul",
+            pf_memlistcls="mlist",
+            pf_elt="dl",
+            name_elt="dd",
+            name_cls="name",
+            pty_elt="span",
+            pty_cls="itemContent",
+        ),
+        # TODO: 145 크롤링 실패
+        # HTTPSConnectionPool(host='council.buyeo.go.kr', port=443): Max retries exceeded with url: /kr/member/active2.do (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1007)')))
+        145: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="em",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        # TODO: 146 크롤링 실패
+        # HTTPSConnectionPool(host='www.scouncil.go.kr', port=443): Max retries exceeded with url: /kr/prog/asemby/sub02_01/list.do (Caused by SSLError(SSLError(1, '[SSL: WRONG_SIGNATURE_TYPE] wrong signature type (_ssl.c:1007)')))
+        146: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="pt",
+            name_elt="strong",
+            name_cls="name",
+            pty_elt="li",
+        ),
+        147: ScrapBasicArgument(
+            pf_elt="dl",
+            pf_cls="profile",
+            name_elt="strong",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        148: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="col",
+            name_elt="strong",
+            name_cls="ui-list__title",
+            pty_elt="li",
+        ),
+        149: ScrapBasicArgument(
+            pf_elt="dl",
+            pf_cls="profile",
+            name_elt="strong",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        150: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="strong",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        151: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="em",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        152: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="councillor_info",
+            name_elt="span",
+            name_cls="name",
+            pty_elt="li",
+        ),
+        153: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="em",
+            name_cls="name",
+            pty_elt="span",
+        ),
+        158: ScrapBasicArgument(
+            pf_memlistelt="ul",
+            pf_memlistcls="mlist",
+            pf_elt="dl",
+            name_elt="dd",
+            name_cls="name",
+            pty_elt="span",
+            pty_cls="itemContent",
+        ),
+        159: ScrapBasicArgument(
+            pf_memlistelt="ul",
+            pf_memlistcls="mlist",
+            pf_elt="dl",
+            name_elt="dd",
+            name_cls="name",
+            pty_elt="span",
+            pty_cls="itemContent",
+        ),
+        166: ScrapBasicArgument(
+            pf_elt="div",
+            pf_cls="profile",
+            name_elt="strong",
+            pty_elt="span",
+        ),
+        168: ScrapBasicArgument(
+            pf_memlistelt="ul",
+            pf_memlistcls="mlist",
+            pf_elt="dl",
+            name_elt="dd",
+            name_cls="name",
+            pty_elt="span",
+            pty_cls="itemContent",
+        ),
     }
 
     # 데이터 가져오기
@@ -416,37 +629,36 @@ def main() -> None:
     parse_error_times = 0
     timeouts = 0
     N = 226
-    # for n in range (113, 169):
-    for n in range(107, 108):
+    for n in range(1, 227):
         encoding = "euc-kr" if n in euc_kr else "utf-8"
+        result = None
         try:
+            council_url = data[n - 1]["URL"]
+            council_args = args[n] if n in args.keys() else None
+
             if n in special_functions:
                 function_name = f"scrap_{n}"
                 if hasattr(sys.modules[__name__], function_name):
                     function_to_call = getattr(sys.modules[__name__], function_name)
                     if n < 57:
-                        result = str(
-                            function_to_call(data[n - 1]["상세약력 링크"]).councilors
-                        )
+                        result = str(function_to_call(council_url).councilors)
                     else:
                         result = str(
-                            function_to_call(
-                                data[n - 1]["상세약력 링크"], args=args[n]
-                            ).councilors
+                            function_to_call(council_url, args=council_args).councilors
                         )
             else:
                 result = str(
-                    scrap_basic(data[n - 1]["상세약력 링크"], n, args[n], encoding).councilors
+                    scrap_basic(council_url, n, council_args, encoding).councilors
                 )
             if "정보 없음" in result:
                 print("정보 없음이 포함되어 있습니다.")
                 parse_error_times += 1
-            print(result)
+            print(f"| {n} | {result}")
         except Timeout:
-            print(f"Request to {data[n - 1]['상세약력 링크']} timed out.")
+            print(f"| {n} | 오류: Request to {council_url} timed out.")
             timeouts += 1
         except Exception as e:
-            print(f"오류 : [district-{n}] {str(e)}")
+            print(f"| {n} | 오류: {e}")
             error_times += 1
             continue  # 에러가 발생하면 다음 반복으로 넘어감
     print(
