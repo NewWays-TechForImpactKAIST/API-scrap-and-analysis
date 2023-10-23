@@ -7,11 +7,13 @@ from time import sleep
 
 
 def scrap_metro_head(
+    id,
     metropolis,
     url="https://laiis.go.kr/lips/mlo/lcl/groupHeadList.do",
 ) -> ScrapResult:
     """내고장알리미를 이용해 광역단체장 인적사항 스크랩
 
+    :param id: 광역자치단체 id
     :param metropolis: 특별시, 광역시, 혹은 도
     :param url: 내고장알리미의 지자체 단체장 목록 사이트
     :return: 국회의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
@@ -40,19 +42,21 @@ def scrap_metro_head(
 
     browser.quit()
     return ScrapResult(
-        council_id=metropolis,
+        council_id=id,
         council_type=CouncilType.LOCAL_LEADER,
         councilors=[Councilor(name=name, party=party)],
     )
 
 
 def scrap_local_head(
+    id,
     metropolis,
     town,
     url="https://laiis.go.kr/lips/mlo/lcl/groupHeadList.do",
 ) -> ScrapResult:
     """내고장알리미를 이용해 기초단체장 인적사항 스크랩
 
+    :param id: 기초자치단체 id
     :param metropolis: 특별시, 광역시, 혹은 도
     :param town: 시, 군, 구
     :param url: 내고장알리미의 지자체 단체장 목록 사이트
@@ -85,7 +89,7 @@ def scrap_local_head(
 
             browser.quit()
             return ScrapResult(
-                council_id=metropolis + " " + town,
+                council_id=id,
                 council_type=CouncilType.LOCAL_LEADER,
                 councilors=[Councilor(name=name, party=party)],
             )
@@ -95,5 +99,5 @@ def scrap_local_head(
 
 
 if __name__ == "__main__":
-    print(scrap_metro_head("서울"))
-    print(scrap_local_head("서울", "종로구"))
+    print(scrap_metro_head("seoul", "서울"))
+    print(scrap_local_head("seoul-jongno", "서울", "종로구"))
