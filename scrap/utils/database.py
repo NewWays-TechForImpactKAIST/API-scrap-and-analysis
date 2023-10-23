@@ -9,6 +9,7 @@ import json
 # 컬렉션은 하나 이상의 문서로 구성됩니다.
 db = client[str(MongoDBSecrets.database_name)]
 
+
 def save_to_database(record: ScrapResult):
     """
     지방의회 크롤링 결과를 데이터베이스에 저장합니다.
@@ -25,20 +26,21 @@ def save_to_database(record: ScrapResult):
         collection.find_one_and_update(
             {"councilId": record.council_id},
             {"$set": dataclasses.asdict(record)},
-            upsert=True
+            upsert=True,
         )
         return True
     except Exception as e:
         print(e)
         return False
 
-if __name__  == "__main__":
-    test_record = (ScrapResult(
+
+if __name__ == "__main__":
+    test_record = ScrapResult(
         council_id="test-test",
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=[
             Councilor(name="김철수", party="국민의힘"),
             Councilor(name="김영희", party="더불어민주당"),
-        ]
-    ))
+        ],
+    )
     print(save_to_database(test_record))
