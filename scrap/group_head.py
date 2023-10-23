@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from time import sleep
+import os
 
 
 def scrap_metro_head(
@@ -19,11 +20,15 @@ def scrap_metro_head(
     :return: 국회의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
     """
 
+    driver_loc = os.popen("which chromedriver").read().strip()
+    if len(driver_loc) == 0:
+        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
+
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
 
-    webdriver_service = Service("/usr/bin/chromedriver")
+    webdriver_service = Service(driver_loc)
     browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
     browser.get(url)
 
@@ -63,11 +68,15 @@ def scrap_local_head(
     :return: 국회의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
     """
 
+    driver_loc = os.popen("which chromedriver").read().strip()
+    if len(driver_loc) == 0:
+        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
+
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
 
-    webdriver_service = Service("/usr/bin/chromedriver")
+    webdriver_service = Service(driver_loc)
     browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
     browser.get(url)
 
