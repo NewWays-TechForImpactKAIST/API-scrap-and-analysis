@@ -10,7 +10,12 @@ base_url = "http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcdd
 page_no = 1
 num_of_rows = 10000
 
-parliamentVote = [20220601, 20230405]
+parliamentVote = [
+    # 20100602,
+# 20140604,
+# 20180613,
+20220601,
+]
 sgCodes = input("Input the number of sgTypecode: ").split(",")
 data_list = []
 for sgId in parliamentVote:
