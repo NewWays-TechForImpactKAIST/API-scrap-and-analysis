@@ -1,11 +1,71 @@
-from urllib.parse import urlparse
-import re
+import os
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult, ScrapBasicArgument
 from scrap.utils.requests import get_soup
 from scrap.local_councils.basic import *
+from scrap.utils.utils import getPartyList
+party_keywords = getPartyList()
+party_keywords.append("무소속")
 
+def scrap_107(
+    url="https://council.wonju.go.kr/content/member/memberName.html",
+) -> ScrapResult:
+    """강원도 원주시 페이지에서 의원 상세약력 스크랩
 
+    :param url: 의원 목록 사이트 url
+    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """
+    councilors: list[Councilor] = []
+
+    driver_loc = os.popen("which chromedriver").read().strip()
+    if len(driver_loc) == 0:
+        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+
+    webdriver_service = Service(driver_loc)
+    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
+    browser.get(url)
+
+    pfs_wrapper = browser.find_element(By.CSS_SELECTOR, "div[id='content']")
+    councilor_infos = pfs_wrapper.find_elements(By.CSS_SELECTOR, "dl")
+    for info in councilor_infos:
+        name_tag = info.find_element(By.CSS_SELECTOR, "dd[class='name']")
+        name = name_tag.text.split("(")[0].strip() if name_tag else "이름 정보 없음"
+        if len(name) > 3:
+          # 수식어가 이름 앞이나 뒤에 붙어있는 경우
+          for keyword in ["부의장", "의원", "의장"]:  # 119, 강서구 등
+              if keyword in name:
+                  name = name.replace(keyword, "").strip()
+        party_tag = info.find_elements(By.TAG_NAME, "dd")
+        for tag in party_tag:
+            party = tag.text.split(" ")[-1]
+            if party in party_keywords:
+                break
+        if party not in party_keywords:
+            party = "정당 정보 없음"
+
+        councilors.append(Councilor(name, party))
+
+    return ScrapResult(
+        council_id="107",
+        council_type=CouncilType.LOCAL_COUNCIL,
+        councilors=councilors,
+    )
+# 107: ScrapBasicArgument(
+#             pf_memlistelt="div",
+#             pf_memlistcls="content",
+#             pf_elt="dl",
+#             name_elt="dd",
+#             name_cls="name",
+#             pty_elt="span",
+#         ),
 def scrap_113(
     url="https://sokchocl.go.kr/kr/member/active.do", args: ScrapBasicArgument = None
 ) -> ScrapResult:
