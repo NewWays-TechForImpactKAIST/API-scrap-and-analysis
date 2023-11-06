@@ -1,22 +1,13 @@
-from urllib.parse import urlparse
-
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from time import sleep
-
-import os
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from time import sleep
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
-
+from urllib.parse import urlparse
+from time import sleep
 
 def scrap_26(
     url="https://www.bsjunggu.go.kr/council/board/list.junggu?boardId=BBS_0000118&menuCd=DOM_000000503003000000&contentsSid=755&cpath=%2Fcouncil",
