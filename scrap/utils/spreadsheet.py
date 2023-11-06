@@ -61,10 +61,12 @@ def main() -> None:
     euc_kr = [6, 13, 16, 31, 72, 88, 112, 134, 154, 157, 163, 165, 167, 181, 197, 202]
     special_functions = (
         list(range(1, 57))
-        + [57, 88, 103]
+        + [62, 63, 64, 88, 103, 107]
         + list(range(113, 127))
         + [132, 134, 140, 142, 154, 155, 156, 157, 160, 161, 162, 163, 164, 165, 167]
     )
+    no_information = [106, 111]
+    errors = []
     args = {
         2: ScrapBasicArgument(
             pf_elt="div", pf_cls="profile", name_elt="em", name_cls="name", pty_elt="em"
@@ -75,11 +77,10 @@ def main() -> None:
         # 인천
         57: ScrapBasicArgument(
             pf_elt="div",
-            pf_cls="box",
+            pf_cls="conbox",
             name_elt="p",
-            name_cls="mem_tit2",
-            pty_elt="p",
-            pty_cls="mem_tit2",
+            name_cls="name",
+            pty_elt="li",
         ),
         58: ScrapBasicArgument(
             pf_elt="div", pf_cls="profile", name_elt="em", name_cls="name", pty_elt="em"
@@ -98,9 +99,7 @@ def main() -> None:
         61: ScrapBasicArgument(
             pf_elt="div", pf_cls="profile", name_elt="em", name_cls="name", pty_elt="em"
         ),
-        # 62 : TODO! /common/selectCouncilMemberProfile.json 을 어떻게 얻을지..
-        # 63 : TODO! 홈페이지 터짐
-        # 64 : TODO! /common/selectCouncilMemberProfile.json 을 어떻게 얻을지..
+        # 62 - 64 : gwangju.py
         # 대전
         65: ScrapBasicArgument(
             pf_elt="dl",
@@ -372,16 +371,8 @@ def main() -> None:
             pf_elt="div", pf_cls="profile", name_elt="em", name_cls="name", pty_elt="em"
         ),
         # 강원
-        # 106 : TODO! 정당정보 없음
-        # TODO! 107이 get_soup에서 실패 중 - HTTPSConnectionPool(host='council.wonju.go.kr', port=443): Max retries exceeded with url: /content/member/memberName.html (Caused by SSLError(SSLError(1, '[SSL: DH_KEY_TOO_SMALL] dh key too small (_ssl.c:1007)')))
-        107: ScrapBasicArgument(
-            pf_memlistelt="div",
-            pf_memlistcls="content",
-            pf_elt="dl",
-            name_elt="dd",
-            name_cls="name",
-            pty_elt="span",
-        ),
+        # 106 : 정당정보 없음
+        # 107 : scrap_gangwon.py
         108: ScrapBasicArgument(
             pf_elt="dl", pf_cls="profile", name_elt="strong", pty_elt="li"
         ),
@@ -625,11 +616,15 @@ def main() -> None:
     data: list[dict] = worksheet.get_all_records()
     result: str = ""
 
-    error_times = 0
     parse_error_times = 0
     timeouts = 0
     N = 226
-    for n in range(1, 227):
+    for n in range(57, 113):
+        if n in no_information:
+            print(f"| {n} | 오류: 지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다."\
+                  "다시 확인해보시겠어요? 링크 : ", data[n - 1]["URL"])
+            errors.append(n)
+            continue
         encoding = "euc-kr" if n in euc_kr else "utf-8"
         result = None
         try:
@@ -640,7 +635,7 @@ def main() -> None:
                 function_name = f"scrap_{n}"
                 if hasattr(sys.modules[__name__], function_name):
                     function_to_call = getattr(sys.modules[__name__], function_name)
-                    if n < 57:
+                    if n < 57 or n in [62, 63, 64, 107]:
                         result = str(function_to_call(council_url).councilors)
                     else:
                         result = str(
@@ -653,16 +648,17 @@ def main() -> None:
             if "정보 없음" in result:
                 print("정보 없음이 포함되어 있습니다.")
                 parse_error_times += 1
+                errors.append(n)
             print(f"| {n} | {result}")
         except Timeout:
             print(f"| {n} | 오류: Request to {council_url} timed out.")
             timeouts += 1
         except Exception as e:
             print(f"| {n} | 오류: {e}")
-            error_times += 1
+            errors.append(n)
             continue  # 에러가 발생하면 다음 반복으로 넘어감
     print(
-        f"| 총 실행 횟수: {N} | 에러 횟수: {error_times} | 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |"
+        f"| 총 실행 횟수: {N} | 에러: {errors}, 총 {len(errors)}회 | 그 중 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |"
     )
 
 

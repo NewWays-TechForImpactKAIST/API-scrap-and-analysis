@@ -56,6 +56,8 @@ def get_name(profile, element, class_, wrapper_element, wrapper_class_):
     # span 태그 안의 것들을 다 지움
     for span in name_tag.find_all("span"):
         span.decompose()
+    for a_tag in name_tag.find_all('a'): # 인천 서구 등. 안에 '개인홈페이지' 링크가 들음.
+        a_tag.extract()
     name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
 
     # name은 길고 그 중 strong태그 안에 이름이 있는 경우. 은평구, 수원시 등.
@@ -72,7 +74,11 @@ def get_name(profile, element, class_, wrapper_element, wrapper_class_):
             if keyword in name:  # 인천 서구 등
                 name = name.replace(keyword, "").strip()
                 break
-    name = name.split(" ")[0]  # 이름 뒤에 직책이 따라오는 경우
+    maybe_name = name.split()[0]  # 이름 뒤에 직책이 따라오는 경우
+    if len(maybe_name) == 1: # 외자 이름이 띄어쓰기 때문에 분리된 경우
+        name = "".join(name.split()[0:2])
+    else:
+        name = maybe_name
     return name
 
 

@@ -1,5 +1,3 @@
-from urllib.parse import urlparse
-
 import os
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
