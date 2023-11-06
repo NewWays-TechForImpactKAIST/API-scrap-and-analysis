@@ -1,6 +1,7 @@
 # coding=utf-8
 import pandas as pd
 
+
 def most_common_age_group(df, d):
     """10년단위로 무리짓고 가장 사람 많은 무리 출력.
     df: 데이터프레임
