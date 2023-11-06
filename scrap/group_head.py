@@ -7,18 +7,16 @@ from time import sleep
 import os
 
 
-def scrap_metro_head(
-    id,
-    metropolis,
+def scrap_group_heads(
     url="https://laiis.go.kr/lips/mlo/lcl/groupHeadList.do",
-) -> ScrapResult:
-    """내고장알리미를 이용해 광역단체장 인적사항 스크랩
+) -> tuple[list[tuple[str, Councilor]], list[tuple[str, Councilor]]]:
+    """내고장알리미를 이용해 광역/기초단체장 인적사항 스크랩
 
-    :param id: 광역자치단체 id
-    :param metropolis: 특별시, 광역시, 혹은 도
     :param url: 내고장알리미의 지자체 단체장 목록 사이트
-    :return: 국회의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    :return: (광역자치단체, 단체장 정보) 순서쌍의 리스트 2개
     """
+    metro_heads: list[tuple[str, Councilor]] = []
+    local_heads: list[tuple[str, Councilor]] = []
 
     driver_loc = os.popen("which chromedriver").read().strip()
     if len(driver_loc) == 0:
@@ -32,81 +30,52 @@ def scrap_metro_head(
     browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
     browser.get(url)
 
-    link = browser.find_element(
-        By.CSS_SELECTOR, f'li[data-areaname="{metropolis}"]'
-    ).find_element(By.TAG_NAME, "a")
-    link.click()
-    sleep(3)
+    areas = [
+        tag.text.strip()
+        for tag in browser.find_element(
+            By.CSS_SELECTOR, "div[class='tab_area']"
+        ).find_elements(By.TAG_NAME, "a")
+    ]
 
-    profile = browser.find_element(By.CSS_SELECTOR, "div[class='head_txt_box']")
-    name_tag = profile.find_element(
-        By.CSS_SELECTOR, "p[class='text_align_center fs_18']"
-    )
-    name = name_tag.text.strip() if name_tag else "이름 정보 없음"
-    party = "정당 정보 없음"
+    for area in areas:
+        # print(area)
+        browser.find_element(
+            By.CSS_SELECTOR, f"li[data-areaname='{area}']"
+        ).find_element(By.TAG_NAME, "a").click()
+        sleep(1)
 
-    browser.quit()
-    return ScrapResult(
-        council_id=id,
-        council_type=CouncilType.LOCAL_LEADER,
-        councilors=[Councilor(name=name, party=party)],
-    )
+        profiles = browser.find_elements(By.CSS_SELECTOR, "div[class='head_txt_box']")
 
+        metro_head_name_tag = profiles[0].find_element(
+            By.CSS_SELECTOR, "p[class='text_align_center fs_18']"
+        )
+        metro_head_name = (
+            metro_head_name_tag.text.strip() if metro_head_name_tag else "이름 정보 없음"
+        )
+        metro_head_party = "정당 정보 없음"
+        metro_heads.append((area, Councilor(metro_head_name, metro_head_party)))
 
-def scrap_local_head(
-    id,
-    metropolis,
-    town,
-    url="https://laiis.go.kr/lips/mlo/lcl/groupHeadList.do",
-) -> ScrapResult:
-    """내고장알리미를 이용해 기초단체장 인적사항 스크랩
+        for profile in profiles[1:]:
+            councilor_title = profile.find_element(
+                By.CSS_SELECTOR, "p[class='text_align_center fs_14']"
+            ).text.strip()
+            local_area_name = f"{area} {councilor_title}"
 
-    :param id: 기초자치단체 id
-    :param metropolis: 특별시, 광역시, 혹은 도
-    :param town: 시, 군, 구
-    :param url: 내고장알리미의 지자체 단체장 목록 사이트
-    :return: 국회의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
-    """
-
-    driver_loc = os.popen("which chromedriver").read().strip()
-    if len(driver_loc) == 0:
-        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
-
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-
-    webdriver_service = Service(driver_loc)
-    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
-    browser.get(url)
-
-    link = browser.find_element(
-        By.CSS_SELECTOR, f'li[data-areaname="{metropolis}"]'
-    ).find_element(By.TAG_NAME, "a")
-    link.click()
-    sleep(3)
-
-    for profile in browser.find_elements(By.CSS_SELECTOR, "div[class='head_txt_box']"):
-        if profile.find_element(
-            By.CSS_SELECTOR, "p[class='text_align_center fs_14']"
-        ).text.startswith(town):
-            name_tag = profile.find_element(
+            local_head_name_tag = profile.find_element(
                 By.CSS_SELECTOR, "p[class='text_align_center fs_18']"
             )
-            name = name_tag.text.strip() if name_tag else "이름 정보 없음"
-            party = "정당 정보 없음"
-
-            browser.quit()
-            return ScrapResult(
-                council_id=id,
-                council_type=CouncilType.LOCAL_LEADER,
-                councilors=[Councilor(name=name, party=party)],
+            local_head_name = (
+                local_head_name_tag.text.strip() if local_head_name_tag else "이름 정보 없음"
+            )
+            local_head_party = "정당 정보 없음"
+            local_heads.append(
+                (local_area_name, Councilor(local_head_name, local_head_party))
             )
 
-    browser.quit()
-    raise Exception(f"{metropolis} {town}의 기초의회장을 찾지 못했습니다")
+        browser.get(url)
+
+    return (metro_heads, local_heads)
 
 
 if __name__ == "__main__":
-    print(scrap_metro_head("seoul", "서울"))
-    print(scrap_local_head("seoul-jongno", "서울", "종로구"))
+    print(scrap_group_heads())
