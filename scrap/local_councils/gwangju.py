@@ -8,8 +8,10 @@ from selenium.webdriver.chrome.options import Options
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.utils import getPartyList
+
 party_keywords = getPartyList()
 party_keywords.append("무소속")
+
 
 def scrap_62(
     url="http://www.gjnc.or.kr/main/contents/lawmakerDistrict",
@@ -64,6 +66,7 @@ def scrap_62(
         councilors=councilors,
     )
 
+
 def scrap_63(
     url="https://council.bukgu.gwangju.kr/index.do?PID=024",
 ) -> ScrapResult:
@@ -89,7 +92,9 @@ def scrap_63(
     councilor_infos = browser.find_elements(By.CSS_SELECTOR, "ul[class='info']")
 
     for info in councilor_infos:
-        name_tag = info.find_element(By.CSS_SELECTOR, "li[class='name']").find_element(By.TAG_NAME, "h5")
+        name_tag = info.find_element(By.CSS_SELECTOR, "li[class='name']").find_element(
+            By.TAG_NAME, "h5"
+        )
         name = name_tag.text.strip() if name_tag else "이름 정보 없음"
         party_tag = info.find_elements(By.TAG_NAME, "dd")
         for tag in party_tag:
@@ -106,6 +111,7 @@ def scrap_63(
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=councilors,
     )
+
 
 def scrap_64(
     url="https://gjgc.or.kr/main/contents/lawmaker",
@@ -135,10 +141,10 @@ def scrap_64(
         name_tag = info.find_element(By.TAG_NAME, "strong")
         name = name_tag.text.strip() if name_tag else "이름 정보 없음"
         if len(name) > 3:
-          # 수식어가 이름 앞이나 뒤에 붙어있는 경우
-          for keyword in ["부의장", "의원", "의장"]:  # 119, 강서구 등
-              if keyword in name:
-                  name = name.replace(keyword, "").strip()
+            # 수식어가 이름 앞이나 뒤에 붙어있는 경우
+            for keyword in ["부의장", "의원", "의장"]:  # 119, 강서구 등
+                if keyword in name:
+                    name = name.replace(keyword, "").strip()
         party_tag = info.find_elements(By.TAG_NAME, "dd")
         for tag in party_tag:
             party = tag.text.replace(" ", "")
