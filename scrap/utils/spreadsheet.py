@@ -621,8 +621,10 @@ def main() -> None:
     N = 226
     for n in range(57, 113):
         if n in no_information:
-            print(f"| {n} | 오류: 지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다."\
-                  "다시 확인해보시겠어요? 링크 : ", data[n - 1]["URL"])
+            print(
+                f"| {n} | 오류: 지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다." "다시 확인해보시겠어요? 링크 : ",
+                data[n - 1]["URL"],
+            )
             errors.append(n)
             continue
         encoding = "euc-kr" if n in euc_kr else "utf-8"

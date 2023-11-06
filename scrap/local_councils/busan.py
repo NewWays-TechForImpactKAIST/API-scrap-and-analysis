@@ -9,6 +9,7 @@ from scrap.utils.requests import get_soup
 from urllib.parse import urlparse
 from time import sleep
 
+
 def scrap_26(
     url="https://www.bsjunggu.go.kr/council/board/list.junggu?boardId=BBS_0000118&menuCd=DOM_000000503003000000&contentsSid=755&cpath=%2Fcouncil",
 ) -> ScrapResult:
