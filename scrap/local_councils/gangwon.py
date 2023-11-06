@@ -8,8 +8,10 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult, ScrapBasicArg
 from scrap.utils.requests import get_soup
 from scrap.local_councils.basic import *
 from scrap.utils.utils import getPartyList
+
 party_keywords = getPartyList()
 party_keywords.append("무소속")
+
 
 def scrap_107(
     url="https://council.wonju.go.kr/content/member/memberName.html",
@@ -39,10 +41,10 @@ def scrap_107(
         name_tag = info.find_element(By.CSS_SELECTOR, "dd[class='name']")
         name = name_tag.text.split("(")[0].strip() if name_tag else "이름 정보 없음"
         if len(name) > 3:
-          # 수식어가 이름 앞이나 뒤에 붙어있는 경우
-          for keyword in ["부의장", "의원", "의장"]:  # 119, 강서구 등
-              if keyword in name:
-                  name = name.replace(keyword, "").strip()
+            # 수식어가 이름 앞이나 뒤에 붙어있는 경우
+            for keyword in ["부의장", "의원", "의장"]:  # 119, 강서구 등
+                if keyword in name:
+                    name = name.replace(keyword, "").strip()
         party_tag = info.find_elements(By.TAG_NAME, "dd")
         for tag in party_tag:
             party = tag.text.split(" ")[-1]
@@ -58,6 +60,8 @@ def scrap_107(
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=councilors,
     )
+
+
 # 107: ScrapBasicArgument(
 #             pf_memlistelt="div",
 #             pf_memlistcls="content",

@@ -4,6 +4,7 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup, get_selenium, By
 
 
+
 def scrap_26(
     url="https://www.bsjunggu.go.kr/council/board/list.junggu?boardId=BBS_0000118&menuCd=DOM_000000503003000000&contentsSid=755&cpath=%2Fcouncil",
 ) -> ScrapResult:
