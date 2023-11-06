@@ -720,8 +720,25 @@ def scrap_24(url="https://council.songpa.go.kr/kr/member/active.do") -> ScrapRes
     :param url: 의원 목록 사이트 url
     :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
     """
-    # TODO
-    raise Exception("송파구 의회 사이트는 현재 먹통입니다")
+    soup = get_soup(url, verify=False)
+    councilors: list[Councilor] = []
+
+    for profile in soup.find_all("div", class_="profile"):
+        name_tag = profile.find_next("em", class_="name")
+        name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
+
+        party = "정당 정보 없음"
+        party_info = profile.find("em", string="소속정당")
+        if party_info:
+            party = party_info.find_next("span").get_text(strip=True)
+
+        councilors.append(Councilor(name=name, party=party))
+
+    return ScrapResult(
+        council_id="seoul-songpagu",
+        council_type=CouncilType.LOCAL_COUNCIL,
+        councilors=councilors,
+    )
 
 
 def scrap_25(url="https://council.gangdong.go.kr/kr/member/active.do") -> ScrapResult:
@@ -754,4 +771,4 @@ def scrap_25(url="https://council.gangdong.go.kr/kr/member/active.do") -> ScrapR
 
 
 if __name__ == "__main__":
-    print(scrap_2())
+    print(scrap_24())
