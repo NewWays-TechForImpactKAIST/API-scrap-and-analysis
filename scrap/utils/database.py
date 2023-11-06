@@ -23,11 +23,28 @@ def save_to_database(record: ScrapResult):
         # JSON 형태로 변환한 후, MongoDB에 저장합니다.
         # serialized_record = json.dumps(dataclasses.asdict(record), ensure_ascii=False)
         collection = db[str(record.council_type)]
-        collection.find_one_and_update(
+        result = collection.find_one(
             {"councilId": record.council_id},
-            {"$set": dataclasses.asdict(record)},
-            upsert=True,
         )
+        if result is not None:
+            collection.delete_one({"councilId": record.council_id})
+
+            updated_array = []
+            for councilor in record.councilors:
+                for before_councilor in result:
+                    if councilor.name == before_councilor['name']:
+                        before_councilor['party'] = councilor.party
+                        updated_array.append(before_councilor)
+            
+            collection.find_one_and_update(
+                {"councilId": record.council_id},
+                {"$set": {
+                    "councilors" : updated_array
+                }}, upsert=True
+            )
+        else:
+            return False
+                    
         return True
     except Exception as e:
         print(e)
