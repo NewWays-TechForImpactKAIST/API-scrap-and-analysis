@@ -32,19 +32,18 @@ def save_to_database(record: ScrapResult):
             updated_array = []
             for councilor in record.councilors:
                 for before_councilor in result:
-                    if councilor.name == before_councilor['name']:
-                        before_councilor['party'] = councilor.party
+                    if councilor.name == before_councilor["name"]:
+                        before_councilor["party"] = councilor.party
                         updated_array.append(before_councilor)
-            
+
             collection.find_one_and_update(
                 {"councilId": record.council_id},
-                {"$set": {
-                    "councilors" : updated_array
-                }}, upsert=True
+                {"$set": {"councilors": updated_array}},
+                upsert=True,
             )
         else:
             return False
-                    
+
         return True
     except Exception as e:
         print(e)
