@@ -1,5 +1,19 @@
 from urllib.parse import urlparse
 
+import os
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from time import sleep
+
+import os
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from time import sleep
+
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 
@@ -423,18 +437,61 @@ def scrap_39(
     :param url: 의원 목록 사이트 url
     :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
     """
-    soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
-    for profile in soup.find_all("dl", class_="info"):
-        name_tag = profile.find("span")
-        name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
+    driver_loc = os.popen("which chromedriver").read().strip()
+    if len(driver_loc) == 0:
+        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
 
-        party = "정당정보없음"
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
 
-        # TODO
+    webdriver_service = Service(driver_loc)
+    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
+    browser.get(url)
 
-        councilors.append(Councilor(name=name, party=party))
+    councilor_infos = browser.find_elements(By.CSS_SELECTOR, "dl[class='info']")
+    cur_win = browser.current_window_handle
+
+    for info in councilor_infos:
+        name_tag = info.find_element(By.TAG_NAME, "span")
+        name = name_tag.text.strip() if name_tag else "이름 정보 없음"
+    driver_loc = os.popen("which chromedriver").read().strip()
+    if len(driver_loc) == 0:
+        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+
+    webdriver_service = Service(driver_loc)
+    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
+    browser.get(url)
+
+    councilor_infos = browser.find_elements(By.CSS_SELECTOR, "dl[class='info']")
+    cur_win = browser.current_window_handle
+
+    for info in councilor_infos:
+        name_tag = info.find_element(By.TAG_NAME, "span")
+        name = name_tag.text.strip() if name_tag else "이름 정보 없음"
+
+        homepage_link = info.find_element(By.TAG_NAME, "a")
+        homepage_link.click()
+        browser.switch_to.window(
+            [win for win in browser.window_handles if win != cur_win][0]
+        )
+
+        party_tag = browser.find_element(By.TAG_NAME, "tbody").find_elements(
+            By.TAG_NAME, "td"
+        )[3]
+        party = party_tag.text.strip() if party_tag else "정당 정보 없음"
+
+        browser.close()
+        browser.switch_to.window(cur_win)
+
+        councilors.append(Councilor(name, party))
+        councilors.append(Councilor(name, party))
 
     return ScrapResult(
         council_id="busan-yeonjegu",
@@ -507,4 +564,4 @@ def scrap_41(
 
 
 if __name__ == "__main__":
-    print(scrap_41())
+    print(scrap_39())
