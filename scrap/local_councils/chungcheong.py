@@ -1,9 +1,9 @@
 from scrap.local_councils import *
 from scrap.local_councils.basic import *
 
+
 def scrap_124(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
-    """충청북도 청주시
-    """
+    """충청북도 청주시"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -26,8 +26,7 @@ def scrap_124(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
 
 
 def scrap_125(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
-    """충청북도 충주시
-    """
+    """충청북도 충주시"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -49,8 +48,7 @@ def scrap_125(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
 
 
 def scrap_126(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
-    """충청북도 제천시
-    """
+    """충청북도 제천시"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -71,8 +69,7 @@ def scrap_126(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
 
 
 def scrap_132(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
-    """충청북도 제천시
-    """
+    """충청북도 제천시"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -94,8 +91,7 @@ def scrap_132(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
 
 
 def scrap_134(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
-    """충청북도 증평군
-    """
+    """충청북도 증평군"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: List[Councilor] = []
 
@@ -117,10 +113,8 @@ def scrap_134(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_140(url, cid, args: ScrapBasicArgument = None
-) -> ScrapResult:
-    """충청남도 태안군
-    """
+def scrap_140(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+    """충청남도 태안군"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
