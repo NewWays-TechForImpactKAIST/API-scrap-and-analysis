@@ -1,7 +1,15 @@
 """경기도를 스크랩.
 """
 from scrap.local_councils import *
-from scrap.local_councils.basic import find, regex_pattern, find_all, extract_party, get_name, get_party_easy
+from scrap.local_councils.basic import (
+    find,
+    regex_pattern,
+    find_all,
+    extract_party,
+    get_name,
+    get_party_easy,
+)
+
 
 def get_profiles_88_103(soup, element, class_, memberlistelement, memberlistclass_):
     if memberlistelement is not None:

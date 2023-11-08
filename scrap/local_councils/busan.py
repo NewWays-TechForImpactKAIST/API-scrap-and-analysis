@@ -7,10 +7,7 @@ from scrap.local_councils import *
 from scrap.local_councils.basic import returncouncilors
 
 
-
-def scrap_26(
-    url, cid
-) -> ScrapResult:
+def scrap_26(url, cid) -> ScrapResult:
     """부산 중구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -32,10 +29,8 @@ def scrap_26(
 
     return returncouncilors(cid, councilors)
 
-def scrap_27(
-    url,
-    cid
-) -> ScrapResult:
+
+def scrap_27(url, cid) -> ScrapResult:
     """부산 서구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -64,9 +59,7 @@ def scrap_27(
     returncouncilors(cid, councilors)
 
 
-def scrap_28(
-    url, cid
-) -> ScrapResult:
+def scrap_28(url, cid) -> ScrapResult:
     """부산 동구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -106,9 +99,7 @@ def scrap_29(url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_30(
-    url, cid
-) -> ScrapResult:
+def scrap_30(url, cid) -> ScrapResult:
     """부산 부산진구"""
     soup = get_soup(url, verify=False).find("ul", class_="mlist")
     councilors: list[Councilor] = []
@@ -129,9 +120,7 @@ def scrap_30(
     return returncouncilors(cid, councilors)
 
 
-def scrap_31(
-    url, cid
-) -> ScrapResult:
+def scrap_31(url, cid) -> ScrapResult:
     """부산 동래구"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: list[Councilor] = []
@@ -173,8 +162,7 @@ def scrap_32(url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_33(
-url, cid) -> ScrapResult:
+def scrap_33(url, cid) -> ScrapResult:
     """부산 북구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -193,8 +181,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_34(
-url, cid) -> ScrapResult:
+def scrap_34(url, cid) -> ScrapResult:
     """부산 해운대구"""
     soup = get_soup(url, verify=False).find("div", class_="initial_list")
     councilors: list[Councilor] = []
@@ -221,8 +208,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_35(
-url, cid) -> ScrapResult:
+def scrap_35(url, cid) -> ScrapResult:
     """부산 기장군"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: list[Councilor] = []
@@ -243,8 +229,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_36(
-url, cid) -> ScrapResult:
+def scrap_36(url, cid) -> ScrapResult:
     """부산 사하구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -263,8 +248,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_37(
-url, cid) -> ScrapResult:
+def scrap_37(url, cid) -> ScrapResult:
     """부산 금정구"""
     soup = get_soup(url, verify=False).find("div", class_="council_list")
     councilors: list[Councilor] = []
@@ -285,8 +269,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_38(
-url, cid) -> ScrapResult:
+def scrap_38(url, cid) -> ScrapResult:
     """부산 강서구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -309,8 +292,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_39(
-url, cid) -> ScrapResult:
+def scrap_39(url, cid) -> ScrapResult:
     """부산 연제구"""
     councilors: list[Councilor] = []
 
@@ -370,8 +352,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_40(
-url, cid) -> ScrapResult:
+def scrap_40(url, cid) -> ScrapResult:
     """부산 수영구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -390,9 +371,7 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_41(
-    url, cid
-) -> ScrapResult:
+def scrap_41(url, cid) -> ScrapResult:
     """부산 사상구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []

@@ -3,9 +3,9 @@
 from scrap.local_councils import *
 from scrap.local_councils.basic import get_profiles, get_name, find, extract_party
 
+
 def scrap_50(url, cid) -> ScrapResult:
-    """인천 중구
-    """
+    """인천 중구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -20,8 +20,7 @@ def scrap_50(url, cid) -> ScrapResult:
 
 
 def scrap_51(url, cid) -> ScrapResult:
-    """인천 동구
-    """
+    """인천 동구"""
     raise Exception("현재 인천 동구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
 
     # soup = get_soup(url, verify=False)
@@ -50,11 +49,8 @@ def scrap_51(url, cid) -> ScrapResult:
 # return returncouncilors(cid, councilors)
 
 
-def scrap_52(
-    url, cid
-) -> ScrapResult:
-    """인천 미추홀구
-    """
+def scrap_52(url, cid) -> ScrapResult:
+    """인천 미추홀구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -70,8 +66,7 @@ def scrap_52(
 
 
 def scrap_53(url, cid) -> ScrapResult:
-    """인천 연수구
-    """
+    """인천 연수구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -92,8 +87,7 @@ def scrap_53(url, cid) -> ScrapResult:
 
 
 def scrap_54(url, cid) -> ScrapResult:
-    """인천 남동구
-    """
+    """인천 남동구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -112,8 +106,7 @@ def scrap_54(url, cid) -> ScrapResult:
 
 
 def scrap_55(url, cid) -> ScrapResult:
-    """인천 부평구
-    """
+    """인천 부평구"""
     raise Exception("현재 인천 부평구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
 
     # soup = get_soup(url, verify=False)
@@ -137,11 +130,8 @@ def scrap_55(url, cid) -> ScrapResult:
     # )
 
 
-def scrap_56(
-    url, cid
-) -> ScrapResult:
-    """인천 계양구
-    """
+def scrap_56(url, cid) -> ScrapResult:
+    """인천 계양구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -161,8 +151,7 @@ def scrap_56(
 
 
 def scrap_57(url, args) -> ScrapResult:
-    """인천 서구
-    """
+    """인천 서구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
     cid = 57
