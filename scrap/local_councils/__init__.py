@@ -10,8 +10,7 @@ from scrap.utils.requests import get_soup
 from scrap.utils.types import CouncilType
 from scrap.utils.utils import getPartyList
 
-
-def returncouncilors(cid, councilors):
+def ret_local_councilors(cid, councilors):
     return ScrapResult(
         council_id=cid,
         council_type=CouncilType.LOCAL_COUNCIL,

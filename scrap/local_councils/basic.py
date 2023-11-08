@@ -189,7 +189,7 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapRe
                 raise RuntimeError("[basic.py] 의원 정당을 가져오는데 실패했습니다. 이유: " + str(e))
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 if __name__ == "__main__":

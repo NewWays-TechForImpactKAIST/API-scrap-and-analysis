@@ -52,7 +52,7 @@ def scrap_62(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name, party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_63(url, cid) -> ScrapResult:
@@ -88,7 +88,7 @@ def scrap_63(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name, party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_64(url, cid) -> ScrapResult:
@@ -127,4 +127,4 @@ def scrap_64(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name, party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)

@@ -1,7 +1,6 @@
 """인천광역시를 스크랩. 50-57번째 의회까지 있음.
 """
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.requests import get_soup, get_selenium, By
+from scrap.utils.requests import get_selenium, By
 from scrap.local_councils.basic import (
     get_profiles,
     get_name,
@@ -23,7 +22,7 @@ def scrap_50(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_51(url, cid) -> ScrapResult:
@@ -77,7 +76,7 @@ def scrap_52(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name, party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_53(url, cid) -> ScrapResult:
@@ -98,7 +97,7 @@ def scrap_53(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_54(url, cid) -> ScrapResult:
@@ -117,7 +116,7 @@ def scrap_54(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_55(url, cid) -> ScrapResult:
@@ -162,7 +161,7 @@ def scrap_56(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_57(url, args) -> ScrapResult:
@@ -198,7 +197,7 @@ def scrap_57(url, args) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 if __name__ == "__main__":

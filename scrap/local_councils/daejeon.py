@@ -31,7 +31,7 @@ def scrap_65(url, cid) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_66(url, cid) -> ScrapResult:
@@ -49,7 +49,7 @@ def scrap_66(url, cid) -> ScrapResult:
             party = party_info.find_next("span").get_text(strip=True)
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_67(
@@ -73,7 +73,7 @@ def scrap_67(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_68(url, cid) -> ScrapResult:
@@ -93,7 +93,7 @@ def scrap_68(url, cid) -> ScrapResult:
             party = party_info.find_next("span").get_text(strip=True)
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_69(url, cid) -> ScrapResult:
@@ -112,7 +112,7 @@ def scrap_69(url, cid) -> ScrapResult:
             party = party_info.find_next("span").get_text(strip=True)
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 if __name__ == "__main__":

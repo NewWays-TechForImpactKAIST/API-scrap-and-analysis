@@ -1,16 +1,8 @@
 from scrap.local_councils import *
 from scrap.local_councils.basic import *
 
-
-def scrap_124(
-    url,
-    cid,
-    args: ScrapBasicArgument = None,
-) -> ScrapResult:
-    """충청북도 청주시 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_124(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+    """충청북도 청주시
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -30,18 +22,11 @@ def scrap_124(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
-def scrap_125(
-    url,
-    cid,
-    args: ScrapBasicArgument = None,
-) -> ScrapResult:
-    """충청북도 충주시 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_125(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+    """충청북도 충주시
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -60,18 +45,11 @@ def scrap_125(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
-def scrap_126(
-    url,
-    cid,
-    args: ScrapBasicArgument = None,
-) -> ScrapResult:
-    """충청북도 제천시 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_126(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+    """충청북도 제천시
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -89,18 +67,11 @@ def scrap_126(
             name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
             councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
-def scrap_132(
-    url,
-    cid,
-    args: ScrapBasicArgument = None,
-) -> ScrapResult:
-    """충청북도 제천시 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_132(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+    """충청북도 제천시
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -119,18 +90,11 @@ def scrap_132(
                 name = name_tag.get_text(strip=True).split()[0]  # 김철수 의원 -> 김철수
                 councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
-def scrap_134(
-    url,
-    cid,
-    args: ScrapBasicArgument = None,
-) -> ScrapResult:
-    """충청북도 증평군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_134(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+    """충청북도 증평군
     """
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: List[Councilor] = []
@@ -150,14 +114,12 @@ def scrap_134(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
-def scrap_140(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
-    """충청남도 태안군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_140(url, cid, args: ScrapBasicArgument = None
+) -> ScrapResult:
+    """충청남도 태안군
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -173,7 +135,7 @@ def scrap_140(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_142(url, cid, args) -> ScrapResult:
@@ -198,7 +160,7 @@ def scrap_142(url, cid, args) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 if __name__ == "__main__":
