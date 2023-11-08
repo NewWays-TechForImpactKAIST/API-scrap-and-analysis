@@ -76,7 +76,7 @@ def scrap_88(url, cid, args: ScrapBasicArgument) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def get_party_103(profile, element, class_, wrapper_element, wrapper_class_, url):
@@ -124,4 +124,4 @@ def scrap_103(url, cid, args: ScrapBasicArgument) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
