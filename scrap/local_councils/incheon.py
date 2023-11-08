@@ -1,7 +1,7 @@
 """인천광역시를 스크랩. 50-57번째 의회까지 있음.
 """
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.requests import get_soup
+from scrap.utils.requests import get_soup, get_selenium, By
 from scrap.local_councils.basic import (
     get_profiles,
     get_name,
@@ -79,16 +79,24 @@ def scrap_52(
     :param url: 의원 목록 사이트 url
     :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
     """
-    soup = get_soup(url, verify=False)
+
     councilors: list[Councilor] = []
+    browser = get_selenium(url)
 
-    script = (
-        soup.find("div", class_="contents_header")
-        .find_next("script")
-        .get_text(strip=True)
-    )
+    for profile in browser.find_elements(By.CSS_SELECTOR, "div[class='career_item']"):
+        name_tag = profile.find_element(
+            By.CSS_SELECTOR, "div[class='career_item_name']"
+        )
+        name = name_tag.text.strip().split()[0].strip() if name_tag else "이름 정보 없음"
 
-    # TODO
+        party_tag = profile.find_element(By.TAG_NAME, "dl")
+        party = (
+            party_tag.find_element(By.TAG_NAME, "dd").text.strip()
+            if party_tag
+            else "정당 정보 없음"
+        )
+
+        councilors.append(Councilor(name, party))
 
     return ScrapResult(
         council_id="incheon-michuholgu",
@@ -257,4 +265,4 @@ def scrap_57(url, args) -> ScrapResult:
 
 
 if __name__ == "__main__":
-    print(scrap_56())
+    print(scrap_52())
