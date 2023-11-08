@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.requests import get_soup
+from scrap.utils.requests import get_soup, get_selenium, By
 
 
 def scrap_metro_1(
@@ -139,10 +139,17 @@ def scrap_metro_5(url="https://council.gwangju.go.kr/index.do?PID=029") -> Scrap
     :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
     """
 
-    soup = get_soup(url, verify=False).find("table", class_="data").find("tbody")
     councilors: list[Councilor] = []
+    browser = get_selenium(url)
 
-    # TODO
+    for profile in browser.find_elements(By.CSS_SELECTOR, "li[class='item_box']"):
+        name_tag = profile.find_element(By.CSS_SELECTOR, "li[class='name']")
+        name = name_tag.text if name_tag else "이름 정보 없음"
+
+        party_tag = profile.find_element(By.CSS_SELECTOR, "li[class='item PA']")
+        party = party_tag.text if party_tag else "정당 정보 없음"
+
+        councilors.append(Councilor(name, party))
 
     return ScrapResult(
         council_id="gwangju",
@@ -534,4 +541,4 @@ def scrap_metro_17(
 
 
 if __name__ == "__main__":
-    print(scrap_metro_17())
+    print(scrap_metro_5())
