@@ -1,21 +1,9 @@
 from urllib.parse import urlparse
 
 import os
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from time import sleep
-
-import os
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from time import sleep
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.requests import get_soup
+from scrap.utils.requests import get_soup, get_selenium, By
 
 
 def scrap_26(
@@ -443,31 +431,7 @@ def scrap_39(
     if len(driver_loc) == 0:
         raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
 
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-
-    webdriver_service = Service(driver_loc)
-    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
-    browser.get(url)
-
-    councilor_infos = browser.find_elements(By.CSS_SELECTOR, "dl[class='info']")
-    cur_win = browser.current_window_handle
-
-    for info in councilor_infos:
-        name_tag = info.find_element(By.TAG_NAME, "span")
-        name = name_tag.text.strip() if name_tag else "이름 정보 없음"
-    driver_loc = os.popen("which chromedriver").read().strip()
-    if len(driver_loc) == 0:
-        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
-
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-
-    webdriver_service = Service(driver_loc)
-    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
-    browser.get(url)
+    browser = get_selenium(url)
 
     councilor_infos = browser.find_elements(By.CSS_SELECTOR, "dl[class='info']")
     cur_win = browser.current_window_handle

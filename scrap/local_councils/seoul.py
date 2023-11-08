@@ -1,3 +1,6 @@
+"""
+서울특별시 기초의회를 스크랩합니다. (1~25)
+"""
 from urllib.parse import urlparse
 
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
@@ -183,7 +186,7 @@ def scrap_6(url="http://council.ddm.go.kr/citizen/menu1.asp") -> ScrapResult:
 
             profile_info = profile_soup.find("div", class_="profileTxt")
             if profile_info:
-                profile_string = profile_info.get_text().strip().split("\xa0")
+                profile_string = profile_info.get_text().strip().split(" ")
                 idx = profile_string.index("소속정당")
                 party = profile_string[idx + 2]
 

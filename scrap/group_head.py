@@ -1,10 +1,10 @@
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+"""
+광역단체장 및 기초단체장 정보를 스크랩합니다.
+"""
 from time import sleep
-import os
+
+from scrap.utils.types import Councilor
+from scrap.utils.requests import get_selenium, By
 
 
 def scrap_group_heads(
@@ -18,17 +18,19 @@ def scrap_group_heads(
     metro_heads: list[tuple[str, Councilor]] = []
     local_heads: list[tuple[str, Councilor]] = []
 
-    driver_loc = os.popen("which chromedriver").read().strip()
-    if len(driver_loc) == 0:
-        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
+    browser = get_selenium(url)
 
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
+    # driver_loc = os.popen("which chromedriver").read().strip()
+    # if len(driver_loc) == 0:
+    #     raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
 
-    webdriver_service = Service(driver_loc)
-    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
-    browser.get(url)
+    # chrome_options = Options()
+    # chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--no-sandbox")
+
+    # webdriver_service = Service(driver_loc)
+    # browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
+    # browser.get(url)
 
     areas = [
         tag.text.strip()
@@ -38,7 +40,7 @@ def scrap_group_heads(
     ]
 
     for area in areas:
-        # print(area)
+        print(area)
         browser.find_element(
             By.CSS_SELECTOR, f"li[data-areaname='{area}']"
         ).find_element(By.TAG_NAME, "a").click()
