@@ -1,7 +1,7 @@
 from db.client import client
 from configurations.secrets import MongoDBSecrets
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
-import dataclasses
+from dataclasses import asdict
 import json
 
 # Note: MongoDB는 데이터베이스가 존재하지 않으면 자동으로 생성합니다.
@@ -24,21 +24,34 @@ def save_to_database(record: ScrapResult):
         # serialized_record = json.dumps(dataclasses.asdict(record), ensure_ascii=False)
         collection = db[str(record.council_type)]
         result = collection.find_one(
-            {"councilId": record.council_id},
+            {"council_id": record.council_id},
         )
         if result is not None:
-            collection.delete_one({"councilId": record.council_id})
+            before_councilors = result["councilors"]  # List[dict]
+            updated_councilors = []
+            updated_names = set()
 
-            updated_array = []
-            for councilor in record.councilors:
-                for before_councilor in result:
-                    if councilor.name == before_councilor["name"]:
-                        before_councilor["party"] = councilor.party
-                        updated_array.append(before_councilor)
+            name_data_map_for_update = {d.name: asdict(d) for d in record.councilors}
+
+            for d in before_councilors:
+                if d["name"] in name_data_map_for_update:
+                    d.update(
+                        {
+                            k: v
+                            for k, v in name_data_map_for_update[d["name"]].items()
+                            if k in d
+                        }
+                    )
+                    updated_names.add(d["name"])
+                updated_councilors.append(d)
+
+            for d in record.councilors:
+                if d.name not in updated_names:
+                    updated_councilors.append(asdict(d))
 
             collection.find_one_and_update(
-                {"councilId": record.council_id},
-                {"$set": {"councilors": updated_array}},
+                {"council_id": record.council_id},
+                {"$set": {"councilors": updated_councilors}},
                 upsert=True,
             )
         else:
@@ -46,6 +59,7 @@ def save_to_database(record: ScrapResult):
 
         return True
     except Exception as e:
+        t
         print(e)
         return False
 
@@ -56,7 +70,8 @@ if __name__ == "__main__":
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=[
             Councilor(name="김철수", party="국민의힘"),
-            Councilor(name="김영희", party="더불어민주당"),
+            Councilor(name="김영희", party="Birthday Party"),
+            Councilor(name="테스트", party="테스트당"),
         ],
     )
     print(save_to_database(test_record))
