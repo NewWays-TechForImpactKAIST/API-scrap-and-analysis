@@ -4,6 +4,7 @@ from scrap.utils.requests import get_selenium, By
 from scrap.local_councils import *
 from scrap.local_councils.basic import ret_local_councilors
 
+
 def scrap_26(url, cid) -> ScrapResult:
     """부산 중구"""
     soup = get_soup(url, verify=False)
