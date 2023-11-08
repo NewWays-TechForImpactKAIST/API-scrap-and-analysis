@@ -1,12 +1,8 @@
-from urllib.parse import urlparse
-
-from scrap.utils.types import CouncilType, Councilor, ScrapResult, ScrapBasicArgument
-from scrap.utils.requests import get_soup
+from scrap.local_councils import *
 from scrap.local_councils.basic import *
 
-
 def scrap_124(
-    url="https://council.cheongju.go.kr/content/member/member.html",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 청주시 페이지에서 의원 상세약력 스크랩
@@ -32,16 +28,11 @@ def scrap_124(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(124),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_125(
-    url="https://council.chungju.go.kr/content/member/memberName.html",
-    args: ScrapBasicArgument = None,
+url, cid,    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 충주시 페이지에서 의원 상세약력 스크랩
 
@@ -65,16 +56,11 @@ def scrap_125(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(125),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_126(
-    url="https://www.jecheon.go.kr/council/lawmakerList.do?key=4393",
-    args: ScrapBasicArgument = None,
+url, cid,    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 제천시 페이지에서 의원 상세약력 스크랩
 
@@ -97,16 +83,11 @@ def scrap_126(
             name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
             councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(126),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_132(
-    url="https://council.jincheon.go.kr/council/lawmakerList.do?key=70",
-    args: ScrapBasicArgument = None,
+url, cid,    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 제천시 페이지에서 의원 상세약력 스크랩
 
@@ -130,16 +111,11 @@ def scrap_132(
                 name = name_tag.get_text(strip=True).split()[0]  # 김철수 의원 -> 김철수
                 councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(132),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_134(
-    url="https://council.jp.go.kr/source/korean/member/active.html",
-    args: ScrapBasicArgument = None,
+url, cid,    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 증평군 페이지에서 의원 상세약력 스크랩
 
@@ -164,16 +140,11 @@ def scrap_134(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(134),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_140(
-    url="https://council.taean.go.kr/main/index.php?m_cd=11",
-    args: ScrapBasicArgument = None,
+url, cid,    args: ScrapBasicArgument = None
 ) -> ScrapResult:
     """충청남도 태안군 페이지에서 의원 상세약력 스크랩
 
@@ -194,22 +165,13 @@ def scrap_140(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(140),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_142(
-    url="https://www.nonsancl.go.kr/kr/member/active",
-    args: ScrapBasicArgument = None,
+url, cid,    args
 ) -> ScrapResult:
-    """충청남도 논산시 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
-    """
+    """충청남도 논산시"""
     base_url = "https://www.nonsancl.go.kr/kr/member/profile_popup?uid="
     soup = get_soup(url)
     councilors: list[Councilor] = []
@@ -230,11 +192,7 @@ def scrap_142(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(142),
-        council_type=CouncilType.LOCAL_COUNCIL.value,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 if __name__ == "__main__":

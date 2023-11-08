@@ -1,0 +1,611 @@
+{
+    "2": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "3": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "57": {
+        "pf_elt": "div",
+        "pf_cls": "conbox",
+        "name_elt": "p",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "58": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "59": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "60": {
+        "pf_elt": "div",
+        "pf_cls": "content",
+        "name_elt": "h5",
+        "pty_elt": "li",
+        "pty_wrapelt": "a"
+    },
+    "61": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "65": {
+        "pf_elt": "dl",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "strong"
+    },
+    "66": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "67": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "member",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "68": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "69": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "70": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "memberName",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "71": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "memberName",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "72": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "li",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "73": {
+        "pf_elt": "dl",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "74": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "li",
+        "pty_wrapelt": "a",
+        "pty_wrapcls": "start"
+    },
+    "75": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "76": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "77": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "mbrListByName",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "78": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "li",
+        "pty_wrapelt": "a",
+        "pty_wrapcls": "end"
+    },
+    "79": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "80": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "81": {
+        "pf_elt": "dd",
+        "pf_memlistelt": "div",
+        "pf_memlistcls": "member_list",
+        "name_elt": "p",
+        "pty_elt": "tr"
+    },
+    "82": {
+        "pf_elt": "div",
+        "pf_cls": "conbox",
+        "pf_memlistelt": "div",
+        "pf_memlistcls": "cts1426_box",
+        "name_elt": "p",
+        "pty_elt": "li"
+    },
+    "83": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "li",
+        "pty_wrapelt": "a",
+        "pty_wrapcls": "start"
+    },
+    "84": {
+        "pf_elt": "div",
+        "pf_cls": "law_box",
+        "name_elt": "span",
+        "name_cls": "name",
+        "pty_elt": "p"
+    },
+    "85": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "86": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "87": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "88": {
+        "pf_elt": "dl",
+        "pf_cls": "box",
+        "pf_memlistelt": "div",
+        "pf_memlistcls": "member_list",
+        "name_elt": "span",
+        "name_cls": "name",
+        "pty_elt": "li",
+        "pty_wrapelt": "p",
+        "pty_wrapcls": "btn"
+    },
+    "89": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "memberName",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "90": {
+        "pf_elt": "dl",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "91": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "mbr0101",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "92": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "member",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "93": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "li",
+        "pty_wrapelt": "a",
+        "pty_wrapcls": "end"
+    },
+    "94": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "mbrListByName",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "95": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "member",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "tr"
+    },
+    "96": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "97": {
+        "pf_elt": "li",
+        "pf_memlistelt": "ul",
+        "pf_memlistcls": "memberList",
+        "name_elt": "strong",
+        "pty_elt": "tr",
+        "pty_wrapelt": "a"
+    },
+    "98": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "99": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "100": {
+        "pf_elt": "div",
+        "pf_cls": "list",
+        "name_elt": "h4",
+        "name_cls": "h0",
+        "pty_elt": "li"
+    },
+    "101": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "102": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "li",
+        "pty_wrapelt": "a",
+        "pty_wrapcls": "start"
+    },
+    "103": {
+        "pf_elt": "div",
+        "pf_cls": "col-sm-6",
+        "name_elt": "h5",
+        "name_cls": "h5",
+        "pty_elt": "li",
+        "pty_wrapelt": "a",
+        "pty_wrapcls": "d-inline-block"
+    },
+    "104": {
+        "pf_elt": "div",
+        "pf_cls": "text_box",
+        "name_elt": "h3",
+        "name_cls": "h0",
+        "pty_elt": "li",
+        "pty_wrapelt": "a",
+        "pty_wraptxt": "\ub204\ub9ac\uc9d1"
+    },
+    "105": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "108": {
+        "pf_elt": "dl",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "pty_elt": "li"
+    },
+    "109": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "section",
+        "pf_memlistcls": "memberName",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "110": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "112": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "em"
+    },
+    "113": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "115": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "116": {
+        "pf_elt": "div",
+        "pf_cls": "memberName",
+        "name_cls": "name",
+        "pty_elt": "dd"
+    },
+    "127": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "128": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "129": {
+        "pf_elt": "div",
+        "pf_cls": "right",
+        "pf_memlistelt": "ul",
+        "pf_memlistcls": "memberList",
+        "name_elt": "h5",
+        "pty_elt": "span"
+    },
+    "130": {
+        "pf_elt": "div",
+        "pf_cls": "parliament_text",
+        "name_elt": "h3",
+        "name_cls": "h0",
+        "pty_elt": "span"
+    },
+    "131": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "133": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "div",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "135": {
+        "pf_elt": "dl",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span",
+        "pty_cls": "itemContent"
+    },
+    "136": {
+        "pf_elt": "div",
+        "pf_cls": "info",
+        "name_elt": "div",
+        "name_cls": "tit",
+        "pty_elt": "li"
+    },
+    "137": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "138": {
+        "pf_elt": "div",
+        "pf_cls": "item",
+        "name_elt": "h5",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "139": {
+        "pf_elt": "ul",
+        "pf_cls": "assembly_list",
+        "name_elt": "div",
+        "name_cls": "names",
+        "pty_elt": "li"
+    },
+    "141": {
+        "pf_elt": "dl",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span",
+        "pty_cls": "itemContent"
+    },
+    "143": {
+        "pf_elt": "div",
+        "pf_cls": "card--body",
+        "name_elt": "strong",
+        "name_cls": "ui-list__title",
+        "pty_elt": "li"
+    },
+    "144": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "ul",
+        "pf_memlistcls": "mlist",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span",
+        "pty_cls": "itemContent"
+    },
+    "145": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "146": {
+        "pf_elt": "div",
+        "pf_cls": "pt",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "147": {
+        "pf_elt": "dl",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "148": {
+        "pf_elt": "div",
+        "pf_cls": "col",
+        "name_elt": "strong",
+        "name_cls": "ui-list__title",
+        "pty_elt": "li"
+    },
+    "149": {
+        "pf_elt": "dl",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "150": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "151": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "152": {
+        "pf_elt": "div",
+        "pf_cls": "councillor_info",
+        "name_elt": "span",
+        "name_cls": "name",
+        "pty_elt": "li"
+    },
+    "153": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "em",
+        "name_cls": "name",
+        "pty_elt": "span"
+    },
+    "158": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "ul",
+        "pf_memlistcls": "mlist",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span",
+        "pty_cls": "itemContent"
+    },
+    "159": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "ul",
+        "pf_memlistcls": "mlist",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span",
+        "pty_cls": "itemContent"
+    },
+    "166": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "pty_elt": "span"
+    },
+    "168": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "ul",
+        "pf_memlistcls": "mlist",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_elt": "span",
+        "pty_cls": "itemContent"
+    }
+}
