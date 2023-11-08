@@ -2,7 +2,12 @@
 """
 from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
-from scrap.local_councils.basic import *
+from scrap.local_councils.basic import (
+    get_profiles,
+    get_name,
+    find,
+    extract_party,
+)
 
 
 def scrap_50(url="https://www.icjg.go.kr/council/cnmi0101c") -> ScrapResult:

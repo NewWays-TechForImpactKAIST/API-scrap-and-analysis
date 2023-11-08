@@ -1,16 +1,24 @@
 """
-크롤링 시 공통적으로 사용하는 requests 라이브러리와 bs4 라이브러리를 사용하기 쉽게 모듈화합니다. 
+크롤링 시 공통적으로 사용하는 requests, bs4, selenium 라이브러리를 사용하기 쉽게 모듈화합니다. 
 """
+import os
+from html import unescape
+from unicodedata import normalize
 import requests
 from urllib3.exceptions import InsecureRequestWarning
 from bs4 import BeautifulSoup
-from html import unescape
-from unicodedata import normalize
+
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+
 
 # SSL 인증서 검증 경고 무시
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)  # type: ignore
 # 충청북도 보은군, 강진시에서 타임아웃이
-timeout_time = 60
+TIMEOUT_TIME = 60
 
 
 def get_soup(
@@ -33,8 +41,30 @@ def get_soup(
     http_headers.update(additional_headers)
 
     response = requests.get(
-        url, verify=verify, headers=http_headers, timeout=timeout_time
+        url, verify=verify, headers=http_headers, timeout=TIMEOUT_TIME
     )
     response.encoding = encoding
     sanitized_response = normalize("NFKC", unescape(response.text))
     return BeautifulSoup(sanitized_response, "html.parser")
+
+
+def get_selenium(url: str) -> WebDriver:
+    """
+    url을 입력받아 WebDriver 객체를 반환합니다.
+    selenium 라이브러리를 사용해 JS 기반의 동적이 웹페이지 크롤링이 가능합니다.
+    WebDriver.click() 함수 호출 이후, time.sleep(1) 실행이 권장됩니다.
+
+    :param url: 크롤링할 페이지의 url입니다."""
+    driver_loc = os.popen("which chromedriver").read().strip()
+    if len(driver_loc) == 0:
+        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+
+    webdriver_service = Service(driver_loc)
+    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
+    browser.get(url)
+
+    return browser
