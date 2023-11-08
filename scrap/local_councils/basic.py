@@ -1,8 +1,4 @@
-from urllib.parse import urlparse
-
-from scrap.utils.types import CouncilType, Councilor, ScrapResult, ScrapBasicArgument
-from scrap.utils.requests import get_soup
-from scrap.utils.utils import getPartyList
+from scrap.local_councils import *
 import re
 import requests
 import copy
@@ -10,7 +6,6 @@ import copy
 regex_pattern = re.compile(r"정\s*\S*\s*당", re.IGNORECASE)  # Case-insensitive
 party_keywords = getPartyList()
 party_keywords.append("무소속")
-
 
 def find(soup, element, class_):
     if class_ is None:
@@ -146,7 +141,6 @@ def get_party_easy(profile, wrapper_element, wrapper_class_, wrapper_txt, url):
     assert party is not None
     return party
 
-
 def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapResult:
     """의원 상세약력 스크랩
     :param url: 의원 목록 사이트 url
@@ -193,11 +187,7 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapRe
                 raise RuntimeError("[basic.py] 의원 정당을 가져오는데 실패했습니다. 이유: " + str(e))
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(cid),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 if __name__ == "__main__":

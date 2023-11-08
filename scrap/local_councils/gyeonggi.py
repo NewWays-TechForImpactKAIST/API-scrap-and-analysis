@@ -1,12 +1,9 @@
 """경기도를 스크랩.
 """
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.requests import get_soup
-from scrap.local_councils.basic import *
+from scrap.local_councils import *
+from scrap.local_councils.basic import find, regex_pattern, find_all, extract_party, get_name, get_party_easy
 
-
-def get_profiles_88(soup, element, class_, memberlistelement, memberlistclass_):
-    # 의원 목록 사이트에서 의원 프로필을 가져옴
+def get_profiles_88_103(soup, element, class_, memberlistelement, memberlistclass_):
     if memberlistelement is not None:
         try:
             soup = soup.find_all(memberlistelement, id=memberlistclass_)[0]
@@ -16,7 +13,6 @@ def get_profiles_88(soup, element, class_, memberlistelement, memberlistclass_):
 
 
 def get_party_88(profile, element, class_, wrapper_element, wrapper_class_, url):
-    # 의원 프로필에서 의원이 몸담는 정당 이름을 가져옴
     if wrapper_element is not None:
         parsed_url = urlparse(url)
         base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
@@ -42,18 +38,11 @@ def get_party_88(profile, element, class_, wrapper_element, wrapper_class_, url)
             return "[basic.py] 정당 정보 파싱 불가"
 
 
-def scrap_88(url, args: ScrapBasicArgument) -> ScrapResult:
-    """의원 상세약력 스크랩
-    :param url: 의원 목록 사이트 url
-    :param args: ScrapBasicArgument 객체
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
-    """
-    cid = 88
+def scrap_88(url, cid, args: ScrapBasicArgument) -> ScrapResult:
     encoding = "euc-kr"
     soup = get_soup(url, verify=False, encoding=encoding)
     councilors: list[Councilor] = []
-    party_in_main_page = any(keyword in soup.text for keyword in party_keywords)
-    profiles = get_profiles_88(
+    profiles = get_profiles_88_103(
         soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
     print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
@@ -79,15 +68,10 @@ def scrap_88(url, args: ScrapBasicArgument) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(cid),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def get_party_103(profile, element, class_, wrapper_element, wrapper_class_, url):
-    # 의원 프로필에서 의원이 몸담는 정당 이름을 가져옴
     if wrapper_element is not None:
         parsed_url = urlparse(url)
         base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
@@ -113,17 +97,11 @@ def get_party_103(profile, element, class_, wrapper_element, wrapper_class_, url
             return "[basic.py] 정당 정보 파싱 불가"
 
 
-def scrap_103(url, args: ScrapBasicArgument) -> ScrapResult:
-    """의원 상세약력 스크랩
-    :param url: 의원 목록 사이트 url
-    :param args: ScrapBasicArgument 객체
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
-    """
+def scrap_103(url, cid, args: ScrapBasicArgument) -> ScrapResult:
     cid = 103
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
-    party_in_main_page = any(keyword in soup.text for keyword in party_keywords)
-    profiles = get_profiles_88(
+    profiles = get_profiles_88_103(
         soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
     print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
@@ -138,8 +116,4 @@ def scrap_103(url, args: ScrapBasicArgument) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(cid),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)

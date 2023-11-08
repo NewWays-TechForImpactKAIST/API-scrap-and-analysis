@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
-from scrap.utils.types import CouncilType, Councilor, ScrapResult, ScrapBasicArgument
+from scrap.utils.types import Councilor, ScrapResult, ScrapBasicArgument
 from scrap.utils.requests import get_soup
 from scrap.local_councils.basic import *
 from scrap.utils.utils import getPartyList
@@ -14,12 +14,9 @@ party_keywords.append("무소속")
 
 
 def scrap_107(
-    url="https://council.wonju.go.kr/content/member/memberName.html",
+    url, cid,
 ) -> ScrapResult:
-    """강원도 원주시 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 원주시
     """
     councilors: list[Councilor] = []
 
@@ -55,28 +52,13 @@ def scrap_107(
 
         councilors.append(Councilor(name, party))
 
-    return ScrapResult(
-        council_id="107",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-# 107: ScrapBasicArgument(
-#             pf_memlistelt="div",
-#             pf_memlistcls="content",
-#             pf_elt="dl",
-#             name_elt="dd",
-#             name_cls="name",
-#             pty_elt="span",
-#         ),
 def scrap_113(
-    url="https://sokchocl.go.kr/kr/member/active.do", args: ScrapBasicArgument = None
+    url, cid, args: ScrapBasicArgument = None
 ) -> ScrapResult:
-    """강원도 속초시 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 속초시
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -94,21 +76,14 @@ def scrap_113(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(113),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_114(
-    url="https://council.gwgs.go.kr/Home/H20000/H20100/membProfileActiveList",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 고성군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 고성군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -128,21 +103,14 @@ def scrap_114(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(114),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_115(
-    url="https://www.yangyangcouncil.go.kr/kr/member/name.do",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 양양군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 양양군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -160,21 +128,14 @@ def scrap_115(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(115),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_116(
-    url="https://www.injecl.go.kr/content/members/memberName.html",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 인제군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 인제군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -188,21 +149,14 @@ def scrap_116(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(116),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_117(
-    url="https://www.hccouncil.go.kr/source/korean/member/active.html",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 홍천군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 홍천군
     """
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: list[Councilor] = []
@@ -221,21 +175,14 @@ def scrap_117(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(117),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_118(
-    url="https://www.hsg.go.kr/council/contents.do?key=1423&",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 횡성군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 횡성군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -249,21 +196,14 @@ def scrap_118(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(118),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_119(
-    url="https://council.yw.go.kr/content/member/active.html",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 영월군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 영월군
     """
     base_url = "https://council.yw.go.kr"
     soup = get_soup(url)
@@ -289,21 +229,14 @@ def scrap_119(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(119),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_120(
-    url="https://cl.happy700.or.kr/kr/member/active.do",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 평창군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 평창군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -319,21 +252,14 @@ def scrap_120(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(120),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_121(
-    url="http://council.ihc.go.kr/bbs/content.php?co_id=sub03_2",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 화천군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 화천군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -347,21 +273,14 @@ def scrap_121(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(121),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_122(
-    url="http://www.ygcl.go.kr/portal/F20000/F20100/html",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 양구군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 양구군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -375,21 +294,14 @@ def scrap_122(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(122),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_123(
-    url="https://council.cwg.go.kr/council/contents.do?key=507",
+    url, cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 철원군 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """강원도 철원군
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -406,11 +318,7 @@ def scrap_123(
         # TODO
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(123),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 if __name__ == "__main__":

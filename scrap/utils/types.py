@@ -44,7 +44,7 @@ class ScrapResult:
     의회 크롤링 결과를 나타내는 타입입니다.
     """
 
-    council_id: str
+    council_id: int
     """
     의회를 구분하기 위한 문자열입니다.
     """
