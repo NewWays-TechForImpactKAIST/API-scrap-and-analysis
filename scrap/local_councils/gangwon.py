@@ -14,10 +14,10 @@ party_keywords.append("무소속")
 
 
 def scrap_107(
-    url, cid,
+    url,
+    cid,
 ) -> ScrapResult:
-    """강원도 원주시
-    """
+    """강원도 원주시"""
     councilors: list[Councilor] = []
 
     driver_loc = os.popen("which chromedriver").read().strip()
@@ -55,11 +55,8 @@ def scrap_107(
     return returncouncilors(cid, councilors)
 
 
-def scrap_113(
-    url, cid, args: ScrapBasicArgument = None
-) -> ScrapResult:
-    """강원도 속초시
-    """
+def scrap_113(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+    """강원도 속초시"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -80,11 +77,11 @@ def scrap_113(
 
 
 def scrap_114(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 고성군
-    """
+    """강원도 고성군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -107,11 +104,11 @@ def scrap_114(
 
 
 def scrap_115(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 양양군
-    """
+    """강원도 양양군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -132,11 +129,11 @@ def scrap_115(
 
 
 def scrap_116(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 인제군
-    """
+    """강원도 인제군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -153,11 +150,11 @@ def scrap_116(
 
 
 def scrap_117(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 홍천군
-    """
+    """강원도 홍천군"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: list[Councilor] = []
 
@@ -179,11 +176,11 @@ def scrap_117(
 
 
 def scrap_118(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 횡성군
-    """
+    """강원도 횡성군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -200,11 +197,11 @@ def scrap_118(
 
 
 def scrap_119(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 영월군
-    """
+    """강원도 영월군"""
     base_url = "https://council.yw.go.kr"
     soup = get_soup(url)
     councilors: list[Councilor] = []
@@ -233,11 +230,11 @@ def scrap_119(
 
 
 def scrap_120(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 평창군
-    """
+    """강원도 평창군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -256,11 +253,11 @@ def scrap_120(
 
 
 def scrap_121(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 화천군
-    """
+    """강원도 화천군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -277,11 +274,11 @@ def scrap_121(
 
 
 def scrap_122(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 양구군
-    """
+    """강원도 양구군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -298,11 +295,11 @@ def scrap_122(
 
 
 def scrap_123(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
-    """강원도 철원군
-    """
+    """강원도 철원군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 

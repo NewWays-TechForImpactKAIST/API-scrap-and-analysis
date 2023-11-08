@@ -1,9 +1,8 @@
 from scrap.local_councils import *
 from scrap.local_councils.basic import regex_pattern
 
-def scrap_70(
-    url, cid
-) -> ScrapResult:
+
+def scrap_70(url, cid) -> ScrapResult:
     """울산 중구"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -28,9 +27,7 @@ def scrap_70(
     return returncouncilors(cid, councilors)
 
 
-def scrap_71(
-    url, cid
-) -> ScrapResult:
+def scrap_71(url, cid) -> ScrapResult:
     """울산 남구"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -57,9 +54,7 @@ def scrap_71(
     return returncouncilors(cid, councilors)
 
 
-def scrap_72(
-    url, cid
-) -> ScrapResult:
+def scrap_72(url, cid) -> ScrapResult:
     """울산 동구"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: List[Councilor] = []

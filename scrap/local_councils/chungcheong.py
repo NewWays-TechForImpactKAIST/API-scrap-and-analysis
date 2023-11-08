@@ -1,8 +1,10 @@
 from scrap.local_councils import *
 from scrap.local_councils.basic import *
 
+
 def scrap_124(
-    url, cid,
+    url,
+    cid,
     args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 청주시 페이지에서 의원 상세약력 스크랩
@@ -32,7 +34,9 @@ def scrap_124(
 
 
 def scrap_125(
-url, cid,    args: ScrapBasicArgument = None,
+    url,
+    cid,
+    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 충주시 페이지에서 의원 상세약력 스크랩
 
@@ -60,7 +64,9 @@ url, cid,    args: ScrapBasicArgument = None,
 
 
 def scrap_126(
-url, cid,    args: ScrapBasicArgument = None,
+    url,
+    cid,
+    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 제천시 페이지에서 의원 상세약력 스크랩
 
@@ -87,7 +93,9 @@ url, cid,    args: ScrapBasicArgument = None,
 
 
 def scrap_132(
-url, cid,    args: ScrapBasicArgument = None,
+    url,
+    cid,
+    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 제천시 페이지에서 의원 상세약력 스크랩
 
@@ -115,7 +123,9 @@ url, cid,    args: ScrapBasicArgument = None,
 
 
 def scrap_134(
-url, cid,    args: ScrapBasicArgument = None,
+    url,
+    cid,
+    args: ScrapBasicArgument = None,
 ) -> ScrapResult:
     """충청북도 증평군 페이지에서 의원 상세약력 스크랩
 
@@ -143,9 +153,7 @@ url, cid,    args: ScrapBasicArgument = None,
     return returncouncilors(cid, councilors)
 
 
-def scrap_140(
-url, cid,    args: ScrapBasicArgument = None
-) -> ScrapResult:
+def scrap_140(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
     """충청남도 태안군 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
@@ -168,9 +176,7 @@ url, cid,    args: ScrapBasicArgument = None
     return returncouncilors(cid, councilors)
 
 
-def scrap_142(
-url, cid,    args
-) -> ScrapResult:
+def scrap_142(url, cid, args) -> ScrapResult:
     """충청남도 논산시"""
     base_url = "https://www.nonsancl.go.kr/kr/member/profile_popup?uid="
     soup = get_soup(url)

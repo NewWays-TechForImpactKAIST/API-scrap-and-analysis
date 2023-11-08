@@ -7,6 +7,7 @@ regex_pattern = re.compile(r"정\s*\S*\s*당", re.IGNORECASE)  # Case-insensitiv
 party_keywords = getPartyList()
 party_keywords.append("무소속")
 
+
 def find(soup, element, class_):
     if class_ is None:
         return soup.find(element)
@@ -140,6 +141,7 @@ def get_party_easy(profile, wrapper_element, wrapper_class_, wrapper_txt, url):
     party = extract_party(profile.text)
     assert party is not None
     return party
+
 
 def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapResult:
     """의원 상세약력 스크랩
