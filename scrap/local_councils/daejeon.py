@@ -1,8 +1,8 @@
 from scrap.local_councils import *
 
+
 def scrap_65(url, cid) -> ScrapResult:
-    """대전 동구
-    """
+    """대전 동구"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -35,8 +35,7 @@ def scrap_65(url, cid) -> ScrapResult:
 
 
 def scrap_66(url, cid) -> ScrapResult:
-    """대전 중구
-    """
+    """대전 중구"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -54,10 +53,10 @@ def scrap_66(url, cid) -> ScrapResult:
 
 
 def scrap_67(
-    url, cid,
+    url,
+    cid,
 ) -> ScrapResult:
-    """대전 서구
-    """
+    """대전 서구"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -78,8 +77,7 @@ def scrap_67(
 
 
 def scrap_68(url, cid) -> ScrapResult:
-    """대전 유성구
-    """
+    """대전 유성구"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 
@@ -99,8 +97,7 @@ def scrap_68(url, cid) -> ScrapResult:
 
 
 def scrap_69(url, cid) -> ScrapResult:
-    """대전 대덕구
-    """
+    """대전 대덕구"""
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
 

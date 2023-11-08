@@ -27,6 +27,7 @@ PWD = os.path.dirname(__file__)
 BASE_DIR = os.path.join(PWD, os.pardir, os.pardir)
 JSON_PATH = os.path.join(PWD, "scrap_args.json")
 
+
 def google_authorization():
     """Google Sheets API 활용을 위한 인증 정보 요청
     credentials.json 파일을 토대로 인증을 요청하되, token.json 파일이 존재할 경우 거기에 저장된 정보 활용
@@ -74,10 +75,10 @@ def main() -> None:
     )
     no_information = [106, 111]
     errors = []
-    f = open(JSON_PATH, 'r')
+    f = open(JSON_PATH, "r")
     args = json.load(f)
     f.close()
-    
+
     # 데이터 가져오기
     data: list[dict] = worksheet.get_all_records()
     result: str = ""
@@ -110,7 +111,9 @@ def main() -> None:
                         result = str(function_to_call(council_url, n).councilors)
                     else:
                         result = str(
-                            function_to_call(council_url, n, args=council_args).councilors
+                            function_to_call(
+                                council_url, n, args=council_args
+                            ).councilors
                         )
             else:
                 result = str(

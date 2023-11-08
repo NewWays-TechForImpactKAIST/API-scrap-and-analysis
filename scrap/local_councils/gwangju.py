@@ -6,15 +6,13 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from scrap.local_councils import *
+
 party_keywords = getPartyList()
 party_keywords.append("무소속")
 
 
-def scrap_62(
-    url, cid
-) -> ScrapResult:
-    """광주 서구
-    """
+def scrap_62(url, cid) -> ScrapResult:
+    """광주 서구"""
     councilors: list[Councilor] = []
 
     driver_loc = os.popen("which chromedriver").read().strip()
@@ -57,11 +55,8 @@ def scrap_62(
     return returncouncilors(cid, councilors)
 
 
-def scrap_63(
-    url, cid
-) -> ScrapResult:
-    """광주 북구
-    """
+def scrap_63(url, cid) -> ScrapResult:
+    """광주 북구"""
     councilors: list[Councilor] = []
 
     driver_loc = os.popen("which chromedriver").read().strip()
@@ -96,11 +91,8 @@ def scrap_63(
     return returncouncilors(cid, councilors)
 
 
-def scrap_64(
-    url, cid
-) -> ScrapResult:
-    """광주 광산구
-    """
+def scrap_64(url, cid) -> ScrapResult:
+    """광주 광산구"""
     councilors: list[Councilor] = []
 
     driver_loc = os.popen("which chromedriver").read().strip()

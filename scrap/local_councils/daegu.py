@@ -1,7 +1,7 @@
 from scrap.local_councils import *
 
-def scrap_42(
-url, cid) -> ScrapResult:
+
+def scrap_42(url, cid) -> ScrapResult:
     """대구 중구"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: list[Councilor] = []
@@ -22,10 +22,8 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_43(
-url, cid) -> ScrapResult:
-    """대구 동구
-    """
+def scrap_43(url, cid) -> ScrapResult:
+    """대구 동구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -56,8 +54,7 @@ url, cid) -> ScrapResult:
 
 
 def scrap_44(url, cid) -> ScrapResult:
-    """대구 서구
-    """
+    """대구 서구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -79,10 +76,8 @@ def scrap_44(url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_45(
-url, cid) -> ScrapResult:
-    """대구 남구
-    """
+def scrap_45(url, cid) -> ScrapResult:
+    """대구 남구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -103,8 +98,7 @@ url, cid) -> ScrapResult:
 
 
 def scrap_46(url, cid) -> ScrapResult:
-    """대구 북구
-    """
+    """대구 북구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -124,10 +118,8 @@ def scrap_46(url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_47(
-url, cid) -> ScrapResult:
-    """대구 수성구
-    """
+def scrap_47(url, cid) -> ScrapResult:
+    """대구 수성구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -145,10 +137,8 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_48(
-url, cid) -> ScrapResult:
-    """대구 달서구
-    """
+def scrap_48(url, cid) -> ScrapResult:
+    """대구 달서구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
@@ -169,10 +159,8 @@ url, cid) -> ScrapResult:
     return returncouncilors(cid, councilors)
 
 
-def scrap_49(
-url, cid) -> ScrapResult:
-    """대구 달성군
-    """
+def scrap_49(url, cid) -> ScrapResult:
+    """대구 달성군"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
 
