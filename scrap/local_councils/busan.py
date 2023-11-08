@@ -427,10 +427,6 @@ def scrap_39(
     """
     councilors: list[Councilor] = []
 
-    driver_loc = os.popen("which chromedriver").read().strip()
-    if len(driver_loc) == 0:
-        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
-
     browser = get_selenium(url)
 
     councilor_infos = browser.find_elements(By.CSS_SELECTOR, "dl[class='info']")
