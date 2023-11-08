@@ -5,21 +5,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.utils import getPartyList
-
+from scrap.local_councils import *
 party_keywords = getPartyList()
 party_keywords.append("무소속")
 
 
 def scrap_62(
-    url="http://www.gjnc.or.kr/main/contents/lawmakerDistrict",
+    url, cid
 ) -> ScrapResult:
-    """광주시 서구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """광주 서구
     """
     councilors: list[Councilor] = []
 
@@ -60,20 +54,13 @@ def scrap_62(
 
         councilors.append(Councilor(name, party))
 
-    return ScrapResult(
-        council_id="62",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_63(
-    url="https://council.bukgu.gwangju.kr/index.do?PID=024",
+    url, cid
 ) -> ScrapResult:
-    """광주시 북구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """광주 북구
     """
     councilors: list[Councilor] = []
 
@@ -106,20 +93,13 @@ def scrap_63(
 
         councilors.append(Councilor(name, party))
 
-    return ScrapResult(
-        council_id="63",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_64(
-    url="https://gjgc.or.kr/main/contents/lawmaker",
+    url, cid
 ) -> ScrapResult:
-    """광주시 광산구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """광주 광산구
     """
     councilors: list[Councilor] = []
 
@@ -155,8 +135,4 @@ def scrap_64(
 
         councilors.append(Councilor(name, party))
 
-    return ScrapResult(
-        council_id="64",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)

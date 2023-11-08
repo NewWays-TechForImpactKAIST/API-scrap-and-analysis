@@ -1,15 +1,10 @@
 """인천광역시를 스크랩. 50-57번째 의회까지 있음.
 """
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.requests import get_soup
-from scrap.local_councils.basic import *
+from scrap.local_councils import *
+from scrap.local_councils.basic import get_profiles, get_name, find, extract_party
 
-
-def scrap_50(url="https://www.icjg.go.kr/council/cnmi0101c") -> ScrapResult:
-    """인천시 중구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_50(url, cid) -> ScrapResult:
+    """인천 중구
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -21,20 +16,13 @@ def scrap_50(url="https://www.icjg.go.kr/council/cnmi0101c") -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="incheon-junggu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-def scrap_51(url="https://council.icdonggu.go.kr/korean/member/active") -> ScrapResult:
-    """인천시 동구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_51(url, cid) -> ScrapResult:
+    """인천 동구
     """
-    raise Exception("현재 인천시 동구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
+    raise Exception("현재 인천 동구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
 
     # soup = get_soup(url, verify=False)
     # councilors: list[Councilor] = []
@@ -59,20 +47,13 @@ def scrap_51(url="https://council.icdonggu.go.kr/korean/member/active") -> Scrap
 
 #     councilors.append(Councilor(name=name, party=party))
 
-# return ScrapResult(
-#     council_id="incheon-donggu",
-#     council_type=CouncilType.LOCAL_COUNCIL,
-#     councilors=councilors
-# )
+# return returncouncilors(cid, councilors)
 
 
 def scrap_52(
-    url="https://www.michuhol.go.kr/council/introduction/career.asp",
+    url, cid
 ) -> ScrapResult:
-    """인천시 미추홀구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """인천 미추홀구
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -85,18 +66,11 @@ def scrap_52(
 
     # TODO
 
-    return ScrapResult(
-        council_id="incheon-michuholgu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-def scrap_53(url="https://council.yeonsu.go.kr/kr/member/name.do") -> ScrapResult:
-    """인천시 연수구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_53(url, cid) -> ScrapResult:
+    """인천 연수구
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -114,18 +88,11 @@ def scrap_53(url="https://council.yeonsu.go.kr/kr/member/name.do") -> ScrapResul
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="incheon-yeonsugu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-def scrap_54(url="https://council.namdong.go.kr/kr/member/active.do") -> ScrapResult:
-    """인천시 남동구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_54(url, cid) -> ScrapResult:
+    """인천 남동구
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -141,20 +108,13 @@ def scrap_54(url="https://council.namdong.go.kr/kr/member/active.do") -> ScrapRe
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="incheon-namdonggu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-def scrap_55(url="https://council.icbp.go.kr/kr/member/active") -> ScrapResult:
-    """인천시 부평구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_55(url, cid) -> ScrapResult:
+    """인천 부평구
     """
-    raise Exception("현재 인천시 부평구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
+    raise Exception("현재 인천 부평구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
 
     # soup = get_soup(url, verify=False)
     # councilors: list[Councilor] = []
@@ -170,20 +130,17 @@ def scrap_55(url="https://council.icbp.go.kr/kr/member/active") -> ScrapResult:
 
     #     councilors.append(Councilor(name=name, party=party))
 
-    # return ScrapResult(
-    #     council_id="incheon-bupyeonggu",
+    # return returncouncilors(cid, councilors)
+    #     council_id=55,
     #     council_type=CouncilType.LOCAL_COUNCIL,
     #     councilors=councilors
     # )
 
 
 def scrap_56(
-    url="https://www.gyeyang.go.kr/open_content/council/member/present/present.jsp",
+    url, cid
 ) -> ScrapResult:
-    """인천시 계양구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """인천 계양구
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -200,18 +157,11 @@ def scrap_56(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="incheon-gyeyanggu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_57(url, args) -> ScrapResult:
-    """인천시 서구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """인천 서구
     """
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -244,11 +194,7 @@ def scrap_57(url, args) -> ScrapResult:
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id=str(cid),
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 if __name__ == "__main__":

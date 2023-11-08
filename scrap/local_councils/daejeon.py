@@ -1,16 +1,7 @@
-from urllib.parse import urlparse
+from scrap.local_councils import *
 
-from typing import List
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
-from scrap.utils.requests import get_soup
-import re
-
-
-def scrap_65(url="https://council.donggu.go.kr/kr/member/active") -> ScrapResult:
-    """대전시 동구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_65(url, cid) -> ScrapResult:
+    """대전 동구
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -40,18 +31,11 @@ def scrap_65(url="https://council.donggu.go.kr/kr/member/active") -> ScrapResult
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="daejeon-donggu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-def scrap_66(url="https://council.djjunggu.go.kr/kr/member/name.do") -> ScrapResult:
-    """대전시 중구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_66(url, cid) -> ScrapResult:
+    """대전 중구
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -66,20 +50,13 @@ def scrap_66(url="https://council.djjunggu.go.kr/kr/member/name.do") -> ScrapRes
             party = party_info.find_next("span").get_text(strip=True)
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="daejeon-junggu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 def scrap_67(
-    url="https://www.seogucouncil.daejeon.kr/svc/mbr/MbrPresent.do",
+    url, cid,
 ) -> ScrapResult:
-    """대전시 서구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+    """대전 서구
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -97,18 +74,11 @@ def scrap_67(
 
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="daejeon-seogu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-def scrap_68(url="https://yuseonggucouncil.go.kr/page/page02_01_01.php") -> ScrapResult:
-    """대전시 유성구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_68(url, cid) -> ScrapResult:
+    """대전 유성구
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -125,18 +95,11 @@ def scrap_68(url="https://yuseonggucouncil.go.kr/page/page02_01_01.php") -> Scra
             party = party_info.find_next("span").get_text(strip=True)
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="daejeon-yuseonggu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
-def scrap_69(url="https://council.daedeok.go.kr/kr/member/name.do") -> ScrapResult:
-    """대전시 대덕구 페이지에서 의원 상세약력 스크랩
-
-    :param url: 의원 목록 사이트 url
-    :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
+def scrap_69(url, cid) -> ScrapResult:
+    """대전 대덕구
     """
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
@@ -152,11 +115,7 @@ def scrap_69(url="https://council.daedeok.go.kr/kr/member/name.do") -> ScrapResu
             party = party_info.find_next("span").get_text(strip=True)
         councilors.append(Councilor(name=name, party=party))
 
-    return ScrapResult(
-        council_id="daejeon-daedeokgu",
-        council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors,
-    )
+    return returncouncilors(cid, councilors)
 
 
 if __name__ == "__main__":
