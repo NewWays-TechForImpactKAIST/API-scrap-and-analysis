@@ -27,32 +27,34 @@ def scrap_50(url, cid) -> ScrapResult:
 
 def scrap_51(url, cid) -> ScrapResult:
     """인천 동구"""
-    raise Exception("현재 인천 동구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
 
-    # soup = get_soup(url, verify=False)
-    # councilors: list[Councilor] = []
+    cur_win = browser.current_window_handle
 
+    for profile in browser.find_elements(By.CSS_SELECTOR, "dl[class='profile']"):
+        name_tag = profile.find_element(By.CSS_SELECTOR, "strong[class='name']")
+        name = name_tag.text.strip() if name_tag else "이름 정보 없음"
 
-# # 프로필 링크 스크랩을 위해 base_url 추출
-# parsed_url = urlparse(url)
-# base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+        party = "정당 정보 없음"
+        profile_link = profile.find_element(By.TAG_NAME, "a")
+        if profile_link:
+            profile_link.click()
+            browser.switch_to.window(
+                [win for win in browser.window_handles if win != cur_win][0]
+            )
+            party_tag = browser.find_elements(By.CSS_SELECTOR, "span[class='detail']")[
+                1
+            ]
+            if party_tag:
+                party = party_tag.text.strip()
 
-# for name_tag in soup.find_all('strong', class_='name'):
-#     name = name_tag.get_text(strip=True)
-#     party = '정당 정보 없음'
+        councilors.append(Councilor(name, party))
 
-#     profile_link = name_tag.find_next('a', class_='abtn1')
-#     if profile_link:
-#         profile_url = base_url + profile_link['onclick'][13:104]
-#         profile_soup = get_soup(profile_url, verify=False)
+        browser.close()
+        browser.switch_to.window(cur_win)
 
-#         party_info = profile_soup.find('span', class_='subject', string='소속정당')
-#         if party_info and (party_span := party_info.find_next('span', class_='detail')) is not None:
-#             party = party_span.get_text(strip=True)
-
-#     councilors.append(Councilor(name=name, party=party))
-
-# return returncouncilors(cid, councilors)
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_52(url, cid) -> ScrapResult:
@@ -121,27 +123,22 @@ def scrap_54(url, cid) -> ScrapResult:
 
 def scrap_55(url, cid) -> ScrapResult:
     """인천 부평구"""
-    raise Exception("현재 인천 부평구의회 사이트는 SSLV3_ALERT_HANDSHAKE_FAILURE 에러가 발생합니다")
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
 
-    # soup = get_soup(url, verify=False)
-    # councilors: list[Councilor] = []
+    for profile in browser.find_elements(By.CSS_SELECTOR, "dl[class='profile']"):
+        name_tag = profile.find_element(By.CSS_SELECTOR, "strong[class='name']")
+        name = name_tag.text.strip().split()[0].strip() if name_tag else "이름 정보 없음"
 
-    # for profile in soup.find_all('div', class_='profile'):
-    #     name_tag = profile.find('strong', class_='name')
-    #     name = name_tag.get_text(strip=True).split()[0].strip() if name_tag else '이름 정보 없음'
+        party_tag = profile.find_elements(By.TAG_NAME, "li")[2]
+        party = (
+            party_tag.find_element(By.TAG_NAME, "span").text.strip().split()[-1].strip()
+            if party_tag
+            else "정당 정보 없음"
+        )
+        councilors.append(Councilor(name, party))
 
-    #     party = '정당 정보 없음'
-    #     party_info = profile.find('strong', string='소속정당').find_next('span')
-    #     if party_info:
-    #         party = party_info.get_text(strip=True).split()[-1].strip()
-
-    #     councilors.append(Councilor(name=name, party=party))
-
-    # return returncouncilors(cid, councilors)
-    #     council_id=55,
-    #     council_type=CouncilType.LOCAL_COUNCIL,
-    #     councilors=councilors
-    # )
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_56(url, cid) -> ScrapResult:
@@ -201,4 +198,4 @@ def scrap_57(url, args) -> ScrapResult:
 
 
 if __name__ == "__main__":
-    print(scrap_52())
+    print(scrap_51("https://council.icdonggu.go.kr/korean/member/active", 51))
