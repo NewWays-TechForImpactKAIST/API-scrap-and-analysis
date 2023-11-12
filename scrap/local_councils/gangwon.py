@@ -1,10 +1,7 @@
 import os
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 
 from scrap.local_councils.basic import *
+from scrap.utils.requests import get_selenium, By
 from scrap.utils.utils import getPartyList
 
 party_keywords = getPartyList()
@@ -17,18 +14,7 @@ def scrap_107(
 ) -> ScrapResult:
     """강원도 원주시"""
     councilors: list[Councilor] = []
-
-    driver_loc = os.popen("which chromedriver").read().strip()
-    if len(driver_loc) == 0:
-        raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
-
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-
-    webdriver_service = Service(driver_loc)
-    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
-    browser.get(url)
+    browser = get_selenium(url)
 
     pfs_wrapper = browser.find_element(By.CSS_SELECTOR, "div[id='content']")
     councilor_infos = pfs_wrapper.find_elements(By.CSS_SELECTOR, "dl")

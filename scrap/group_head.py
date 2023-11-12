@@ -20,18 +20,6 @@ def scrap_group_heads(
 
     browser = get_selenium(url)
 
-    # driver_loc = os.popen("which chromedriver").read().strip()
-    # if len(driver_loc) == 0:
-    #     raise Exception("ChromeDriver를 다운로드한 후 다시 시도해주세요.")
-
-    # chrome_options = Options()
-    # chrome_options.add_argument("--headless")
-    # chrome_options.add_argument("--no-sandbox")
-
-    # webdriver_service = Service(driver_loc)
-    # browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
-    # browser.get(url)
-
     areas = [
         tag.text.strip()
         for tag in browser.find_element(

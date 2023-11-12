@@ -1,4 +1,5 @@
 from scrap.local_councils import *
+from scrap.utils.requests import get_selenium, By
 
 
 def scrap_154(
@@ -86,24 +87,36 @@ def scrap_157(
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_160(
-    url,
-    cid,
-    args: ScrapBasicArgument = None,
-) -> ScrapResult:
+def scrap_160(url, cid) -> ScrapResult:
     """전라북도 임실군"""
-    # TODO: js로 동적으로 읽어옴
-    raise NotImplementedError
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
+
+    for profile in browser.find_elements(By.CSS_SELECTOR, "div[class='col-lg-6']"):
+        name_tag = profile.find_element(By.TAG_NAME, "strong")
+        name = name_tag.text.strip() if name_tag else "이름 정보 없음"
+
+        party = "정당 정보 없음"
+        councilors.append(Councilor(name, party))
+
+    return ret_local_councilors(cid, councilors)
 
 
-def scrap_161(
-    url,
-    cid,
-    args: ScrapBasicArgument = None,
-) -> ScrapResult:
+def scrap_161(url, cid) -> ScrapResult:
     """전라북도 순창군"""
-    # TODO: js로 동적으로 읽어옴
-    raise NotImplementedError
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
+
+    for profile in browser.find_elements(By.CSS_SELECTOR, "div[class='con']"):
+        name_tag = profile.find_element(By.TAG_NAME, "strong")
+        name = name_tag.text.strip()[:-2].strip() if name_tag else "이름 정보 없음"
+
+        party_tag = profile.find_elements(By.TAG_NAME, "dd")[1]
+        party = party_tag.text.strip() if party_tag else "정당 정보 없음"
+
+        councilors.append(Councilor(name, party))
+
+    return ret_local_councilors(cid, councilors)
 
 
 def scrap_162(
@@ -226,4 +239,4 @@ def scrap_167(
 
 
 if __name__ == "__main__":
-    print(scrap_167())
+    print(scrap_161("https://www.sunchangcouncil.go.kr/main/contents/lawmaker", 161))
