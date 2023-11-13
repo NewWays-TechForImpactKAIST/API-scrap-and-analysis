@@ -55,7 +55,7 @@ def scrap_113(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
                 party = tag.find("span").get_text(strip=True)
                 break
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -82,7 +82,7 @@ def scrap_114(
                 party = tag.find("strong").get_text(strip=True)
                 break
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -107,7 +107,7 @@ def scrap_115(
                 party = tag.find("span").find_next().get_text(strip=True)
                 break
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -128,7 +128,7 @@ def scrap_116(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -154,7 +154,7 @@ def scrap_117(
                 party = tag.get_text(strip=True).replace(span_text, "").strip()
                 break
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -175,7 +175,7 @@ def scrap_118(
         party_td = profile.find("th", string="정당").find_next("td")
         party = party_td.get_text(strip=True) if party_td else "정당 정보 없음"
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -208,7 +208,7 @@ def scrap_119(
             .strip()
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -231,7 +231,7 @@ def scrap_120(
         if party_tag:
             party = party_tag.select_one("span").text.strip()
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -252,7 +252,7 @@ def scrap_121(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -273,7 +273,7 @@ def scrap_122(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -297,7 +297,7 @@ def scrap_123(
 
         party = "정당 정보 없음"
         # TODO
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 

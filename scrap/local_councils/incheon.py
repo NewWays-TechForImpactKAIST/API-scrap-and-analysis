@@ -20,7 +20,7 @@ def scrap_50(url, cid) -> ScrapResult:
         name = name_tag_str[0].strip()
         party = name_tag_str[-1][:-1].strip()
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -97,7 +97,7 @@ def scrap_53(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -116,7 +116,7 @@ def scrap_54(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -156,7 +156,7 @@ def scrap_56(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -192,7 +192,7 @@ def scrap_57(url, args) -> ScrapResult:
             else:
                 raise RuntimeError("[incheon.py] 정당 정보 파싱 불가")
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 

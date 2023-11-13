@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
+from db.types import CouncilType, Councilor
+from scrap.utils.types import ScrapResult
 from scrap.utils.requests import get_soup, get_selenium, By
 
 
@@ -31,7 +32,7 @@ def scrap_metro_1(
         if party_info and (party_span := party_info.find("li")) is not None:
             party = party_span.find_next("li").get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="seoul",
@@ -67,7 +68,7 @@ def scrap_metro_2(url="https://council.busan.go.kr/council/past02") -> ScrapResu
                 .strip()
             )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="busan",
@@ -95,7 +96,7 @@ def scrap_metro_3(url="https://council.daegu.go.kr/kr/member/active") -> ScrapRe
         if party_info:
             party = party_info.find_next("span").get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="daegu",
@@ -123,7 +124,7 @@ def scrap_metro_4(url="https://www.icouncil.go.kr/main/member/name.jsp") -> Scra
         party_tag = columns[1]
         party = party_tag.get_text(strip=True) if party_tag else "정당 정보 없음"
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="incheon",
@@ -177,7 +178,7 @@ def scrap_metro_6(
         party_tag = name_tag.find_next("dd").find_next("dd")
         party = party_tag.find("i").get_text(strip=True) if party_tag else "정당 정보 없음"
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="daejeon",
@@ -204,7 +205,7 @@ def scrap_metro_7(
         party_tag = name_tag.find_next("li").find_next("li")
         party = party_tag.get_text(strip=True) if party_tag else "정당 정보 없음"
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="ulsan",
@@ -240,7 +241,7 @@ def scrap_metro_8(
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="sejong",
@@ -276,7 +277,7 @@ def scrap_metro_9(
             party_tag = profile.find("li", class_="f15 m0")
             party = party_tag.get_text(strip=True) if party_tag else "정당 정보 없음"
 
-            councilors.append(Councilor(name=name, party=party))
+            councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="gyeonggi",
@@ -310,7 +311,7 @@ def scrap_metro_10(
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="chungbuk",
@@ -344,7 +345,7 @@ def scrap_metro_11(
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="chungnam",
@@ -376,7 +377,7 @@ def scrap_metro_12(
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="jeonbuk",
@@ -408,7 +409,7 @@ def scrap_metro_13(
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="jeonnam",
@@ -438,7 +439,7 @@ def scrap_metro_14(url="https://council.gb.go.kr/kr/member/name") -> ScrapResult
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="gyeongbuk",
@@ -474,7 +475,7 @@ def scrap_metro_15(
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="gyeongnam",
@@ -504,7 +505,7 @@ def scrap_metro_16(url="https://council.gangwon.kr/kr/member/name.do") -> ScrapR
             else "정당 정보 없음"
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="gangwon",
@@ -531,7 +532,7 @@ def scrap_metro_17(
         name = text[0].strip()
         party = text[1][:-1].strip()
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="jeju",

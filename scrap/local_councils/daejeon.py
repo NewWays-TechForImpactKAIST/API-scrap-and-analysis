@@ -29,7 +29,7 @@ def scrap_65(url, cid) -> ScrapResult:
                 ):
                     party = party_span.text
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -47,7 +47,7 @@ def scrap_66(url, cid) -> ScrapResult:
         party_info = profile.find("em", string="소속정당")
         if party_info:
             party = party_info.find_next("span").get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -71,7 +71,7 @@ def scrap_67(
         if party_info:
             party = party_info[0].get_text(strip=True).replace("정당: ", "")
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -91,7 +91,7 @@ def scrap_68(url, cid) -> ScrapResult:
         party_info = profile.find("em", string=regex_pattern)
         if party_info:
             party = party_info.find_next("span").get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -110,7 +110,7 @@ def scrap_69(url, cid) -> ScrapResult:
         party_info = profile.find("em", string=regex_pattern)
         if party_info:
             party = party_info.find_next("span").get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 

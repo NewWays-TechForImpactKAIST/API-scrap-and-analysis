@@ -38,7 +38,7 @@ def getDataFromAPI(url_format, data_uid, name_id, party_id) -> Councilor:
     result = requests.get(url).json()
     return Councilor(
         name=result[name_id] if result[name_id] else "이름 정보 없음",
-        party=result[party_id] if result[party_id] else "정당 정보 없음",
+        jdName=result[party_id] if result[party_id] else "정당 정보 없음",
     )
 
 
@@ -187,7 +187,7 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapRe
                 )
             except Exception:
                 raise RuntimeError("[basic.py] 의원 정당을 가져오는데 실패했습니다. 이유: " + str(e))
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 

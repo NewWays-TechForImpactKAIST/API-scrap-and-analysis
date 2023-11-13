@@ -5,9 +5,10 @@
 import re
 from urllib.parse import urlparse
 from typing import List
-from scrap.utils.types import Councilor, ScrapResult, ScrapBasicArgument
+
+from db.types import CouncilType, Councilor
+from scrap.utils.types import ScrapResult, ScrapBasicArgument
 from scrap.utils.requests import get_soup
-from scrap.utils.types import CouncilType
 from scrap.utils.utils import getPartyList
 
 
