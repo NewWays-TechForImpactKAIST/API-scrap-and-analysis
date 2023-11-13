@@ -11,7 +11,9 @@ from .utils import save_to_excel
 BASE_URL = "http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire"
 
 
-def fetch_data(sgId: str, sgTypecode: str, page_no: int = 1, num_of_rows: int = 10_000) -> List[dict]:
+def fetch_data(
+    sgId: str, sgTypecode: str, page_no: int = 1, num_of_rows: int = 10_000
+) -> List[dict]:
     params = {
         "serviceKey": OpenDataPortalSecrets.service_key,
         "pageNo": str(page_no),
@@ -37,6 +39,7 @@ def fetch_data(sgId: str, sgTypecode: str, page_no: int = 1, num_of_rows: int = 
 
     return data_list
 
+
 def fetch_all_data(sgIds: List[str], sgTypecodes: List[str]) -> List[dict]:
     data_list = []
     for sgId in sgIds:
@@ -44,6 +47,7 @@ def fetch_all_data(sgIds: List[str], sgTypecodes: List[str]) -> List[dict]:
             data_list.extend(fetch_data(sgId, sgTypecode))
 
     return data_list
+
 
 if __name__ == "__main__":
     sgTypecode_input = input("원하는 sgTypecode 하나를 입력하세요:\n")
