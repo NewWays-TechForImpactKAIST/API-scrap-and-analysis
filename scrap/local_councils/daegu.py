@@ -17,7 +17,7 @@ def scrap_42(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True).split()[-1].strip()
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -48,7 +48,7 @@ def scrap_43(url, cid) -> ScrapResult:
             if party_info and (party_span := party_info.find_next("td")) is not None:
                 party = party_span.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -71,7 +71,7 @@ def scrap_44(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True).split()[-1].strip()
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -92,7 +92,7 @@ def scrap_45(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -113,7 +113,7 @@ def scrap_46(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -132,7 +132,7 @@ def scrap_47(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -154,7 +154,7 @@ def scrap_48(url, cid) -> ScrapResult:
         if party_info:
             party = party_info.get_text(strip=True).split()[-1].strip()
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -189,7 +189,7 @@ def scrap_49(url, cid) -> ScrapResult:
             ):
                 party = party_span.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 

@@ -1,8 +1,11 @@
 from db.client import client
 from configurations.secrets import MongoDBSecrets
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
+
+from db.types import CouncilType, Councilor
+from scrap.utils.types import ScrapResult
 from dataclasses import asdict
 import json
+
 
 # Note: MongoDB는 데이터베이스가 존재하지 않으면 자동으로 생성합니다.
 # MongoDB 데이터베이스는 하나 이상의 컬렉션으로 구성됩니다.
@@ -69,9 +72,9 @@ if __name__ == "__main__":
         council_id="test-test",
         council_type=CouncilType.LOCAL_COUNCIL,
         councilors=[
-            Councilor(name="김철수", party="국민의힘"),
-            Councilor(name="김영희", party="Birthday Party"),
-            Councilor(name="테스트", party="테스트당"),
+            Councilor(name="김철수", jdName="국민의힘"),
+            Councilor(name="김영희", jdName="Birthday Party"),
+            Councilor(name="테스트", jdName="테스트당"),
         ],
     )
     print(save_to_database(test_record))

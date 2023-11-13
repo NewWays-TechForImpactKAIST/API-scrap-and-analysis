@@ -18,7 +18,7 @@ def scrap_154(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -39,7 +39,7 @@ def scrap_155(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -61,7 +61,7 @@ def scrap_156(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -82,7 +82,7 @@ def scrap_157(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -135,7 +135,7 @@ def scrap_162(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -162,7 +162,7 @@ def scrap_163(
             if "소속정당" in party_tag.text:
                 party = party_tag.find_next("span").get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -190,7 +190,7 @@ def scrap_164(
             party_tag.select_one("li:contains('정 당')").text.replace("정 당:", "").strip()
         )
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -212,7 +212,7 @@ def scrap_165(
         party_tag = [li for li in soup.find_all("li") if "소속정당" in li.get_text()]
         party = party_tag[0].get_text() if party_tag else "정당 정보 없음"
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -233,7 +233,7 @@ def scrap_167(
         party = "정당 정보 없음"
         # TODO
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 

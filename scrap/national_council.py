@@ -1,6 +1,7 @@
 import os
 import json
-from scrap.utils.types import CouncilType, Councilor, ScrapResult
+from db.types import CouncilType, Councilor
+from scrap.utils.types import ScrapResult
 import requests
 import xml.etree.ElementTree as ET
 
@@ -35,7 +36,7 @@ def scrap_national_council() -> ScrapResult:
 
     for row in root.iter("row"):
         councilors.append(
-            Councilor(name=row.find("HG_NM").text, party=row.find("POLY_NM").text)
+            Councilor(name=row.find("HG_NM").text, jdName=row.find("POLY_NM").text)
         )
 
     return ScrapResult(

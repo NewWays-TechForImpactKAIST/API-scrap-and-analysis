@@ -3,7 +3,7 @@
 """
 from time import sleep
 
-from scrap.utils.types import Councilor
+from db.types import Councilor
 from scrap.utils.requests import get_selenium, By
 
 
