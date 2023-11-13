@@ -14,9 +14,7 @@ args = parser.parse_args()
 if args.code:
     formatted_code = ", ".join([f"({k}) {v}" for k, v in SG_TYPECODE.items()])
     print(formatted_code)
-print(
-        "sgTypecode를 입력하면 해당 sgTypecode와 일치하는 sgId 값을 출력합니다. 여러 개를 입력하려면 ','로 구분해 주세요."
-    )
+print("sgTypecode를 입력하면 해당 sgTypecode와 일치하는 sgId 값을 출력합니다. 여러 개를 입력하려면 ','로 구분해 주세요.")
 
 url = "http://apis.data.go.kr/9760000/CommonCodeService/getCommonSgCodeList"
 params = {

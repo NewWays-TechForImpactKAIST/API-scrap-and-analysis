@@ -11,7 +11,9 @@ from .utils import save_to_excel
 BASE_URL = "http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire"
 
 
-def fetch_data(sgId: str, sgTypecode: str, page_no: int = 1, num_of_rows: int = 10_000) -> List[dict]:
+def fetch_data(
+    sgId: str, sgTypecode: str, page_no: int = 1, num_of_rows: int = 10_000
+) -> List[dict]:
     params = {
         "serviceKey": OpenDataPortalSecrets.service_key,
         "pageNo": str(page_no),
