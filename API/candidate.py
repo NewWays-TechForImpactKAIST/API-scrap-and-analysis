@@ -2,95 +2,52 @@
 # Source : https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15000908
 import os, requests, sys
 import xml.etree.ElementTree as ET
-import pandas as pd
+from typing import List
+
 from configurations.secrets import OpenDataPortalSecrets
+from .utils import save_to_excel
 
-BASE_DIR = os.path.join(os.path.dirname(__file__), os.pardir)
-base_url = "http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire"
-page_no = 1
-num_of_rows = 10000
 
-parliamentVote = [
-    # 20100602,
-    # 20140604,
-    # 20180613,
-    20220601,
-]
-sgCodes = input("Input the number of sgTypecode: ").split(",")
-data_list = []
-for sgId in parliamentVote:
-    for code in sgCodes:
-        params = {
-            "serviceKey": OpenDataPortalSecrets.service_key,
-            "pageNo": str(page_no),
-            "numOfRows": str(num_of_rows),
-            "sgId": str(sgId),
-            "sgTypecode": str(code),
-            "sggName": "",
-            "sdName": "",
-            "jdName": "",
-        }
+BASE_URL = "http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire"
 
-        response = requests.get(base_url, params=params)
-        if response.status_code != 200:
-            print(f"Error: Unable to fetch data for page {page_no}")
-            continue
 
-        root = ET.fromstring(response.content)
+def fetch_data(sgId: str, sgTypecode: str, page_no: int = 1, num_of_rows: int = 10_000) -> List[dict]:
+    params = {
+        "serviceKey": OpenDataPortalSecrets.service_key,
+        "pageNo": str(page_no),
+        "numOfRows": str(num_of_rows),
+        "sgId": str(sgId),
+        "sgTypecode": str(sgTypecode),
+        "sggName": "",
+        "sdName": "",
+        "jdName": "",
+    }
 
-        for item in root.findall(".//item"):
-            sgId = item.find("sgId").text
-            sggName = item.find("sggName").text
-            sdName = item.find("sdName").text
-            wiwName = item.find("wiwName").text
-            giho = item.find("giho").text
-            jdName = item.find("jdName").text
-            name = item.find("name").text
-            hanjaName = item.find("hanjaName").text
-            gender = item.find("gender").text
-            birthday = item.find("birthday").text
-            age = item.find("age").text
-            addr = item.find("addr").text
-            jobId = item.find("jobId").text
-            job = item.find("job").text
-            eduId = item.find("eduId").text
-            edu = item.find("edu").text
-            career1 = item.find("career1").text
-            career2 = item.find("career2").text
-            status = item.find("status").text
+    response = requests.get(BASE_URL, params=params)
+    if response.status_code != 200:
+        print(f"Error: Unable to fetch data for page {page_no}")
+        return []
 
-            data_list.append(
-                {
-                    "sgId": sgId,
-                    "sggName": sggName,
-                    "sdName": sdName,
-                    "wiwName": wiwName,
-                    "giho": giho,
-                    "jdName": jdName,
-                    "name": name,
-                    "hanjaName": hanjaName,
-                    "gender": gender,
-                    "birthday": birthday,
-                    "age": age,
-                    "addr": addr,
-                    "jobId": jobId,
-                    "job": job,
-                    "eduId": eduId,
-                    "edu": edu,
-                    "career1": career1,
-                    "career2": career2,
-                    "status": status,
-                }
-            )
+    root = ET.fromstring(response.content)
 
-# Create a DataFrame from the collected data
-df = pd.DataFrame(data_list)
+    data_list = []
+    for item in root.findall(".//item"):
+        data_entry = {child.tag: child.text for child in item}
+        data_list.append(data_entry)
 
-# Save the DataFrame to an Excel file
-directory_path = os.path.join(BASE_DIR, "output")
-if not os.path.exists(directory_path):
-    os.makedirs(directory_path)
-excel_file = "[후보][구시군의회의원].xlsx"
-df.to_excel(os.path.join(directory_path, excel_file), index=False)
+    return data_list
 
-print(f"Data has been saved to {excel_file}")
+def fetch_all_data(sgIds: List[str], sgTypecodes: List[str]) -> List[dict]:
+    data_list = []
+    for sgId in sgIds:
+        for sgTypecode in sgTypecodes:
+            data_list.extend(fetch_data(sgId, sgTypecode))
+
+    return data_list
+
+if __name__ == "__main__":
+    sgTypecode_input = input("원하는 sgTypecode 하나를 입력하세요:\n")
+    sgIds_input = input("원하는 sgId를 입력하세요. 여러 개라면 ','로 구분하여 입력하세요:\n").split(",")
+
+    data_list = fetch_all_data(sgIds_input, [sgTypecode_input])
+    save_to_excel(data_list, sgTypecode_input, is_elected=False)
