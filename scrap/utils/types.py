@@ -5,6 +5,8 @@
 from typing import Optional, List
 from dataclasses import dataclass
 
+from db.types import CouncilType, Councilor
+
 
 @dataclass
 class ScrapResult:
