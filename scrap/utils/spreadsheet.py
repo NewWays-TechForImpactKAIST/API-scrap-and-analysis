@@ -1,66 +1,140 @@
-import os, sys
+import os
+import sys
+import gspread
+import json
+
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
-import gspread
-
 from scrap.local_councils.seoul import *
+from scrap.local_councils.busan import *
+from scrap.local_councils.daegu import *
+from scrap.local_councils.incheon import *
+from scrap.local_councils.gwangju import *
+from scrap.local_councils.daejeon import *
+from scrap.local_councils.ulsan import *
+from scrap.local_councils.gyeonggi import *
+from scrap.local_councils.gangwon import *
+from scrap.local_councils.chungcheong import *
+from scrap.local_councils.jeolla import *
 from scrap.local_councils import *
+from requests.exceptions import Timeout
 
 # 구글로부터 권한을 요청할 어플리케이션 목록
 # 변경 시 token.json 삭제 후 재인증 필요
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-BASE_DIR = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
+PWD = os.path.dirname(__file__)
+BASE_DIR = os.path.join(PWD, os.pardir, os.pardir)
+JSON_PATH = os.path.join(PWD, "scrap_args.json")
+
+
 def google_authorization():
-    '''Google Sheets API 활용을 위한 인증 정보 요청
+    """Google Sheets API 활용을 위한 인증 정보 요청
     credentials.json 파일을 토대로 인증을 요청하되, token.json 파일이 존재할 경우 거기에 저장된 정보 활용
     :todo: credentials.json 파일, token.json 파일 값을 환경변수로 설정
-    :return: gspread.client.Client 인스턴스'''
+    :return: gspread.client.Client 인스턴스"""
 
     creds = None
-    token_json_path = os.path.join(BASE_DIR, '_data', 'token.json')
+    token_json_path = os.path.join(BASE_DIR, "_data", "token.json")
     # 이미 저장된 인증 정보가 있는지 확인
     if os.path.exists(token_json_path):
         creds = Credentials.from_authorized_user_file(token_json_path, SCOPES)
-    
+
     # 인증 정보가 없거나 비정상적인 경우 인증 재요청
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow= InstalledAppFlow.from_client_secrets_file(os.path.join(BASE_DIR, '_data', 'credentials.json'), SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                os.path.join(BASE_DIR, "_data", "credentials.json"), SCOPES
+            )
             creds = flow.run_local_server(port=0)
-        with open(token_json_path, 'w') as token:
+        with open(token_json_path, "w") as token:
             token.write(creds.to_json())
 
     return gspread.authorize(creds)
+
 
 def main() -> None:
     # Google Sheets API 설정
     client: gspread.client.Client = google_authorization()
 
     # 스프레드시트 열기
-    spreadsheet: gspread.Spreadsheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1Eq2x7xZCw_5ng2GdHDnpUIhhwbmOAKEl4abX09JLyuA/edit#gid=1044938838')
-    worksheet: gspread.Worksheet = spreadsheet.get_worksheet(1)  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
+    link = "https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905"  # T4I-의회목록
+    spreadsheet: gspread.Spreadsheet = client.open_by_url(link)
+    worksheet: gspread.Worksheet = spreadsheet.get_worksheet(
+        0
+    )  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
+    # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
+    euc_kr = [6, 13, 16, 31, 72, 88, 112, 134, 154, 157, 163, 165, 167, 181, 197, 202]
+    special_functions = (
+        list(range(1, 57))
+        + [62, 63, 64, 88, 103, 107]
+        + list(range(113, 127))
+        + [132, 134, 140, 142, 154, 155, 156, 157, 160, 161, 162, 163, 164, 165, 167]
+    )
+    no_information = [106, 111]
+    errors = []
+    f = open(JSON_PATH, "r")
+    args = json.load(f)
+    f.close()
 
     # 데이터 가져오기
     data: list[dict] = worksheet.get_all_records()
+    result: str = ""
 
-    print(scrap_junggu(data[1]['상세약력 링크']))
-    print(scrap_gwangjingu(data[4]['상세약력 링크']))
-    print(scrap_dongdaemungu(data[5]['상세약력 링크']))
-    for n in range (65, 75):
-        function_name = f"scrap_{n}"
-        if hasattr(sys.modules[__name__], function_name):
-            function_to_call = getattr(sys.modules[__name__], function_name)
-            print(function_to_call)
-            if n in [66, 70, 74]:
-                result = function_to_call() # 스프레드시트 링크 터짐 (울산 울주군처럼 애먼데 링크인 경우도 있다)
+    parse_error_times = 0
+    timeouts = 0
+    N = 226
+    for n in range(1, 57):
+        if n in no_information:
+            print(
+                f"| {n} | 오류: 지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다." "다시 확인해보시겠어요? 링크 : ",
+                data[n - 1]["URL"],
+            )
+            errors.append(n)
+            continue
+        encoding = "euc-kr" if n in euc_kr else "utf-8"
+        result = None
+        try:
+            council_url = data[n - 1]["URL"]
+            council_args = args.get(str(n), None)
+            if council_args is not None:
+                council_args = ScrapBasicArgument(**council_args)
+            # council_args = args[n] if n in args.keys() else None
+
+            if n in special_functions:
+                function_name = f"scrap_{n}"
+                if hasattr(sys.modules[__name__], function_name):
+                    function_to_call = getattr(sys.modules[__name__], function_name)
+                    if n < 57 or n in [62, 63, 64, 107]:
+                        result = str(function_to_call(council_url, n).councilors)
+                    else:
+                        result = str(
+                            function_to_call(
+                                council_url, n, args=council_args
+                            ).councilors
+                        )
             else:
-                result = function_to_call(data[n - 1]['상세약력 링크'])
-            print(result)
-        else:
-            print(f"함수 {function_name}를 찾을 수 없습니다.")
+                result = str(
+                    scrap_basic(council_url, n, council_args, encoding).councilors
+                )
+            if "정보 없음" in result:
+                print("정보 없음이 포함되어 있습니다.")
+                parse_error_times += 1
+                errors.append(n)
+            print(f"| {n} | {result}")
+        except Timeout:
+            print(f"| {n} | 오류: Request to {council_url} timed out.")
+            timeouts += 1
+        except Exception as e:
+            print(f"| {n} | 오류: {e}")
+            errors.append(n)
+            continue  # 에러가 발생하면 다음 반복으로 넘어감
+    print(
+        f"| 총 실행 횟수: {N} | 에러: {errors}, 총 {len(errors)}회 | 그 중 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |"
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
