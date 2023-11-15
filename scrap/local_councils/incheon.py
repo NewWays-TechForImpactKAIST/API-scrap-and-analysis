@@ -2,15 +2,15 @@
 """
 from scrap.utils.requests import get_selenium, By
 from scrap.local_councils.basic import (
-    get_profiles,
-    get_name,
+    getprofiles,
+    getname,
     find,
     extract_party,
 )
 from scrap.local_councils import *
 
 
-def scrap_50(url, cid) -> ScrapResult:
+def scrap_50(url, cid, args: ArgsType = None) -> ScrapResult:
     """인천 중구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -25,7 +25,7 @@ def scrap_50(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_51(url, cid) -> ScrapResult:
+def scrap_51(url, cid, args: ArgsType = None) -> ScrapResult:
     """인천 동구"""
     browser = get_selenium(url)
     councilors: list[Councilor] = []
@@ -57,7 +57,7 @@ def scrap_51(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_52(url, cid) -> ScrapResult:
+def scrap_52(url, cid, args: ArgsType = None) -> ScrapResult:
     """인천 미추홀구"""
 
     councilors: list[Councilor] = []
@@ -81,7 +81,7 @@ def scrap_52(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_53(url, cid) -> ScrapResult:
+def scrap_53(url, cid, args: ArgsType = None) -> ScrapResult:
     """인천 연수구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -102,7 +102,7 @@ def scrap_53(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_54(url, cid) -> ScrapResult:
+def scrap_54(url, cid, args: ArgsType = None) -> ScrapResult:
     """인천 남동구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -121,7 +121,7 @@ def scrap_54(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_55(url, cid) -> ScrapResult:
+def scrap_55(url, cid, args: ArgsType = None) -> ScrapResult:
     """인천 부평구"""
     browser = get_selenium(url)
     councilors: list[Councilor] = []
@@ -141,7 +141,7 @@ def scrap_55(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_56(url, cid) -> ScrapResult:
+def scrap_56(url, cid, args: ArgsType = None) -> ScrapResult:
     """인천 계양구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -167,13 +167,13 @@ def scrap_57(url, args) -> ScrapResult:
     councilors: list[Councilor] = []
     cid = 57
 
-    profiles = get_profiles(
+    profiles = getprofiles(
         soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
     print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
-        name = get_name(
+        name = getname(
             profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls
         )
 

@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from typing import List
 
 from db.types import CouncilType, Councilor
-from scrap.utils.types import ScrapResult, ScrapBasicArgument
+from scrap.utils.types import ScrapResult, ScrapBasicArgument, ArgsType
 from scrap.utils.requests import get_soup
 from scrap.utils.utils import getPartyList
 

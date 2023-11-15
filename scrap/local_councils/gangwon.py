@@ -10,7 +10,7 @@ party_keywords.append("무소속")
 
 def scrap_107(
     url,
-    cid,
+    cid, args: ArgsType = None
 ) -> ScrapResult:
     """강원도 원주시"""
     councilors: list[Councilor] = []
@@ -27,6 +27,7 @@ def scrap_107(
                 if keyword in name:
                     name = name.replace(keyword, "").strip()
         party_tag = info.find_elements(By.TAG_NAME, "dd")
+        party = ""
         for tag in party_tag:
             party = tag.text.split(" ")[-1]
             if party in party_keywords:
@@ -39,7 +40,7 @@ def scrap_107(
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_113(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
+def scrap_113(url, cid, args: ArgsType = None) -> ScrapResult:
     """강원도 속초시"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -63,7 +64,7 @@ def scrap_113(url, cid, args: ScrapBasicArgument = None) -> ScrapResult:
 def scrap_114(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 고성군"""
     soup = get_soup(url, verify=False)
@@ -90,7 +91,7 @@ def scrap_114(
 def scrap_115(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 양양군"""
     soup = get_soup(url, verify=False)
@@ -115,7 +116,7 @@ def scrap_115(
 def scrap_116(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 인제군"""
     soup = get_soup(url, verify=False)
@@ -136,7 +137,7 @@ def scrap_116(
 def scrap_117(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 홍천군"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
@@ -162,7 +163,7 @@ def scrap_117(
 def scrap_118(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 횡성군"""
     soup = get_soup(url, verify=False)
@@ -179,11 +180,10 @@ def scrap_118(
 
     return ret_local_councilors(cid, councilors)
 
-
 def scrap_119(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 영월군"""
     base_url = "https://council.yw.go.kr"
@@ -216,7 +216,7 @@ def scrap_119(
 def scrap_120(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 평창군"""
     soup = get_soup(url, verify=False)
@@ -239,7 +239,7 @@ def scrap_120(
 def scrap_121(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 화천군"""
     soup = get_soup(url, verify=False)
@@ -260,7 +260,7 @@ def scrap_121(
 def scrap_122(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 양구군"""
     soup = get_soup(url, verify=False)
@@ -281,7 +281,7 @@ def scrap_122(
 def scrap_123(
     url,
     cid,
-    args: ScrapBasicArgument = None,
+    args: ArgsType = None,
 ) -> ScrapResult:
     """강원도 철원군"""
     soup = get_soup(url, verify=False)
@@ -300,7 +300,3 @@ def scrap_123(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
-
-
-if __name__ == "__main__":
-    print(scrap_123())

@@ -11,7 +11,7 @@ party_keywords = getPartyList()
 party_keywords.append("무소속")
 
 
-def scrap_62(url, cid) -> ScrapResult:
+def scrap_62(url, cid, args: ArgsType = None) -> ScrapResult:
     """광주 서구"""
     councilors: list[Councilor] = []
 
@@ -40,6 +40,7 @@ def scrap_62(url, cid) -> ScrapResult:
         )
 
         party_tag = browser.find_elements(By.TAG_NAME, "dd")
+        party = ""
         for tag in party_tag:
             party = tag.text.strip()
             if party in party_keywords:
@@ -55,7 +56,7 @@ def scrap_62(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_63(url, cid) -> ScrapResult:
+def scrap_63(url, cid, args: ArgsType = None) -> ScrapResult:
     """광주 북구"""
     councilors: list[Councilor] = []
 
@@ -79,6 +80,7 @@ def scrap_63(url, cid) -> ScrapResult:
         )
         name = name_tag.text.strip() if name_tag else "이름 정보 없음"
         party_tag = info.find_elements(By.TAG_NAME, "dd")
+        party = ""
         for tag in party_tag:
             party = tag.text.strip()
             if party in party_keywords:
@@ -91,7 +93,7 @@ def scrap_63(url, cid) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_64(url, cid) -> ScrapResult:
+def scrap_64(url, cid, args: ArgsType = None) -> ScrapResult:
     """광주 광산구"""
     councilors: list[Councilor] = []
 
@@ -118,6 +120,7 @@ def scrap_64(url, cid) -> ScrapResult:
                 if keyword in name:
                     name = name.replace(keyword, "").strip()
         party_tag = info.find_elements(By.TAG_NAME, "dd")
+        party = ""
         for tag in party_tag:
             party = tag.text.replace(" ", "")
             if party in party_keywords:

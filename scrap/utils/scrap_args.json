@@ -135,7 +135,7 @@
         "pf_cls": "profile",
         "name_elt": "em",
         "name_cls": "name",
-        "pty_elt": "em"
+        "pty_elt": "span"
     },
     "77": {
         "pf_elt": "dl",
@@ -296,8 +296,8 @@
     },
     "97": {
         "pf_elt": "li",
-        "pf_memlistelt": "ul",
-        "pf_memlistcls": "memberList",
+        "pf_memlistelt": "class",
+        "pf_memlistcls": "nameMember",
         "name_elt": "strong",
         "pty_elt": "tr",
         "pty_wrapelt": "a"
@@ -607,5 +607,24 @@
         "name_cls": "name",
         "pty_elt": "span",
         "pty_cls": "itemContent"
+    },
+    "171": {
+        "pf_elt": "tr",
+        "pf_memlistelt": "tbody",
+        "name_elt": "td",
+        "name_cls": "AlignCenter",
+        "pty_elt": "p",
+        "pty_cls": "pro_text",
+        "pty_wrapelt": "a",
+        "pty_wrapcls": "cont_btn"
+    },
+    "173": {
+        "pf_elt": "li",
+        "pf_cls": "item_box",
+        "pf_memlistelt": "div",
+        "pf_memlistcls": "submem",
+        "name_elt": "li",
+        "name_cls": "name",
+        "pty_elt": "dl"
     }
 }

@@ -115,7 +115,3 @@ def scrap_69(url, cid) -> ScrapResult:
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
-
-
-if __name__ == "__main__":
-    print(scrap_69())

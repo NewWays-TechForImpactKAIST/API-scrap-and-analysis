@@ -1,14 +1,50 @@
 """경기도를 스크랩.
 """
+from scrap.utils.requests import get_selenium, By
 from scrap.local_councils import *
 from scrap.local_councils.basic import (
     find,
     regex_pattern,
-    find_all,
+    findall,
     extract_party,
-    get_name,
-    get_party_easy,
+    getname,
+    getpty_easy,
 )
+
+party_keywords = getPartyList()
+party_keywords.append("무소속")
+
+def scrap_76(url, cid, args: ArgsType) -> ScrapResult:
+    """경기도 성남시"""
+    assert args is not None
+    assert args.pf_elt is not None
+    assert args.pf_cls is not None
+    assert args.name_elt is not None
+    assert args.name_cls is not None
+    assert args.pty_elt is not None
+    assert args.pty_cls is not None
+
+    councilors: list[Councilor] = []
+
+    browser = get_selenium(url)
+
+    councilor_infos = browser.find_elements(By.CSS_SELECTOR, args.pf_elt + "[class*='" + args.pf_cls + "']")
+
+    for info in councilor_infos:
+        name_tag = info.find_element(By.CSS_SELECTOR, args.name_elt + "[class='" + args.name_cls + "']")
+        name = name_tag.text.strip() if name_tag else "이름 정보 없음"
+        party_tag = info.find_elements(By.TAG_NAME, args.pty_elt)
+        party = ""
+        for tag in party_tag:
+            party = tag.text.strip()
+            if party in party_keywords:
+                break
+        if party not in party_keywords:
+            party = "정당 정보 없음"
+
+        councilors.append(Councilor(name, party))
+
+    return ret_local_councilors(cid, councilors)
 
 
 def get_profiles_88_103(soup, element, class_, memberlistelement, memberlistclass_):
@@ -30,7 +66,7 @@ def get_party_88(profile, element, class_, wrapper_element, wrapper_class_, url)
         profile = get_soup(profile_url, verify=False, encoding="euc-kr")
     party_pulp_list = list(
         filter(
-            lambda x: regex_pattern.search(str(x)), find_all(profile, element, class_)
+            lambda x: regex_pattern.search(str(x)), findall(profile, element, class_)
         )
     )
     if party_pulp_list == []:
@@ -56,7 +92,7 @@ def scrap_88(url, cid, args: ScrapBasicArgument) -> ScrapResult:
     print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
-        name = get_name(
+        name = getname(
             profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls
         )
         party = ""
@@ -70,7 +106,7 @@ def scrap_88(url, cid, args: ScrapBasicArgument) -> ScrapResult:
                 url,
             )
         except Exception:
-            party = get_party_easy(
+            party = getpty_easy(
                 profile, args.pty_wrapelt, args.pty_wrapcls, args.pty_wraptxt, url
             )
 
@@ -89,7 +125,7 @@ def get_party_103(profile, element, class_, wrapper_element, wrapper_class_, url
         profile = get_soup(profile_url, verify=False)
     party_pulp_list = list(
         filter(
-            lambda x: regex_pattern.search(str(x)), find_all(profile, element, class_)
+            lambda x: regex_pattern.search(str(x)), findall(profile, element, class_)
         )
     )
     if party_pulp_list == []:
@@ -115,7 +151,7 @@ def scrap_103(url, cid, args: ScrapBasicArgument) -> ScrapResult:
     print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
-        name = get_name(
+        name = getname(
             profile, args.name_elt, args.name_cls, args.name_wrapelt, args.name_wrapcls
         )
         party = get_party_103(
