@@ -3,7 +3,9 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 
 
-def scrap_cheongdo(url="https://www.cheongdocl.go.kr/kr/member/active.do") -> ScrapResult:
+def scrap_cheongdo(
+    url="https://www.cheongdocl.go.kr/kr/member/active.do",
+) -> ScrapResult:
     """
     Scrap councilors’ details from Yongsan-gu District Council of Seoul page.
 
