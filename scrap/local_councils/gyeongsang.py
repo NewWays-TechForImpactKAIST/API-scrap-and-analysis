@@ -1,7 +1,15 @@
 import requests
 from scrap.local_councils import *
 from scrap.utils.requests import get_selenium, By
-from scrap.local_councils.basic import getprofiles, getname, extract_party, find, findall, regex_pattern
+from scrap.local_councils.basic import (
+    getprofiles,
+    getname,
+    extract_party,
+    find,
+    findall,
+    regex_pattern,
+)
+
 
 def scrap_186(
     url,
@@ -25,6 +33,7 @@ def scrap_186(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_188(
     url,
     cid,
@@ -45,6 +54,7 @@ def scrap_188(
             councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_189(
     url,
@@ -68,6 +78,7 @@ def scrap_189(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_190(
     url,
     cid,
@@ -87,6 +98,7 @@ def scrap_190(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_191(
     url,
@@ -110,6 +122,7 @@ def scrap_191(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_194(
     url,
     cid,
@@ -129,6 +142,7 @@ def scrap_194(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_195(
     url,
@@ -151,6 +165,7 @@ def scrap_195(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_196(
     url,
     cid,
@@ -171,6 +186,7 @@ def scrap_196(
             councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_198(
     url,
@@ -193,6 +209,7 @@ def scrap_198(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_199(
     url,
     cid,
@@ -213,6 +230,7 @@ def scrap_199(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_201(
     url,
@@ -241,6 +259,7 @@ def scrap_201(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_203(
     url,
     cid,
@@ -261,6 +280,7 @@ def scrap_203(
             councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_206(
     url,
@@ -289,6 +309,7 @@ def scrap_206(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_208(
     url,
     cid,
@@ -309,6 +330,7 @@ def scrap_208(
             councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_209(
     url,
@@ -332,6 +354,7 @@ def scrap_209(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_210(
     url,
     cid,
@@ -351,6 +374,7 @@ def scrap_210(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_212(
     url,
@@ -372,6 +396,7 @@ def scrap_212(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_213(
     url,
@@ -422,6 +447,7 @@ def scrap_214(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_215(
     url,
     cid,
@@ -445,6 +471,7 @@ def scrap_215(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_216(
     url,
@@ -473,6 +500,7 @@ def scrap_216(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_217(
     url,
     cid,
@@ -494,6 +522,7 @@ def scrap_217(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_218(
     url,
@@ -520,6 +549,7 @@ def scrap_218(
             councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_219(
     url,
@@ -548,6 +578,7 @@ def scrap_219(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_220(
     url,
     cid,
@@ -567,6 +598,7 @@ def scrap_220(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_222(
     url,
@@ -588,6 +620,7 @@ def scrap_222(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_223(
     url,
     cid,
@@ -608,6 +641,7 @@ def scrap_223(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_224(
     url,
@@ -635,6 +669,7 @@ def scrap_224(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_226(
     url,

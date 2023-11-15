@@ -1,7 +1,15 @@
 import requests
 from scrap.local_councils import *
 from scrap.utils.requests import get_selenium, By
-from scrap.local_councils.basic import getprofiles, getname, extract_party, find, findall, regex_pattern
+from scrap.local_councils.basic import (
+    getprofiles,
+    getname,
+    extract_party,
+    find,
+    findall,
+    regex_pattern,
+)
+
 
 def scrap_154(
     url,
@@ -54,7 +62,7 @@ def scrap_156(
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
     memberlist = soup.find("div", class_="card-member")
-    
+
     for profile in findall(memberlist, "li"):
         name_tag = profile.find("div", class_="name")
         name = name_tag.get_text(strip=True).split()[0] if name_tag else "이름 정보 없음"
@@ -238,6 +246,7 @@ def scrap_167(
 
     return ret_local_councilors(cid, councilors)
 
+
 # def goto_profilesite_171(profile, wrapper_element, wrapper_class_, wrapper_txt, url):
 #     # 프로필보기 링크 가져오기
 #     profile_link = find(profile, wrapper_element, class_=wrapper_class_)
@@ -325,6 +334,7 @@ def scrap_167(
 
 #     return ret_local_councilors(cid, councilors)
 
+
 def scrap_177(
     url,
     cid,
@@ -352,6 +362,7 @@ def scrap_177(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_178(
     url,
     cid,
@@ -368,6 +379,7 @@ def scrap_178(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_179(
     url,
@@ -389,6 +401,7 @@ def scrap_179(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_182(
     url,
@@ -416,6 +429,7 @@ def scrap_182(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_183(
     url,
     cid,
@@ -441,6 +455,7 @@ def scrap_183(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_184(
     url,

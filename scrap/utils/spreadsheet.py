@@ -67,16 +67,55 @@ def main() -> None:
         0
     )  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
     # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
-    euc_kr = [6, 13, 16, 31, 72, 88, 112, 134, 154, 157, 163, 165, 167, 176, 181, 197, 202, 222]
+    euc_kr = [
+        6,
+        13,
+        16,
+        31,
+        72,
+        88,
+        112,
+        134,
+        154,
+        157,
+        163,
+        165,
+        167,
+        176,
+        181,
+        197,
+        202,
+        222,
+    ]
     special_functions = (
         list(range(1, 57))
         + [62, 63, 64, 88, 97, 103, 107]
         + list(range(113, 127))
-        + [132, 134, 140, 142, 154, 155, 156, 157, 160, 161, 162, 163, 164, 165,
-           167]
-            + list(range(177, 180))
-           + [182, 183, 184, 186, 188, 189, 190, 191, 194, 195, 196, 198, 199, 201, 203, 206, 208, 209, 210]
-           + list(range(212, 221)) + [222, 223, 224, 226]
+        + [132, 134, 140, 142, 154, 155, 156, 157, 160, 161, 162, 163, 164, 165, 167]
+        + list(range(177, 180))
+        + [
+            182,
+            183,
+            184,
+            186,
+            188,
+            189,
+            190,
+            191,
+            194,
+            195,
+            196,
+            198,
+            199,
+            201,
+            203,
+            206,
+            208,
+            209,
+            210,
+        ]
+        + list(range(212, 221))
+        + [222, 223, 224, 226]
     )
     selenium_basic = [76, 78, 101, 169, 173, 177]
     no_information = [18, 29, 106, 111, 172, 181, 185, 187, 197, 200, 204, 207]
@@ -93,16 +132,15 @@ def main() -> None:
     parse_error_times = 0
     timeouts = 0
     N = 226
-    for n in [189]:# range(1, N + 1):
+    for n in [189]:  # range(1, N + 1):
         if n in no_information + error_unsolved:
-            error_msg = "지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다. \
-            다시 확인해보시겠어요?" \
-            if n in no_information \
-            else "함수 구현에 실패한 웹페이지입니다."
-            print(
-                f"| {n} | 오류: ", error_msg, " 링크 : ",
-                data[n - 1]["URL"]
+            error_msg = (
+                "지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다. \
+            다시 확인해보시겠어요?"
+                if n in no_information
+                else "함수 구현에 실패한 웹페이지입니다."
             )
+            print(f"| {n} | 오류: ", error_msg, " 링크 : ", data[n - 1]["URL"])
             errors.append(n)
             continue
         encoding = "euc-kr" if n in euc_kr else "utf-8"
@@ -117,14 +155,18 @@ def main() -> None:
             if n in special_functions:
                 function_name = f"scrap_{n}"
                 if hasattr(sys.modules[__name__], function_name):
-                    function_to_call = getattr(sys.modules[__name__], function_name) # type: ignore
-                    result = str(function_to_call(council_url, n, args=council_args).councilors)
+                    function_to_call = getattr(sys.modules[__name__], function_name)  # type: ignore
+                    result = str(
+                        function_to_call(council_url, n, args=council_args).councilors
+                    )
                 else:
                     print("[API/spreadsheet] Error : No function found")
             elif n in selenium_basic:
                 result = str(sel_scrap_basic(council_url, n, council_args).councilors)
             else:
-                result = str(scrap_basic(council_url, n, council_args, encoding).councilors)
+                result = str(
+                    scrap_basic(council_url, n, council_args, encoding).councilors
+                )
             if "정보 없음" in result:
                 print("정보 없음이 포함되어 있습니다.")
                 parse_error_times += 1

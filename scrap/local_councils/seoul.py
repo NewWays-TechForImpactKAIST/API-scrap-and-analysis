@@ -6,8 +6,7 @@ from urllib.parse import urlparse
 from scrap.local_councils import *
 
 
-def scrap_1(url, cid, args: ArgsType = None
-) -> ScrapResult:
+def scrap_1(url, cid, args: ArgsType = None) -> ScrapResult:
     """서울 종로구"""
     soup = get_soup(url, verify=False)
     councilors: list[Councilor] = []
@@ -277,9 +276,7 @@ def scrap_12(url, cid, args: ArgsType = None) -> ScrapResult:
     return ret_local_councilors(cid, councilors)
 
 
-def scrap_13(
-    url, cid, args: ArgsType = None
-) -> ScrapResult:
+def scrap_13(url, cid, args: ArgsType = None) -> ScrapResult:
     """서울 서대문구"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: list[Councilor] = []

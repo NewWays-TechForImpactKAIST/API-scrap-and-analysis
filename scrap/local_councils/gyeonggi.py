@@ -14,6 +14,7 @@ from scrap.local_councils.basic import (
 party_keywords = getPartyList()
 party_keywords.append("무소속")
 
+
 def scrap_76(url, cid, args: ArgsType) -> ScrapResult:
     """경기도 성남시"""
     assert args is not None
@@ -28,10 +29,14 @@ def scrap_76(url, cid, args: ArgsType) -> ScrapResult:
 
     browser = get_selenium(url)
 
-    councilor_infos = browser.find_elements(By.CSS_SELECTOR, args.pf_elt + "[class*='" + args.pf_cls + "']")
+    councilor_infos = browser.find_elements(
+        By.CSS_SELECTOR, args.pf_elt + "[class*='" + args.pf_cls + "']"
+    )
 
     for info in councilor_infos:
-        name_tag = info.find_element(By.CSS_SELECTOR, args.name_elt + "[class='" + args.name_cls + "']")
+        name_tag = info.find_element(
+            By.CSS_SELECTOR, args.name_elt + "[class='" + args.name_cls + "']"
+        )
         name = name_tag.text.strip() if name_tag else "이름 정보 없음"
         party_tag = info.find_elements(By.TAG_NAME, args.pty_elt)
         party = ""

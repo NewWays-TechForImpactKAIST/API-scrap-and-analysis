@@ -9,10 +9,7 @@ party_keywords = getPartyList()
 party_keywords.append("무소속")
 
 
-def scrap_107(
-    url,
-    cid, args: ArgsType = None
-) -> ScrapResult:
+def scrap_107(url, cid, args: ArgsType = None) -> ScrapResult:
     """강원도 원주시"""
     councilors: list[Councilor] = []
     browser = get_selenium(url)
@@ -180,6 +177,7 @@ def scrap_118(
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_119(
     url,

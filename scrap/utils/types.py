@@ -80,4 +80,5 @@ class ScrapBasicArgument:
         self.pty_wrapcls = pty_wrapcls
         self.pty_wraptxt = pty_wraptxt
 
+
 ArgsType = Optional[ScrapBasicArgument]
