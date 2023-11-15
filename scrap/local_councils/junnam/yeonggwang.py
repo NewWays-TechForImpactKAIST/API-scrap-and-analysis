@@ -5,20 +5,27 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 import re
 
-def scrap_yeonggwang(url = 'https://www.ygcouncil.go.kr/bbs/content.php?co_id=councilors_curr#aside') -> ScrapResult:
-    '''무안 페이지에서 의원 상세약력 스크랩
+
+def scrap_yeonggwang(
+    url="https://www.ygcouncil.go.kr/bbs/content.php?co_id=councilors_curr#aside",
+) -> ScrapResult:
+    """무안 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
     :return: 의원들의 이름과 정당 데이터를 담은 ScrapResult 객체
-    '''
-    
+    """
+
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
-    mlist = soup.find_all('div', class_='councilors_curr2_wrap')[0]
+    mlist = soup.find_all("div", class_="councilors_curr2_wrap")[0]
 
-    for profile in mlist.find_all('div',class_="subcon_body_txt", recursive=False):
-        info = profile.find('div', class_='ygmember_txt')
-        name = info.find("h4").get_text(strip=True).split(" ")[0] if info.find("h4").get_text(strip=True) else "이름 정보 없음"
+    for profile in mlist.find_all("div", class_="subcon_body_txt", recursive=False):
+        info = profile.find("div", class_="ygmember_txt")
+        name = (
+            info.find("h4").get_text(strip=True).split(" ")[0]
+            if info.find("h4").get_text(strip=True)
+            else "이름 정보 없음"
+        )
 
         party_dd = info.find("p", class_="party_highlight")
         party = "정당 정보 없음"
@@ -29,8 +36,9 @@ def scrap_yeonggwang(url = 'https://www.ygcouncil.go.kr/bbs/content.php?co_id=co
     return ScrapResult(
         council_id="yeonggwang",
         council_type=CouncilType.LOCAL_COUNCIL,
-        councilors=councilors
+        councilors=councilors,
     )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     print(scrap_yeonggwang())

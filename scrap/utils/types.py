@@ -5,11 +5,14 @@
 from typing import Optional, List
 from dataclasses import dataclass
 from enum import Enum
+
+
 class CouncilType(str, Enum):
     """
     의회의 종류를 나타내는 열거형입니다.
     """
-    LOCAL_COUNCIL = "local_council" 
+
+    LOCAL_COUNCIL = "local_council"
     """
     기초의회
     """
@@ -17,11 +20,14 @@ class CouncilType(str, Enum):
     """
     광역의회
     """
+
     def __str__(self):
         """
         JSON으로 직렬화하기 위해 문자열로 변환하는 함수를 오버라이드합니다.
         """
         return str(self.value)
+
+
 from db.types import CouncilType, Councilor
 
 

@@ -3,7 +3,9 @@ from scrap.utils.types import CouncilType, Councilor, ScrapResult
 from scrap.utils.requests import get_soup
 
 
-def scrap_uiryeong(url="https://www.uiryeong.go.kr/board/list.uiryeong?boardId=BBS_0000169&menuCd=DOM_000000502001000000&contentsSid=1040") -> ScrapResult:
+def scrap_uiryeong(
+    url="https://www.uiryeong.go.kr/board/list.uiryeong?boardId=BBS_0000169&menuCd=DOM_000000502001000000&contentsSid=1040",
+) -> ScrapResult:
     """
     Scrap councilors’ details from Yongsan-gu District Council of Seoul page.
 
