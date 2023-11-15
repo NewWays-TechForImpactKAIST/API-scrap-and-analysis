@@ -1,4 +1,6 @@
 from scrap.local_councils import *
+from scrap.utils.types import CouncilType, Councilor, ScrapResult
+from scrap.utils.requests import get_soup
 
 
 def scrap_65(url, cid) -> ScrapResult:

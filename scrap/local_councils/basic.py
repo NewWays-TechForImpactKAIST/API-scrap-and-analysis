@@ -2,6 +2,8 @@ from scrap.local_councils import *
 import re
 import requests
 import copy
+from scrap.utils.utils import getPartyList
+from scrap.utils.types import ScrapBasicArgument
 
 regex_pattern = re.compile(r"정\s*\S*\s*당", re.IGNORECASE)  # Case-insensitive
 party_keywords = getPartyList()

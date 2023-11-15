@@ -52,19 +52,19 @@ class ScrapBasicArgument:
 
     def __init__(
         self,
-        pf_elt: str | None = None,
-        pf_cls: str | None = None,
-        pf_memlistelt: str | None = None,
-        pf_memlistcls: str | None = None,
-        name_elt: str | None = None,
-        name_cls: str | None = None,
-        name_wrapelt: str | None = None,
-        name_wrapcls: str | None = None,
-        pty_elt: str | None = None,
-        pty_cls: str | None = None,
-        pty_wrapelt: str | None = None,
-        pty_wrapcls: str | None = None,
-        pty_wraptxt: str | None = None,
+        pf_elt: str = None,
+        pf_cls: str = None,
+        pf_memlistelt: str = None,
+        pf_memlistcls: str  = None,
+        name_elt: str  = None,
+        name_cls: str = None,
+        name_wrapelt: str = None,
+        name_wrapcls: str = None,
+        pty_elt: str  = None,
+        pty_cls: str  = None,
+        pty_wrapelt: str  = None,
+        pty_wrapcls: str = None,
+        pty_wraptxt: str  = None,
     ):
         """
         ScrapBasicArgument 클래스의 생성자입니다.
