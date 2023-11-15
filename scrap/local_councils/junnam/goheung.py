@@ -30,7 +30,7 @@ def scrap_goheung(url="https://council.gc.go.kr/kr/member/active.do") -> ScrapRe
         party_dd = li.find_all("dd")[1]
         if party_dd:
             party = party_dd.get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="damyang",

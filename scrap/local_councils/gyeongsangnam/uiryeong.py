@@ -26,7 +26,7 @@ def scrap_uiryeong(
         if party_info:
             party = party_info.get_text(strip=True)
 
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="goseong",

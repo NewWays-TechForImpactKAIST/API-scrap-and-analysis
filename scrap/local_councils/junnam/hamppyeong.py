@@ -35,7 +35,7 @@ def scrap_hamppyeong(
         party = "정당 정보 없음"
         if party_dd:
             party = party_dd.get_text(strip=True).replace("소속정당 : ", "")
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="yeonggwang",

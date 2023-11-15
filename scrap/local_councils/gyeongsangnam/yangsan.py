@@ -23,7 +23,7 @@ def scrap_yangsan(url="https://www.yscouncil.go.kr/kr/member/active") -> ScrapRe
         party_info = profile.find("strong", string="정   당 : ")
         if party_info:
             party = party_info.find_next("span").get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="yangsan",

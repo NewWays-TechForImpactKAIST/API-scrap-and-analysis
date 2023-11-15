@@ -28,7 +28,7 @@ def scrap_gyeongju(
             name = result["name"] if result["name"] else "이름 정보 없음"
             party = result["party_nm"] if result["party_nm"] else "정당 정보 없음"
 
-            councilors.append(Councilor(name=name, party=party))
+            councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="gyeongju",

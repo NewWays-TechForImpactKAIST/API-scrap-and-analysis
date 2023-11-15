@@ -25,7 +25,7 @@ def scrap_gimcheon(url="https://council.gc.go.kr/kr/member/active.do") -> ScrapR
         party_info = profile.find("span", string="소속정당 : ")
         if party_info:
             party = party_info.find_next("span").get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="gimcheon",

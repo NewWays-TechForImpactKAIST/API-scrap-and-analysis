@@ -29,7 +29,7 @@ def scrap_miryang(
         )
         if party_info:
             party = party_info
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="miryang",
