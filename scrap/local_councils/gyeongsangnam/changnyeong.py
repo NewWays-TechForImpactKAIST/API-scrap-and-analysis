@@ -30,7 +30,7 @@ def scrap_changnyeong(url="https://www.cngc.go.kr/kr/member/active") -> ScrapRes
             party_dd = info[2].get_text(strip=True).replace("정 당 :", "")
             if party_dd:
                 party = party_dd
-            councilors.append(Councilor(name=name, party=party))
+            councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="geoje",

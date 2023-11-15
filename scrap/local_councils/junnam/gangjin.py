@@ -30,7 +30,7 @@ def scrap_gangjin(url="https://www.gangjincl.go.kr/index.do?PID=010") -> ScrapRe
         party_dd = li.find("dd")
         if party_dd:
             party = party_dd.get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="damyang",

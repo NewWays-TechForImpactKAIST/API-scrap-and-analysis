@@ -25,7 +25,7 @@ def scrap_jinju(url="https://www.jinjucl.com/kr/member/name.do") -> ScrapResult:
         party_info = profile.find("em", string="소속정당")
         if party_info:
             party = party_info.find_next("span").find_next("span").get_text(strip=True)
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="jinju",

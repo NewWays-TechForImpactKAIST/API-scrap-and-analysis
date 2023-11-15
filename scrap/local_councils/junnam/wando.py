@@ -22,7 +22,7 @@ def scrap_wando(
     for profile in result_json["list"]:
         name = profile["cmNm"]
         party = profile["mpParty"]
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="wando",

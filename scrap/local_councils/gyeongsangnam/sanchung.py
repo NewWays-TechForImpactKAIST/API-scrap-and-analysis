@@ -32,7 +32,7 @@ def scrap_sanchung(
         party_dd = info[3].get_text(strip=True).replace("소속정당", "")
         if party_dd:
             party = party_dd
-        councilors.append(Councilor(name=name, party=party))
+        councilors.append(Councilor(name=name, jdName=party))
 
     return ScrapResult(
         council_id="hapchun",
