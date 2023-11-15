@@ -1,5 +1,6 @@
 import os
 
+from scrap.local_councils import *
 from scrap.local_councils.basic import *
 from scrap.utils.requests import get_selenium, By
 from scrap.utils.utils import getPartyList
@@ -171,7 +172,7 @@ def scrap_118(
 
     for profile in soup.find_all("div", class_="person_info"):
         name_td = profile.find("th", string="성함/직위").find_next("td")
-        name = name_td.get_text(strip=True) if name_td else "이름 정보 없음"
+        name = name_td.get_text(strip=True).split()[0] if name_td else "이름 정보 없음"
 
         party_td = profile.find("th", string="정당").find_next("td")
         party = party_td.get_text(strip=True) if party_td else "정당 정보 없음"
@@ -290,7 +291,7 @@ def scrap_123(
     for profile in soup.find_all("div", class_="img_text_box"):
         name_li = profile.select_one("ul.bu li:contains('성명')")
         name = (
-            name_li.get_text(strip=True).replace("성명", "").strip()
+            name_li.get_text(strip=True).replace("성명", "").strip().split()[0]
             if name_li
             else "이름 정보 없음"
         )

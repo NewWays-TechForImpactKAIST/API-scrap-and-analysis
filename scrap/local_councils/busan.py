@@ -239,7 +239,7 @@ def scrap_36(url, cid, args: ArgsType = None) -> ScrapResult:
             party = "정당 정보 없음"
             party_info = name_tag.find_next("span", string="소속당  : ")
             if party_info:
-                party = party_info.parent.get_text(strip=True)[7:].strip()
+                party = party_info.parent.get_text(strip=True)[6:].strip()
 
             councilors.append(Councilor(name=name, jdName=party))
 
@@ -284,7 +284,7 @@ def scrap_38(url, cid, args: ArgsType = None) -> ScrapResult:
         party = "정당 정보 없음"
         party_info = profile.find("span", class_="bold", string="정당 : ")
         if party_info:
-            party = party_info.parent.get_text(strip=True)[5:].strip()
+            party = party_info.parent.get_text(strip=True)[4:].strip()
 
         councilors.append(Councilor(name=name, jdName=party))
 

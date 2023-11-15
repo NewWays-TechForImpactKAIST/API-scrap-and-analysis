@@ -105,7 +105,7 @@ def scrap_46(url, cid, args: ArgsType = None) -> ScrapResult:
     for profile in soup.find_all("div", class_="profile"):
         name_tag = profile.find("em", class_="name")
         name = (
-            name_tag.get_text(strip=True).split()[0].strip() if name_tag else "이름 정보 없음"
+            name_tag.get_text(strip=True).split()[0].replace('의원', '').strip() if name_tag else "이름 정보 없음"
         )
 
         party = "정당 정보 없음"

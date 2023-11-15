@@ -608,6 +608,15 @@
         "pty_elt": "span",
         "pty_cls": "itemContent"
     },
+    "169": {
+        "pf_elt": "li",
+        "pf_cls": "item_box",
+        "pf_memlistelt": "div",
+        "pf_memlistcls": "submem",
+        "name_elt": "h5",
+        "pty_elt": "li",
+        "pty_cls": "item MP"
+    },
     "171": {
         "pf_elt": "tr",
         "pf_memlistelt": "tbody",
@@ -625,6 +634,23 @@
         "pf_memlistcls": "submem",
         "name_elt": "li",
         "name_cls": "name",
+        "pty_elt": "dl"
+    },
+    "176": {
+        "pf_elt": "div",
+        "pf_cls": "profile",
+        "name_elt": "strong",
+        "name_cls": "name",
+        "pty_elt": "ul",
+        "pty_cls": "dot"
+    },
+    "177": {
+        "pf_elt": "li",
+        "pf_cls": "item_box",
+        "pf_memlistelt": "ul",
+        "pf_memlistcls": "memlist",
+        "name_elt": "h5",
+        "name_cls": "dd",
         "pty_elt": "dl"
     }
 }
