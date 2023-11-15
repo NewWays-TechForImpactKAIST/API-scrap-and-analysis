@@ -4,6 +4,29 @@
 """
 from typing import Optional, List
 from dataclasses import dataclass
+from enum import Enum
+
+
+class CouncilType(str, Enum):
+    """
+    의회의 종류를 나타내는 열거형입니다.
+    """
+
+    LOCAL_COUNCIL = "local_council"
+    """
+    기초의회
+    """
+    METRO_COUNCIL = "metropolitan_council"
+    """
+    광역의회
+    """
+
+    def __str__(self):
+        """
+        JSON으로 직렬화하기 위해 문자열로 변환하는 함수를 오버라이드합니다.
+        """
+        return str(self.value)
+
 
 from db.types import CouncilType, Councilor
 
@@ -35,19 +58,19 @@ class ScrapBasicArgument:
 
     def __init__(
         self,
-        pf_elt: str | None = None,
-        pf_cls: str | None = None,
-        pf_memlistelt: str | None = None,
-        pf_memlistcls: str | None = None,
-        name_elt: str | None = None,
-        name_cls: str | None = None,
-        name_wrapelt: str | None = None,
-        name_wrapcls: str | None = None,
-        pty_elt: str | None = None,
-        pty_cls: str | None = None,
-        pty_wrapelt: str | None = None,
-        pty_wrapcls: str | None = None,
-        pty_wraptxt: str | None = None,
+        pf_elt: str = None,
+        pf_cls: str = None,
+        pf_memlistelt: str = None,
+        pf_memlistcls: str = None,
+        name_elt: str = None,
+        name_cls: str = None,
+        name_wrapelt: str = None,
+        name_wrapcls: str = None,
+        pty_elt: str = None,
+        pty_cls: str = None,
+        pty_wrapelt: str = None,
+        pty_wrapcls: str = None,
+        pty_wraptxt: str = None,
     ):
         """
         ScrapBasicArgument 클래스의 생성자입니다.

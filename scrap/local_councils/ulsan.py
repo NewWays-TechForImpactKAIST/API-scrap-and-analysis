@@ -1,3 +1,9 @@
+from urllib.parse import urlparse
+import sys
+from typing import List
+from scrap.utils.types import CouncilType, Councilor, ScrapResult
+from scrap.utils.requests import get_soup
+import re
 from scrap.local_councils import *
 from scrap.local_councils.basic import regex_pattern
 
