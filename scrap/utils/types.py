@@ -61,16 +61,16 @@ class ScrapBasicArgument:
         pf_elt: str = None,
         pf_cls: str = None,
         pf_memlistelt: str = None,
-        pf_memlistcls: str  = None,
-        name_elt: str  = None,
+        pf_memlistcls: str = None,
+        name_elt: str = None,
         name_cls: str = None,
         name_wrapelt: str = None,
         name_wrapcls: str = None,
-        pty_elt: str  = None,
-        pty_cls: str  = None,
-        pty_wrapelt: str  = None,
+        pty_elt: str = None,
+        pty_cls: str = None,
+        pty_wrapelt: str = None,
         pty_wrapcls: str = None,
-        pty_wraptxt: str  = None,
+        pty_wraptxt: str = None,
     ):
         """
         ScrapBasicArgument 클래스의 생성자입니다.
