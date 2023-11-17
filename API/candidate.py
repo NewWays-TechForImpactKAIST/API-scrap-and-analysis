@@ -3,8 +3,6 @@
 import os, requests, sys
 import xml.etree.ElementTree as ET
 from typing import List
-from .MongoDB import Councilor
-import argparse
 
 from configurations.secrets import OpenDataPortalSecrets
 from .utils import save_to_excel
@@ -41,10 +39,11 @@ def fetch_data(
     data_list = []
     for item in root.findall(".//item"):
         data_entry = {child.tag: child.text for child in item}
+
         for column in drop_columns:
             data_entry.pop(column)
 
-        data_list.append(Councilor.from_dict(data_entry))
+        data_list.append(data_entry)
 
     return data_list
 
