@@ -9,7 +9,8 @@ from configurations.secrets import OpenDataPortalSecrets
 from .utils import save_to_excel, save_to_mongo, getLocalMetroMap
 
 
-BASE_URL = "http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire"    
+BASE_URL = "http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire"
+
 
 def fetch_data(
     sgId: str,
