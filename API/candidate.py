@@ -84,8 +84,6 @@ if __name__ == "__main__":
     drop_columns = args.drop_columns.split(",") if args.drop_columns else []
 
     data_list = fetch_all_data(sgIds, args.sgTypecode, drop_columns=drop_columns)
-    print(getLocalMetroMap())
-
 
     if args.save_method == "excel":
         save_to_excel(data_list, args.sgTypecode, is_elected=True)
