@@ -45,7 +45,7 @@ def fetch_data(
             data_entry.pop(column)
         
         data_list.append(Councilor.from_dict(data_entry))
-    print(data_list)
+
     return data_list
 
 
