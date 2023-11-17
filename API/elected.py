@@ -3,14 +3,13 @@
 import argparse
 import requests
 import xml.etree.ElementTree as ET
-from typing import List
+from typing import List, Dict
 
 from configurations.secrets import OpenDataPortalSecrets
-from .utils import save_to_excel, save_to_mongo
+from .utils import save_to_excel, save_to_mongo, getLocalMetroMap
 
 
-BASE_URL = "http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire"
-
+BASE_URL = "http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire"    
 
 def fetch_data(
     sgId: str,
@@ -82,7 +81,7 @@ if __name__ == "__main__":
     drop_columns = args.drop_columns.split(",") if args.drop_columns else []
 
     data_list = fetch_all_data(sgIds, args.sgTypecode, drop_columns=drop_columns)
-
+    print(getLocalMetroMap())
     if args.save_method == "excel":
         save_to_excel(data_list, args.sgTypecode, is_elected=True)
     elif args.save_method == "mongo":
