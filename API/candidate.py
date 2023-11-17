@@ -43,7 +43,7 @@ def fetch_data(
         data_entry = {child.tag: child.text for child in item}
         for column in drop_columns:
             data_entry.pop(column)
-        
+
         data_list.append(Councilor.from_dict(data_entry))
 
     return data_list
