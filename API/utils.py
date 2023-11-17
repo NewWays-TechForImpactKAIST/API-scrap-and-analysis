@@ -1,7 +1,7 @@
 import os
 import requests
 import pandas as pd
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from . import BASE_DIR, SG_TYPECODE, SG_TYPECODE_TYPE
 from configurations.secrets import MongoDBSecrets
@@ -58,3 +58,35 @@ def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
         raise NotImplementedError("현재 구시군의회의원(6)만 구현되어 있습니다.")
 
     print(f"데이터를 성공적으로 MongoDB '{main_collection.name}' 컬렉션에 저장하였습니다.")
+
+
+def getLocalMetroMap() -> Dict[str, str]:
+    db = client["district"]
+    result = db["local_district"].aggregate(
+        [
+            {
+                "$lookup": {
+                    "from": "metro_district",
+                    "localField": "sdName",
+                    "foreignField": "name_ko",
+                    "as": "productInfo",
+                }
+            },
+            {"$unwind": "$productInfo"},
+            {
+                "$project": {
+                    "cid": 1,
+                    "metro_id": "$productInfo.metro_id",
+                    "sdName": 1,
+                    "wiwName": 1,
+                }
+            },
+        ]
+    )
+    return {
+        (item["sdName"], item["wiwName"]): {
+            "local_id": item["cid"],
+            "metro_id": item["metro_id"],
+        }
+        for item in result
+    }

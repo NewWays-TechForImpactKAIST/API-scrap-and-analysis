@@ -7,7 +7,7 @@ from .MongoDB import Councilor
 import argparse
 
 from configurations.secrets import OpenDataPortalSecrets
-from .utils import save_to_excel
+from .utils import save_to_excel, getLocalMetroMap
 
 
 BASE_URL = "http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire"
