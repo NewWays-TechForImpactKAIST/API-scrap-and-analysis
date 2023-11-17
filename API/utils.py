@@ -59,20 +59,34 @@ def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
 
     print(f"데이터를 성공적으로 MongoDB '{main_collection.name}' 컬렉션에 저장하였습니다.")
 
+
 def getLocalMetroMap() -> Dict[str, str]:
     db = client["district"]
-    result = db["local_district"].aggregate([{
-        "$lookup": {
-        "from": "metro_district",
-        "localField": "sdName",
-        "foreignField": "name_ko",
-        "as": "productInfo"
+    result = db["local_district"].aggregate(
+        [
+            {
+                "$lookup": {
+                    "from": "metro_district",
+                    "localField": "sdName",
+                    "foreignField": "name_ko",
+                    "as": "productInfo",
+                }
+            },
+            {"$unwind": "$productInfo"},
+            {
+                "$project": {
+                    "cid": 1,
+                    "metro_id": "$productInfo.metro_id",
+                    "sdName": 1,
+                    "wiwName": 1,
+                }
+            },
+        ]
+    )
+    return {
+        (item["sdName"], item["wiwName"]): {
+            "local_id": item["cid"],
+            "metro_id": item["metro_id"],
         }
-    }, { "$unwind": "$productInfo" }, { "$project": {
-    "cid": 1,
-    "metro_id": "$productInfo.metro_id",
-    "sdName": 1,
-    "wiwName": 1,
-    } }])
-    return {(item["sdName"], item["wiwName"]): {"local_id": item["cid"], "metro_id": item["metro_id"]} for item in result}
-
+        for item in result
+    }
