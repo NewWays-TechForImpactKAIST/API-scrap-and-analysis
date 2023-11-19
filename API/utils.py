@@ -6,6 +6,7 @@ from typing import List, Optional, Dict
 from . import BASE_DIR, SG_TYPECODE, SG_TYPECODE_TYPE
 from configurations.secrets import MongoDBSecrets
 from db.client import client
+from API.MongoDB import Councilor
 
 
 def save_to_excel(data: List[dict], sgTypecode: str, is_elected: bool) -> None:
@@ -31,23 +32,25 @@ def get_local_district_id(sd_name: str, wiw_name: str) -> Optional[int]:
 
 
 def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
-    db = client[str(MongoDBSecrets.database_name)]
-    main_collection = db[str(SG_TYPECODE_TYPE[sgTypecode])]
+    db = client["council"]
+    main_collection = db["local_councilor"]
+
+    local_metro_map = getLocalMetroMap()
 
     # TODO: Support other types of councils
     if sgTypecode == "6":
         for entry in data:
-            district_id = get_local_district_id(entry["sdName"], entry["wiwName"])
-            entry.pop("sdName")
-            entry.pop("wiwName")
+            district_id = local_metro_map[(entry["sdName"], entry["wiwName"])][
+                "local_id"
+            ]
 
             if district_id:
                 main_collection.update_one(
                     {
-                        "council_id": district_id,
-                        "council_type": SG_TYPECODE_TYPE[sgTypecode],
+                        "name": entry["name"],
+                        "localId": district_id,
                     },
-                    {"$push": {"councilors": entry}},
+                    {"$push": Councilor.from_dict(entry)},
                     upsert=True,
                 )
             else:
