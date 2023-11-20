@@ -50,8 +50,8 @@ def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
                 main_collection.update_one(
                     {
                         "name": entry["name"],
-                        "localId": district_id["local_id"],
-                        "metroId": district_id["metro_id"],
+                        "local_id": district_id["local_id"],
+                        "metro_id": district_id["metro_id"],
                     },
                     {"$set": Councilor.from_dict(entry).to_dict()},
                     upsert=True,

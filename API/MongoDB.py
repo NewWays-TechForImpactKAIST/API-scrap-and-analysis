@@ -24,10 +24,10 @@ class Councilor:
             name=data.get("name"),
             gender=data.get("gender"),
             birthday=data.get("birthday"),
-            age=data.get("age"),
-            jobId=data.get("jobId"),
+            age=int(data.get("age")),
+            jobId=int(data.get("jobId")),
             job=data.get("job"),
-            eduId=data.get("eduId"),
+            eduId=int(data.get("eduId")),
             edu=data.get("edu"),
         )
 
