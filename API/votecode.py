@@ -27,7 +27,6 @@ response = requests.get(url, params=params)
 xml_data = response.content.decode("utf-8")
 # Parse the XML data
 root = ET.fromstring(xml_data)
-
 # Find all elements where sgTypecode is equal to INPUT and extract their sgId values
 sgIds = set()
 for code in input("Input the number of sgTypecode: ").split(","):
