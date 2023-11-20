@@ -7,6 +7,7 @@ class Councilor:
     sggName: str
     wiwName: str
     name: str
+    jdName: str
     gender: str
     birthday: str
     age: int
@@ -22,6 +23,7 @@ class Councilor:
             sggName=data.get("sggName"),
             wiwName=data.get("wiwName"),
             name=data.get("name"),
+            jdName=data.get("jdName"),
             gender=data.get("gender"),
             birthday=data.get("birthday"),
             age=int(data.get("age")),
@@ -37,6 +39,7 @@ class Councilor:
             "sggName": self.sggName,
             "wiwName": self.wiwName,
             "name": self.name,
+            "jdName": self.jdName,
             "gender": self.gender,
             "birthday": self.birthday,
             "age": self.age,
