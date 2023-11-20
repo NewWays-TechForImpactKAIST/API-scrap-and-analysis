@@ -36,21 +36,24 @@ def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
     main_collection = db["local_councilor"]
 
     local_metro_map = getLocalMetroMap()
-
+    print(len(data))
     # TODO: Support other types of councils
     if sgTypecode == "6":
         for entry in data:
-            district_id = local_metro_map[(entry["sdName"], entry["wiwName"])][
-                "local_id"
-            ]
-
+            if not (entry["sdName"], entry["wiwName"]) in local_metro_map:
+                print(
+                    f"Warning: '{entry['sdName']} {entry['wiwName']}'에 해당하는 지역 ID가 존재하지 않습니다."
+                )
+                continue
+            district_id = local_metro_map[(entry["sdName"], entry["wiwName"])]
             if district_id:
                 main_collection.update_one(
                     {
                         "name": entry["name"],
-                        "localId": district_id,
+                        "localId": district_id["local_id"],
+                        "metroId": district_id["metro_id"],
                     },
-                    {"$push": Councilor.from_dict(entry)},
+                    {"$set": Councilor.from_dict(entry).to_dict()},
                     upsert=True,
                 )
             else:
