@@ -30,7 +30,7 @@ class Councilor:
             eduId=data.get("eduId"),
             edu=data.get("edu"),
         )
-    
+
     def to_dict(self):
         return {
             "sdName": self.sdName,
