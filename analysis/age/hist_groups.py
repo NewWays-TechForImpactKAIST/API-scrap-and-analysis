@@ -38,6 +38,7 @@ def plot_young_and_old(youngest_cluster, oldest_cluster):
 
 
 def cluster_data(method, n_clst, df):
+    clst_labels = []
     if method == "kmeans":
         ages_data = df[["age"]]
         # K-means 모델을 초기화하고 학습합니다.
@@ -47,7 +48,6 @@ def cluster_data(method, n_clst, df):
         # 각 데이터 포인트가 속한 클러스터를 나타내는 레이블을 가져옵니다.
         clst_labels = kmeans.labels_
     elif method == "equal":
-        clst_labels = []
         clst_labels = np.repeat(np.arange(n_clst), len(df) // n_clst)
         clst_labels = np.append(clst_labels, np.arange(len(df) % n_clst))
         clst_labels.sort()
@@ -70,7 +70,13 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
     """구역별 그룹을 만듭니다.
     df: 데이터프레임
     year: 선거 연도
-    n_clusters: 그룹 수
+    n_clst: 그룹 수
+    method: "kmeans" 또는 "equal"
+    cluster_by: "sdName" (1단계) 또는 "wiwName" (2단계)
+    outdir: 출력 디렉토리
+    font_name: 폰트 이름
+    folder_name: 출력 디렉토리의 하위 디렉토리 이름. 현재 '지선-당선' 또는 '지선-후보'.
+                 결과가 mongodb등으로 옮겨가야 하므로, 사용하지 않도록 바꿔야 함.
     """
     os.makedirs(os.path.join(outdir, method), exist_ok=True)
     youngest_age = ("", 100)
@@ -117,6 +123,20 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
         print(
             f"젊은 층의 성비는 여자가 {young_group_sexratio}, 노인층의 성비는 여자가 {old_group_sexratio}"
         )
+        data = [
+            {
+                "minAge": age,
+                "maxAge": age + 1,
+                "count": count,
+                "ageGroup": age_group,
+                "color": colors[age_group]
+            }
+            for age, count, age_group in zip(
+                range(df_clst['age'].min(), df_clst['age'].max() + 1),
+                df_clst.groupby('age').size(),
+                df_clst.groupby('age')['cluster_label'].first()
+            )
+        ]
 
         # 그리기
         package = (
