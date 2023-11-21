@@ -11,6 +11,7 @@ from scrap.local_councils.busan import *
 from scrap.local_councils.daegu import *
 from scrap.local_councils.incheon import *
 from scrap.local_councils.gwangju import *
+
 # from scrap.local_councils.daejeon import *
 from scrap.local_councils.ulsan import *
 from scrap.local_councils.gyeonggi import *
