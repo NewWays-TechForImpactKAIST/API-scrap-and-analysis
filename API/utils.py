@@ -36,7 +36,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
     main_collection = db["local_councilor"]
 
     local_metro_map = getLocalMetroMap()
-    print(len(data))
+
     # TODO: Support other types of councils
     if sgTypecode == "6":
         for entry in data:
