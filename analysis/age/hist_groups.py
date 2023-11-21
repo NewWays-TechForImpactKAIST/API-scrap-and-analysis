@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from matplotlib import cm
 from analysis.age.draw import make_scatterplot, make_hist
-
+from db.client import client
 
 def plot_young_and_old(youngest_cluster, oldest_cluster):
     try:
@@ -79,6 +79,13 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                  결과가 mongodb등으로 옮겨가야 하므로, 사용하지 않도록 바꿔야 함.
     """
     os.makedirs(os.path.join(outdir, method), exist_ok=True)
+    database_list = client.list_database_names()
+    print("Available databases:", database_list)
+    db = client["agehist"]
+    level = "1level" if cluster_by == "sdName" else "2level"
+    main_collection = db[year + "_" + level + "_" + method]
+    # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
+    main_collection.delete_many({})
     youngest_age = ("", 100)
     oldest_age = ("", 0)
     print(f"({year}), {n_clst} clusters")
@@ -129,7 +136,6 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                 "maxAge": age + 1,
                 "count": count,
                 "ageGroup": age_group,
-                "color": colors[age_group]
             }
             for age, count, age_group in zip(
                 range(df_clst['age'].min(), df_clst['age'].max() + 1),
@@ -137,21 +143,22 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                 df_clst.groupby('age')['cluster_label'].first()
             )
         ]
+        main_collection.insert_one({"name": area, "data": data})
 
-        # 그리기
-        package = (
-            outdir,
-            df_clst,
-            year,
-            area,
-            n_clst,
-            method,
-            cluster_by,
-            folder_name,
-            colors,
-            font_name,
-        )
-        make_hist(package)
+        # # 그리기
+        # package = (
+        #     outdir,
+        #     df_clst,
+        #     year,
+        #     area,
+        #     n_clst,
+        #     method,
+        #     cluster_by,
+        #     folder_name,
+        #     colors,
+        #     font_name,
+        # )
+        # make_hist(package)
 
         print(f"Number of data points per cluster for {area}")
         for cluster_label in range(n_clst):
@@ -162,17 +169,17 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
     print(f"Youngest in {youngest_age[0]}: {youngest_age[1]}")
     print(f"Oldest in {oldest_age[0]}: {oldest_age[1]}")
 
-    # 그리기
-    package = (
-        outdir,
-        df.shape[0],
-        year,
-        df_age,
-        n_clst,
-        method,
-        cluster_by,
-        folder_name,
-        colors,
-        font_name,
-    )
-    make_scatterplot(package)
+    # # 그리기
+    # package = (
+    #     outdir,
+    #     df.shape[0],
+    #     year,
+    #     df_age,
+    #     n_clst,
+    #     method,
+    #     cluster_by,
+    #     folder_name,
+    #     colors,
+    #     font_name,
+    # )
+    # make_scatterplot(package)
