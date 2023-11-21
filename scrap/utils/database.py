@@ -10,7 +10,6 @@ import json
 # Note: MongoDB는 데이터베이스가 존재하지 않으면 자동으로 생성합니다.
 # MongoDB 데이터베이스는 하나 이상의 컬렉션으로 구성됩니다.
 # 컬렉션은 하나 이상의 문서로 구성됩니다.
-db = client[str(MongoDBSecrets.database_name)]
 
 
 def save_to_database(record: ScrapResult):
@@ -25,6 +24,7 @@ def save_to_database(record: ScrapResult):
         # MongoDB는 JSON을 저장할 수 있습니다.
         # JSON 형태로 변환한 후, MongoDB에 저장합니다.
         # serialized_record = json.dumps(dataclasses.asdict(record), ensure_ascii=False)
+        db = client[str(MongoDBSecrets.database_name)]
         collection = db[str(record.council_type)]
         result = collection.find_one(
             {"council_id": record.council_id},
@@ -62,7 +62,6 @@ def save_to_database(record: ScrapResult):
 
         return True
     except Exception as e:
-        t
         print(e)
         return False
 
