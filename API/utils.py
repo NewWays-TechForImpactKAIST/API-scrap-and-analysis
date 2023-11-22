@@ -42,7 +42,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
     # main_collection = db["test"]
 
     # TODO: Support other types of councils
-    if sgTypecode == "6":
+    if sgTypecode in ["6", "9"]:
         for entry in data:
             district_id = get_district_id(entry["sdName"], entry["wiwName"])
 
@@ -61,7 +61,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
                     f"Warning: '{entry['sdName']} {entry['wiwName']}'에 해당하는 지역 ID가 존재하지 않습니다."
                 )
     else:
-        raise NotImplementedError("현재 구시군의회의원(6)만 구현되어 있습니다.")
+        raise NotImplementedError("현재 구시군의회의원(6) 및 기초의원비례대표(9)만 구현되어 있습니다.")
 
     print(f"데이터를 성공적으로 MongoDB '{main_collection.name}' 컬렉션에 저장하였습니다.")
 
