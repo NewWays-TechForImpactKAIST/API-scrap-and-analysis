@@ -6,7 +6,7 @@ from typing import List
 import argparse
 
 from configurations.secrets import OpenDataPortalSecrets
-from .utils import save_to_excel, getLocalMetroMap
+from .utils import save_to_excel, save_to_mongo, getLocalMetroMap
 
 
 BASE_URL = "http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire"
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--drop-columns",
         type=str,
-        default="num,huboid,hanjaName,regdate,status",
+        default="num,huboid,hanjaName,status",
         help="제거할 열 이름을 ','로 구분하여 입력하세요",
     )
     parser.add_argument(
@@ -86,6 +86,6 @@ if __name__ == "__main__":
     data_list = fetch_all_data(sgIds, args.sgTypecode, drop_columns=drop_columns)
 
     if args.save_method == "excel":
-        save_to_excel(data_list, args.sgTypecode, is_elected=True)
+        save_to_excel(data_list, args.sgTypecode, is_elected=False)
     elif args.save_method == "mongo":
         save_to_mongo(data_list, args.sgTypecode)
