@@ -94,7 +94,7 @@ def scrap_88(url, cid, args: ScrapBasicArgument) -> ScrapResult:
     profiles = get_profiles_88_103(
         soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
-    print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
+    # print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
         name = getname(
@@ -153,7 +153,7 @@ def scrap_103(url, cid, args: ScrapBasicArgument) -> ScrapResult:
     profiles = get_profiles_88_103(
         soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
-    print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
+    # print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
         name = getname(

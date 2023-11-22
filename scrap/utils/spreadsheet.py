@@ -14,7 +14,8 @@ from scrap.local_councils.busan import *
 from scrap.local_councils.daegu import *
 from scrap.local_councils.incheon import *
 from scrap.local_councils.gwangju import *
-from scrap.local_councils.daejeon import *
+
+# from scrap.local_councils.daejeon import *
 from scrap.local_councils.ulsan import *
 from scrap.local_councils.gyeonggi import *
 from scrap.local_councils.gangwon import *
@@ -60,16 +61,16 @@ def google_authorization():
     return gspread.authorize(creds)
 
 
-def main() -> None:
-    # Google Sheets API 설정
-    client: gspread.client.Client = google_authorization()
-
-    # 스프레드시트 열기
+def read_record_from_spreadsheet() -> list[dict]:
+    client = google_authorization()
     link = "https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905"  # T4I-의회목록
-    spreadsheet: gspread.Spreadsheet = client.open_by_url(link)
-    worksheet: gspread.Worksheet = spreadsheet.get_worksheet(
-        0
-    )  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
+    spreadsheet = client.open_by_url(link)
+    worksheet = spreadsheet.get_worksheet(0)
+
+    return worksheet.get_all_records()
+
+
+def main() -> None:
     # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
     euc_kr = [
         6,
@@ -129,22 +130,14 @@ def main() -> None:
     f.close()
 
     # 데이터 가져오기
-    data: list[dict] = worksheet.get_all_records()
+    # data: list[dict] = worksheet.get_all_records()
+    data = read_record_from_spreadsheet()
     result: str = ""
 
     parse_error_times = 0
     timeouts = 0
     N = 226
-    emessages: str = ""
-    enumbers = []
-
-    def add_error(n, msg):
-        nonlocal emessages
-        emsg: str = f"| {n:3} | 오류: {msg}"
-        emessages += emsg
-        enumbers.append(n)
-
-    for n in range(1, N + 1):
+    for n in range(1, N + 1):  # range(1, N + 1):
         if n in no_information + error_unsolved:
             emsg: str = (
                 (
@@ -190,7 +183,8 @@ def main() -> None:
                 emsg = "스크랩 결과에 '정보 없음'이 포함되어 있습니다. 일부 인명에\
                     대해 스크랩이 실패했다는 뜻이에요. 함수나 인자를 점검해 주세요."
                 parse_error_times += 1
-                add_error(n, emsg)
+                errors.append(n)
+            # print(f"| {n} | {result}")
         except Timeout:
             emsg = f"{council_url}에 시도한 연결이 타임아웃됐어요."
             timeouts += 1

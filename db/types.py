@@ -9,9 +9,9 @@ class CouncilType(str, Enum):
     의회의 종류를 나타내는 열거형입니다.
     """
 
-    LOCAL_COUNCIL = "local_council"
-    NATIONAL_COUNCIL = "national_council"
-    METROPOLITAN_COUNCIL = "metropolitan_council"
+    LOCAL_COUNCIL = "local_councilor"
+    NATIONAL_COUNCIL = "national_councilor"
+    METROPOLITAN_COUNCIL = "metropolitan_councilor"
     LOCAL_LEADER = "local_leader"
     METRO_LEADER = "metro_leader"
     """

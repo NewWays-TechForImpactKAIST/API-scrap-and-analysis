@@ -138,7 +138,7 @@ def sel_getname(profile, element, class_, wrapper_element, wrapper_class_):
             if keyword in name:  # 인천 서구 등
                 name = name.replace(keyword, "").strip()
                 break
-    print(name, "is name\n")
+    # print(name, "is name\n")
     maybe_name = name.split()[0]  # 이름 뒤에 직책이 따라오는 경우
     if len(maybe_name) == 1:  # 외자 이름이 띄어쓰기 때문에 분리된 경우
         name = "".join(name.split()[0:2])
@@ -266,7 +266,7 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapRe
     profiles = getprofiles(
         soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
-    print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
+    # print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
         name = party = ""
@@ -314,7 +314,7 @@ def sel_scrap_basic(url, cid, args: ScrapBasicArgument) -> ScrapResult:
     profiles = sel_getprofiles(
         browser, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
-    print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
+    # print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
         name = party = ""

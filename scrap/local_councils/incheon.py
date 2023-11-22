@@ -170,7 +170,7 @@ def scrap_57(url, args) -> ScrapResult:
     profiles = getprofiles(
         soup, args.pf_elt, args.pf_cls, args.pf_memlistelt, args.pf_memlistcls
     )
-    print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
+    # print(cid, "번째 의회에는,", len(profiles), "명의 의원이 있습니다.")  # 디버깅용.
 
     for profile in profiles:
         name = getname(
