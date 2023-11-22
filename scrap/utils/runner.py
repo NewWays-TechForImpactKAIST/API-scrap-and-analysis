@@ -108,7 +108,7 @@ class ScraperRunner:
         else:
             if council_args is None:
                 raise ValueError(f"{n}번 의회에 대한 ScrapBasicArgument가 없습니다.")
-        
+
             if self.is_selenium_basic(n):
                 result = sel_scrap_basic(council_url, n, council_args)
             else:
