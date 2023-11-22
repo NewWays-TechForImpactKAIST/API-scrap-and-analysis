@@ -69,7 +69,7 @@ def cluster_data(method, n_clst, df):
         for i in range(n_clst - 2, 0, -1):
             cluster_to_exchange = df[df["cluster_label"] == i]
             if not cluster_to_exchange.empty:
-                df.loc[cluster_to_exchange.index, "cluster_label"] = (n_clst - 1)
+                df.loc[cluster_to_exchange.index, "cluster_label"] = n_clst - 1
                 break
 
     return df
@@ -117,7 +117,10 @@ def local_to_metro_list(sdName, wiwName):
     else:
         return sdName
 
-def insert_data_to_mongo(metroId, histdata, histcoll, localId = None, statdata=None, statcoll=None):
+
+def insert_data_to_mongo(
+    metroId, histdata, histcoll, localId=None, statdata=None, statcoll=None
+):
     if localId is None:
         histcoll.insert_one({"metroId": metroId, "data": histdata})
         if statdata is not None:
@@ -127,9 +130,11 @@ def insert_data_to_mongo(metroId, histdata, histcoll, localId = None, statdata=N
         histcoll.insert_one({"metroId": metroId, "localId": localId, "data": histdata})
         if statdata is not None:
             print(statdata)
-            statcoll.insert_one({"metroId": metroId, "localId": localId, "data": statdata})
+            statcoll.insert_one(
+                {"metroId": metroId, "localId": localId, "data": statdata}
+            )
 
-        
+
 def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name):
     """구역별 그룹을 만듭니다.
     df: 데이터프레임
@@ -156,7 +161,7 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
     statcoll = None
     if method == "equal":
         statcoll = statdb[folder_name + "_" + year + "_" + level + "_" + method]
-        statcoll.delete_many({})    
+        statcoll.delete_many({})
     youngest_age = ("", 100)
     oldest_age = ("", 0)
     print(f"({year}), {n_clst} clusters")
@@ -166,8 +171,12 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
 
     # wiwName을 처리합니다
     if level == "2level":
-        df['sdName'] = df[['sdName', 'wiwName']].apply(lambda x: local_to_metro_list(*x), axis=1)
-        df['wiwName'] = df[['sdName', 'wiwName']].apply(lambda x: change_local_name(*x), axis=1)
+        df["sdName"] = df[["sdName", "wiwName"]].apply(
+            lambda x: local_to_metro_list(*x), axis=1
+        )
+        df["wiwName"] = df[["sdName", "wiwName"]].apply(
+            lambda x: change_local_name(*x), axis=1
+        )
     # # 데이터프레임에서 시도별로 묶은 후 나이 열만 가져옵니다.
     # df_age = pd.DataFrame(columns=["area", "age"])
     for area, df_clst in df.groupby(cluster_by):
@@ -186,7 +195,7 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
             clst_of_old = clst_age_mean.index(max(clst_age_mean))
             clst_age_mean.sort()
             # new_data = pd.DataFrame({"area": area, "age": clst_age_mean})
-            # df_age = pd.concat([df_age, new_data], ignore_index=True)        
+            # df_age = pd.concat([df_age, new_data], ignore_index=True)
         elif method == "equal":
             # firstquintile is the oldest age in the cluster_label == 0
             # lastquintile is the youngest age in the cluster_label == n_clst - 1
@@ -239,23 +248,40 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
         metroname = df_clst["sdName"].iloc[0]
         metroId = metroIds.find_one({"sdName": metroname})["metroId"]
         if level == "1level":
-            print ("sdName is ", metroname)
-            insert_data_to_mongo(metroId, histdata, histcoll, statdata=statdata, statcoll=statcoll)
+            print("sdName is ", metroname)
+            insert_data_to_mongo(
+                metroId, histdata, histcoll, statdata=statdata, statcoll=statcoll
+            )
         elif metroname in change_lvl2to1.values():
-            print ("sdName is ", metroname)
+            print("sdName is ", metroname)
             l1histcoll = histdb[folder_name + "_" + year + "_1level_" + method]
-            l1histcoll.delete_many({"metroId": metroId}) # 기존 정보를 삭제 
+            l1histcoll.delete_many({"metroId": metroId})  # 기존 정보를 삭제
             if method == "kmeans":
                 insert_data_to_mongo(metroId, histdata, l1histcoll)
             else:
                 l1statcoll = statdb[folder_name + "_" + year + "_1level_" + method]
                 l1statcoll.delete_many({"metroId": metroId})
-                insert_data_to_mongo(metroId, histdata, l1histcoll, statdata=statdata, statcoll=l1statcoll)
+                insert_data_to_mongo(
+                    metroId,
+                    histdata,
+                    l1histcoll,
+                    statdata=statdata,
+                    statcoll=l1statcoll,
+                )
         else:
             localname = df_clst["wiwName"].iloc[0]
-            print ("sdName is ", metroname, "wiwName is", localname)
-            localId = localIds.find_one({"sdName": metroname, "wiwName": localname})["localId"]
-            insert_data_to_mongo(metroId, histdata, histcoll, statdata=statdata, statcoll=statcoll, localId=localId)
+            print("sdName is ", metroname, "wiwName is", localname)
+            localId = localIds.find_one({"sdName": metroname, "wiwName": localname})[
+                "localId"
+            ]
+            insert_data_to_mongo(
+                metroId,
+                histdata,
+                histcoll,
+                statdata=statdata,
+                statcoll=statcoll,
+                localId=localId,
+            )
 
         # # 그리기
         # package = (
