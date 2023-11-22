@@ -71,16 +71,53 @@ def main() -> None:
         0
     )  # 원하는 워크시트 선택 (0은 첫 번째 워크시트입니다.)
     # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
-    euc_kr = [6, 13, 16, 31, 72, 88, 112, 134, 154, 157, 163, 165, 167, 176, 181,
-              197, 202, 222]
+    euc_kr = [
+        6,
+        13,
+        16,
+        31,
+        72,
+        88,
+        112,
+        134,
+        154,
+        157,
+        163,
+        165,
+        167,
+        176,
+        181,
+        197,
+        202,
+        222,
+    ]
     special_functions = (
         list(range(1, 57))
         + [62, 63, 64, 88, 97, 103, 107]
         + list(range(113, 127))
         + [132, 134, 140, 142, 154, 155, 156, 157, 160, 161, 162, 163, 164, 165, 167]
         + list(range(177, 180))
-        + [182, 183, 184, 186, 188, 189, 190, 191, 194, 195, 196, 198, 199, 201, 203,
-            206, 208, 209, 210]
+        + [
+            182,
+            183,
+            184,
+            186,
+            188,
+            189,
+            190,
+            191,
+            194,
+            195,
+            196,
+            198,
+            199,
+            201,
+            203,
+            206,
+            208,
+            209,
+            210,
+        ]
         + list(range(212, 221))
         + [222, 223, 224, 226]
     )
@@ -100,19 +137,25 @@ def main() -> None:
     N = 226
     emessages: str = ""
     enumbers = []
+
     def add_error(n, msg):
         nonlocal emessages
         emsg: str = f"| {n:3} | 오류: {msg}"
         emessages += emsg
         enumbers.append(n)
+
     for n in range(1, N + 1):
         if n in no_information + error_unsolved:
             emsg: str = (
-                "지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다. \
+                (
+                    "지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다. \
             다시 확인해보시겠어요?"
-                if n in no_information
-                else "함수 구현에 실패한 웹페이지입니다."
-            ) + " 링크: " + data[n - 1]["URL"]
+                    if n in no_information
+                    else "함수 구현에 실패한 웹페이지입니다."
+                )
+                + " 링크: "
+                + data[n - 1]["URL"]
+            )
             add_error(n, emsg)
             continue
         encoding = "euc-kr" if n in euc_kr else "utf-8"
@@ -154,12 +197,15 @@ def main() -> None:
             add_error(n, emsg)
         except Exception as e:
             add_error(n, "기타 오류 - " + str(e))
-    emessages = f"""
+    emessages = (
+        f"""
         총 실행 횟수: {N}
         에러: {enumbers}, 총 {len(enumbers)}회
         그 중 '정보 없음' 횟수: {parse_error_times}
         타임아웃 횟수: {timeouts}
-    """ + emessages
+    """
+        + emessages
+    )
     email_result(emessages)
 
 

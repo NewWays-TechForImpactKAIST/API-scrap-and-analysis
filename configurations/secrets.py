@@ -28,6 +28,7 @@ class OpenDataPortalSecrets:
 
     service_key = str(os.getenv("OPEN_DATA_SERICE_KEY") or "")
 
+
 class EmailSecrets:
     """
     스크랩 결과 이메일 전송에 필요한 키를 정의합니다.

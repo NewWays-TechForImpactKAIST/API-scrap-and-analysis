@@ -8,6 +8,7 @@ from matplotlib import cm
 from analysis.age.draw import make_scatterplot, make_hist
 from db.client import client
 
+
 def plot_young_and_old(youngest_cluster, oldest_cluster):
     try:
         sns.histplot(
@@ -65,6 +66,7 @@ def cluster_data(method, n_clst, df):
         df.loc[df["age"] == min_age, "cluster_label"] = i
     return df
 
+
 # 이름이 바뀐 경우
 change_city_name = {
     ("충청남도", "당진군"): "당진시",
@@ -75,8 +77,9 @@ change_city_name = {
     ("인천광역시", "남구"): "미추홀구",
 }
 
-# 
+#
 change_lvl2to1 = {"연기군": "세종특별자치시"}
+
 
 def change_local_name(sdName, wiwName):
     """
@@ -90,20 +93,23 @@ def change_local_name(sdName, wiwName):
     """
     if (sdName, wiwName) in change_city_name:
         return change_city_name[(sdName, wiwName)]
-    if '구' in wiwName and '시' in wiwName:
-        return wiwName.split('시')[0] + '시'
+    if "구" in wiwName and "시" in wiwName:
+        return wiwName.split("시")[0] + "시"
     else:
         return wiwName
+
 
 def local_to_metro_list(sdName, wiwName):
     """
     구시군에서 광역시/도로 승격한 경우
     """
     if wiwName in change_lvl2to1:
-        print('change', wiwName, 'to', change_lvl2to1[wiwName])
+        print("change", wiwName, "to", change_lvl2to1[wiwName])
         return change_lvl2to1[wiwName]
     else:
         return sdName
+
+
 def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name):
     """구역별 그룹을 만듭니다.
     df: 데이터프레임
@@ -134,8 +140,12 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
 
     # wiwName을 처리합니다
     if level == "2level":
-        df['sdName'] = df[['sdName', 'wiwName']].apply(lambda x: local_to_metro_list(*x), axis=1)
-        df['wiwName'] = df[['sdName', 'wiwName']].apply(lambda x: change_local_name(*x), axis=1)
+        df["sdName"] = df[["sdName", "wiwName"]].apply(
+            lambda x: local_to_metro_list(*x), axis=1
+        )
+        df["wiwName"] = df[["sdName", "wiwName"]].apply(
+            lambda x: change_local_name(*x), axis=1
+        )
     # 데이터프레임에서 시도별로 묶은 후 나이 열만 가져옵니다.
     df_age = pd.DataFrame(columns=["area", "age"])
     for area, df_clst in df.groupby(cluster_by):
@@ -181,25 +191,29 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                 "ageGroup": age_group,
             }
             for age, count, age_group in zip(
-                range(df_clst['age'].min(), df_clst['age'].max() + 1),
-                df_clst.groupby('age').size(),
-                df_clst.groupby('age')['cluster_label'].first()
+                range(df_clst["age"].min(), df_clst["age"].max() + 1),
+                df_clst.groupby("age").size(),
+                df_clst.groupby("age")["cluster_label"].first(),
             )
         ]
         metroname = df_clst["sdName"].iloc[0]
         metroId = metroIds.find_one({"sdName": metroname})["metroId"]
         if level == "1level":
-            print ("sdName is ", metroname)
+            print("sdName is ", metroname)
             main_collection.insert_one({"metroId": metroId, "data": data})
         elif metroname in change_lvl2to1.values():
-            print ("sdName is ", metroname)
+            print("sdName is ", metroname)
             lvl1_collection = db[folder_name + "_" + year + "_1level_" + method]
             lvl1_collection.insert_one({"metroId": metroId, "data": data})
         else:
             localname = df_clst["wiwName"].iloc[0]
-            print ("sdName is ", metroname, "wiwName is", localname)
-            localId = localIds.find_one({"sdName": metroname, "wiwName": localname})["localId"]
-            main_collection.insert_one({"metroId": metroId, "localId": localId, "data": data})
+            print("sdName is ", metroname, "wiwName is", localname)
+            localId = localIds.find_one({"sdName": metroname, "wiwName": localname})[
+                "localId"
+            ]
+            main_collection.insert_one(
+                {"metroId": metroId, "localId": localId, "data": data}
+            )
 
         # # 그리기
         # package = (
