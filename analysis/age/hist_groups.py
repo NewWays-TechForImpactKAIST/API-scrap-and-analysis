@@ -65,6 +65,18 @@ def cluster_data(method, n_clst, df):
         df.loc[df["age"] == min_age, "cluster_label"] = i
     return df
 
+def extract_city(area):
+    """
+    만약 '시' 와 '구'가 모두 wiwName에 있다면, '시' 까지만 쓰기
+    ex) '용인시수지구' (선거 단위) -> '용인시' (의회 단위)
+    Keyword arguments:
+    argument -- string
+    Return: processed string
+    """
+    if '구' in area and '시' in area:
+        return area.split('시')[0] + '시'
+    else:
+        return area
 
 def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name):
     """구역별 그룹을 만듭니다.
@@ -79,23 +91,28 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                  결과가 mongodb등으로 옮겨가야 하므로, 사용하지 않도록 바꿔야 함.
     """
     os.makedirs(os.path.join(outdir, method), exist_ok=True)
-    database_list = client.list_database_names()
-    print("Available databases:", database_list)
-    db = client["agehist"]
+    ids = client["district"]
+    metroIds = ids["metro_district"]
+    localIds = ids["local_district"]
+    db = client["agehistogram"]
     level = "1level" if cluster_by == "sdName" else "2level"
-    main_collection = db[year + "_" + level + "_" + method]
+    main_collection = db[folder_name + "_" + year + "_" + level + "_" + method]
     # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
     main_collection.delete_many({})
     youngest_age = ("", 100)
     oldest_age = ("", 0)
     print(f"({year}), {n_clst} clusters")
     print(f"{'-' * 20}")
-    # Get a colormap for generating unique colors for clusters
-    colors = cm.rainbow(np.linspace(0, 1, n_clst))
+    # # Get a colormap for generating unique colors for clusters
+    # colors = cm.rainbow(np.linspace(0, 1, n_clst))
 
+    # wiwName을 처리합니다
+    df['wiwName'] = df['wiwName'].apply(extract_city)
     # 데이터프레임에서 시도별로 묶은 후 나이 열만 가져옵니다.
     df_age = pd.DataFrame(columns=["area", "age"])
     for area, df_clst in df.groupby(cluster_by):
+        metroname = df_clst["sdName"].iloc[0]
+        localname = df_clst["wiwName"].iloc[0]
         df_clst = cluster_data(method, n_clst, df_clst)
         # 클러스터 중심 나이를 계산합니다.
         clst_age_mean = []
@@ -143,7 +160,13 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                 df_clst.groupby('age')['cluster_label'].first()
             )
         ]
-        main_collection.insert_one({"name": area, "data": data})
+        metroId = metroIds.find_one({"sdName": metroname})["metroId"]
+        if level == "1level":
+            main_collection.insert_one({"metroId": metroId, "data": data})
+        else:
+            print ("sdName is ", metroname, "wiwName is", localname)
+            localId = localIds.find_one({"sdName": metroname, "wiwName": localname})["localId"]
+            main_collection.insert_one({"metroId": metroId, "localId": localId, "data": data})
 
         # # 그리기
         # package = (
