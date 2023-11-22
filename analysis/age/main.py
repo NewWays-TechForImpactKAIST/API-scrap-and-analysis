@@ -16,7 +16,7 @@ font_name = font_manager.FontProperties(
 ).get_name()
 
 
-def main():
+def main(N=5):
     ## TO-DO: excel말고 mongodb에서 받아오도록 합니다.
     ## 이 링크에 구현될 save_to_mongo함수 참고 : https://github.com/NewWays-TechForImpactKAIST/API-scrap-and-analysis//blob/bd817e9a15086d313d9615b2515a81e0dbd73850/API/utils.py#L34
     for folder_name in ["지선-당선", "지선-후보"]:
@@ -40,10 +40,10 @@ def main():
                 year = d[7:11]
                 # most_common_age_group(df, year)
                 cluster(
-                    df, year, 7, "kmeans", cluster_by, outdir, font_name, folder_name
+                    df, year, N, "kmeans", cluster_by, outdir, font_name, folder_name
                 )
                 cluster(
-                    df, year, 7, "equal", cluster_by, outdir, font_name, folder_name
+                    df, year, N, "equal", cluster_by, outdir, font_name, folder_name
                 )
 
 
