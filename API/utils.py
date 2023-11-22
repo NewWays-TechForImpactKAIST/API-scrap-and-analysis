@@ -9,6 +9,9 @@ from db.client import client
 from API.MongoDB import Councilor
 
 
+LOCAL_METRO_ID_MAP = None
+
+
 def save_to_excel(data: List[dict], sgTypecode: str, is_elected: bool) -> None:
     directory_path = os.path.join(BASE_DIR, "output")
     if not os.path.exists(directory_path):
@@ -20,38 +23,35 @@ def save_to_excel(data: List[dict], sgTypecode: str, is_elected: bool) -> None:
     print(f"데이터를 성공적으로 '{excel_file}'에 저장하였습니다.")
 
 
-def get_local_district_id(sd_name: str, wiw_name: str) -> Optional[int]:
-    db = client["district"]
+def get_district_id(sd_name: str, wiw_name: str) -> Optional[int]:
+    global LOCAL_METRO_ID_MAP
+    if not LOCAL_METRO_ID_MAP:
+        LOCAL_METRO_ID_MAP = getLocalMetroMap()
+
     if "시" in wiw_name and "구" in wiw_name:
         wiw_name = wiw_name[: wiw_name.find("시") + 1]  # 포항시북구 -> 포항시
 
-    district_doc = db["local_district"].find_one(
-        {"sdName": sd_name, "wiwName": wiw_name}
-    )
-    return district_doc["cid"] if district_doc else None
+    if (sd_name, wiw_name) not in LOCAL_METRO_ID_MAP.keys():
+        return None
+    return LOCAL_METRO_ID_MAP[(sd_name, wiw_name)]
 
 
 def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
     db = client["council"]
     main_collection = db["local_councilor"]
-
-    local_metro_map = getLocalMetroMap()
+    # main_collection = db["test"]
 
     # TODO: Support other types of councils
     if sgTypecode == "6":
         for entry in data:
-            if not (entry["sdName"], entry["wiwName"]) in local_metro_map:
-                print(
-                    f"Warning: '{entry['sdName']} {entry['wiwName']}'에 해당하는 지역 ID가 존재하지 않습니다."
-                )
-                continue
-            district_id = local_metro_map[(entry["sdName"], entry["wiwName"])]
+            district_id = get_district_id(entry["sdName"], entry["wiwName"])
+
             if district_id:
                 main_collection.update_one(
                     {
                         "name": entry["name"],
-                        "local_id": district_id["local_id"],
-                        "metro_id": district_id["metro_id"],
+                        "localId": district_id["localId"],
+                        "metroId": district_id["metroId"],
                     },
                     {"$set": Councilor.from_dict(entry).to_dict()},
                     upsert=True,
@@ -74,15 +74,15 @@ def getLocalMetroMap() -> Dict[str, str]:
                 "$lookup": {
                     "from": "metro_district",
                     "localField": "sdName",
-                    "foreignField": "name_ko",
+                    "foreignField": "sdName",
                     "as": "productInfo",
                 }
             },
             {"$unwind": "$productInfo"},
             {
                 "$project": {
-                    "cid": 1,
-                    "metro_id": "$productInfo.metro_id",
+                    "localId": 1,
+                    "metroId": "$productInfo.metroId",
                     "sdName": 1,
                     "wiwName": 1,
                 }
@@ -91,8 +91,8 @@ def getLocalMetroMap() -> Dict[str, str]:
     )
     return {
         (item["sdName"], item["wiwName"]): {
-            "local_id": item["cid"],
-            "metro_id": item["metro_id"],
+            "localId": item["localId"],
+            "metroId": item["metroId"],
         }
         for item in result
     }

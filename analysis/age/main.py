@@ -17,6 +17,8 @@ font_name = font_manager.FontProperties(
 
 
 def main():
+    ## TO-DO: excel말고 mongodb에서 받아오도록 합니다.
+    ## 이 링크에 구현될 save_to_mongo함수 참고 : https://github.com/NewWays-TechForImpactKAIST/API-scrap-and-analysis//blob/bd817e9a15086d313d9615b2515a81e0dbd73850/API/utils.py#L34
     for folder_name in ["지선-당선", "지선-후보"]:
         for cluster_by in ["sdName", "wiwName"]:
             # folder_name = input("_data 내의 폴더 이름은 무엇인가요?")

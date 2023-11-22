@@ -1,3 +1,6 @@
+"""
+local_councils 폴더에 정의된 각 함수를 사용해서 크롤링합니다.
+"""
 import os
 import sys
 import gspread
@@ -21,6 +24,7 @@ from scrap.local_councils.jeolla import *
 from scrap.local_councils.gyeongsang import *
 from scrap.local_councils import *
 from requests.exceptions import Timeout
+from utils.email_result import email_result
 
 # 구글로부터 권한을 요청할 어플리케이션 목록
 # 변경 시 token.json 삭제 후 재인증 필요
@@ -121,7 +125,6 @@ def main() -> None:
     selenium_basic = [76, 78, 101, 169, 173, 177]
     no_information = [18, 29, 106, 111, 172, 181, 185, 187, 197, 200, 204, 207]
     error_unsolved = [170, 171]
-    errors = []
     f = open(JSON_PATH, "r")
     args = json.load(f)
     f.close()
@@ -136,14 +139,17 @@ def main() -> None:
     N = 226
     for n in range(1, N + 1):  # range(1, N + 1):
         if n in no_information + error_unsolved:
-            error_msg = (
-                "지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다. \
+            emsg: str = (
+                (
+                    "지난번 확인 시, 정당 정보 등이 홈페이지에 없었습니다. \
             다시 확인해보시겠어요?"
-                if n in no_information
-                else "함수 구현에 실패한 웹페이지입니다."
+                    if n in no_information
+                    else "함수 구현에 실패한 웹페이지입니다."
+                )
+                + " 링크: "
+                + data[n - 1]["URL"]
             )
-            print(f"| {n} | 오류: ", error_msg, " 링크 : ", data[n - 1]["URL"])
-            errors.append(n)
+            add_error(n, emsg)
             continue
         encoding = "euc-kr" if n in euc_kr else "utf-8"
         council_url: str = ""
@@ -162,7 +168,11 @@ def main() -> None:
                         function_to_call(council_url, n, args=council_args).councilors
                     )
                 else:
-                    print("[API/spreadsheet] Error : No function found")
+                    emsg: str = f"특수 함수를 사용해서 스크랩한다고 \
+                        명시되어 있는데 함수가 정의되어 있지 않네요. [scrap/utils/\
+                        spreadsheet.py의 special_functions에 함수 번호를 빼고 \
+                        다시 시도해 보시겠어요?]"
+                    add_error(n, emsg)
             elif n in selenium_basic:
                 result = str(sel_scrap_basic(council_url, n, council_args).councilors)
             else:
@@ -170,20 +180,27 @@ def main() -> None:
                     scrap_basic(council_url, n, council_args, encoding).councilors
                 )
             if "정보 없음" in result:
-                print("정보 없음이 포함되어 있습니다.")
+                emsg = "스크랩 결과에 '정보 없음'이 포함되어 있습니다. 일부 인명에\
+                    대해 스크랩이 실패했다는 뜻이에요. 함수나 인자를 점검해 주세요."
                 parse_error_times += 1
                 errors.append(n)
             # print(f"| {n} | {result}")
         except Timeout:
-            print(f"| {n} | 오류: Request to {council_url} timed out.")
+            emsg = f"{council_url}에 시도한 연결이 타임아웃됐어요."
             timeouts += 1
+            add_error(n, emsg)
         except Exception as e:
-            print(f"| {n} | 오류: {e}")
-            errors.append(n)
-            continue  # 에러가 발생하면 다음 반복으로 넘어감
-    print(
-        f"| 총 실행 횟수: {N} | 에러: {errors}, 총 {len(errors)}회 | 그 중 정보 없음 횟수: {parse_error_times} | 타임아웃 횟수: {timeouts} |"
+            add_error(n, "기타 오류 - " + str(e))
+    emessages = (
+        f"""
+        총 실행 횟수: {N}
+        에러: {enumbers}, 총 {len(enumbers)}회
+        그 중 '정보 없음' 횟수: {parse_error_times}
+        타임아웃 횟수: {timeouts}
+    """
+        + emessages
     )
+    email_result(emessages)
 
 
 if __name__ == "__main__":

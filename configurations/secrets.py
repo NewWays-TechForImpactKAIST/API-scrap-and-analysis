@@ -27,3 +27,13 @@ class OpenDataPortalSecrets:
     """
 
     service_key = str(os.getenv("OPEN_DATA_SERICE_KEY") or "")
+
+
+class EmailSecrets:
+    """
+    스크랩 결과 이메일 전송에 필요한 키를 정의합니다.
+    """
+
+    sender_email = str(os.getenv("SCRAP_SENDER_EMAIL") or "")
+    receiver_email = str(os.getenv("SCRAP_RECEIVER_EMAIL") or "")
+    password = str(os.getenv("SCRAP_EMAIL_PASSWORD") or "")
