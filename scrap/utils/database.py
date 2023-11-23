@@ -98,21 +98,24 @@ def remove_councilors(collection, councilors: List[Councilor]) -> None:
             {"localId": councilor["localId"], "name": councilor["name"]}
         )
 
-def add_councilors(collection, cid: int, councilors: List[Councilor], council_type: str) -> None:
+
+def add_councilors(
+    collection, cid: int, councilors: List[Councilor], council_type: str
+) -> None:
     """
     신규 의원을 검사합니다. 기존 비례대표의 사퇴로 새 비례대표가 바로 추가되었을
     가능성을 보고, 아닐 시에는 사용자에게 보고합니다.
     :param collection: MongoDB 컬렉션
     :param councilors: 업데이트할 의원 리스트
-    :param council_type: local_councilor 등등, 의원의 종류 
+    :param council_type: local_councilor 등등, 의원의 종류
     """
     db = client[str(MongoDBSecrets.database_name)]
-    candcoll = db[council_type + "_cand"] # 예: local_councilor_cand
+    candcoll = db[council_type + "_cand"]  # 예: local_councilor_cand
     for councilor in councilors:
         # find the councilor in candidate
         query = {"localId": cid, "name": councilor.name}
         all_documents = list(candcoll.find(query))
-        assert(len(all_documents) <= 1, "신규의원을 같은 의회의 후보중에 찾는데, 동명이인이 있네요.")
+        assert (len(all_documents) <= 1, "신규의원을 같은 의회의 후보중에 찾는데, 동명이인이 있네요.")
         if len(all_documents) == 0:
             # no candidate found, report to user
             print(f"신규의원 {councilor.name}을 찾을 수 없습니다.")

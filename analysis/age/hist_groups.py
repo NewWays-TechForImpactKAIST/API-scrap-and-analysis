@@ -260,7 +260,9 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
             if method == "kmeans":
                 insert_data_to_mongo(metroId, histdata, l1histcoll)
             else:
-                l1statcoll = statcollection[folder_name + "_" + year + "_1level_" + method]
+                l1statcoll = statcollection[
+                    folder_name + "_" + year + "_1level_" + method
+                ]
                 l1statcoll.delete_many({"metroId": metroId})
                 insert_data_to_mongo(
                     metroId,
