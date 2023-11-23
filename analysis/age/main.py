@@ -37,7 +37,7 @@ def main(N=5):
                 # 필요한 열만 추출합니다.
                 df = df[["sdName", "wiwName", "name", "age", "gender"]]
                 df = df.sort_values(by="age")
-                year = d[7:11]
+                year = int(d[7:11])
                 # most_common_age_group(df, year)
                 cluster(
                     df, year, N, "kmeans", cluster_by, outdir, font_name, folder_name

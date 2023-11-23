@@ -123,19 +123,61 @@ def insert_data_to_mongo(
 ):
     if localId is None:
         dic["data"] = histdata
-        histcoll.insert_one(dic)
+        histcoll.find_one_and_update(
+            {
+                "councilorType": dic["councilorType"],
+                "year": dic["year"],
+                "level": dic["level"],
+                "method": dic["method"],
+                "metroId": dic["metroId"],
+            },
+            {"$set": dic},
+            upsert=True,
+        )
         if statdata is not None:
             print(statdata)
             dic["data"] = statdata
-            statcoll.insert_one(dic)
+            statcoll.find_one_and_update(
+                {
+                    "councilorType": dic["councilorType"],
+                    "year": dic["year"],
+                    "level": dic["level"],
+                    "method": dic["method"],
+                    "metroId": dic["metroId"],
+                },
+                {"$set": dic},
+                upsert=True,
+            )
     else:
         dic["localId"] = localId
         dic["data"] = histdata
-        histcoll.insert_one(dic)
+        histcoll.find_one_and_update(
+            {
+                "councilorType": dic["councilorType"],
+                "year": dic["year"],
+                "level": dic["level"],
+                "method": dic["method"],
+                "metroId": dic["metroId"],
+                "localId": dic["localId"],
+            },
+            {"$set": dic},
+            upsert=True,
+        )
         if statdata is not None:
             print(statdata)
             dic["data"] = statdata
-            statcoll.insert_one(dic)
+            statcoll.find_one_and_update(
+                {
+                    "councilorType": dic["councilorType"],
+                    "year": dic["year"],
+                    "level": dic["level"],
+                    "method": dic["method"],
+                    "metroId": dic["metroId"],
+                    "localId": dic["localId"],
+                },
+                {"$set": dic},
+                upsert=True,
+            )
 
 
 def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name):
@@ -172,9 +214,9 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
         "method": method,
     }
     # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
-    histcoll.delete_many(basedic)
-    if method == "equal":
-        statcoll.delete_many(basedic)
+    # histcoll.delete_many(basedic)
+    # if method == "equal":
+    #     statcoll.delete_many(basedic)
     youngest_age = ("", 100)
     oldest_age = ("", 0)
     print(f"({year}), {n_clst} clusters")
@@ -272,14 +314,14 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
             dic = basedic.copy()
             dic["level"] = 1
             dic["metroId"] = metroId
-            histcoll.delete_many(dic)  # 기존 정보를 삭제
+            # histcoll.delete_many(dic)  # 기존 정보를 삭제
             if method == "kmeans":
                 insert_data_to_mongo(dic, histdata, histcoll)
             else:
                 # l1statcoll = statcollection[
                 #     folder_name + "_" + year + "_1level_" + method
                 # ]
-                statcoll.delete_many(dic)
+                # statcoll.delete_many(dic)
                 insert_data_to_mongo(
                     dic,
                     histdata,
