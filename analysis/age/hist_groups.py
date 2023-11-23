@@ -156,16 +156,21 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
     metroIds = distdb["metro_district"]
     localIds = distdb["local_district"]
     histcoll = statdb["age_hist"]
-    statcoll = statdb["age_stat"] # method = "equal"에서 써 줄 통계.
-    councilorType = "elected" if folder_name[-2:] == "당선"\
-        else "candidate" if folder_name[-2:] == "후보"\
+    statcoll = statdb["age_stat"]  # method = "equal"에서 써 줄 통계.
+    councilorType = (
+        "elected"
+        if folder_name[-2:] == "당선"
+        else "candidate"
+        if folder_name[-2:] == "후보"
         else ValueError("folder_name should end with '당선' or '후보'")
+    )
     level = 1 if cluster_by == "sdName" else 2
-    basedic = {"councilorType": councilorType,
-                "year": year,
-                "level": level,
-                "method": method,
-                }
+    basedic = {
+        "councilorType": councilorType,
+        "year": year,
+        "level": level,
+        "method": method,
+    }
     # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
     histcoll.delete_many(basedic)
     if method == "equal":
