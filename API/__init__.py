@@ -20,10 +20,17 @@ SG_TYPECODE = {
     "10": "교육의원",
     "11": "교육감",
 }
-SG_TYPECODE_TYPE = {
+ELECTED_TYPECODE_TYPE = {
     "2": CouncilType.NATIONAL_COUNCIL,
     "3": CouncilType.METRO_LEADER,
     "4": CouncilType.LOCAL_LEADER,
     "5": CouncilType.METROPOLITAN_COUNCIL,
     "6": CouncilType.LOCAL_COUNCIL,
+    "9": CouncilType.LOCAL_COUNCIL,
+}
+CANDIDATE_TYPECODE_TYPE = {
+    "2": CouncilType.NATIONAL_COUNCIL_CAND,
+    "5": CouncilType.METROPOLITAN_COUNCIL_CAND,
+    "6": CouncilType.LOCAL_COUNCIL_CAND,
+    "9": CouncilType.LOCAL_COUNCIL_CAND,
 }
