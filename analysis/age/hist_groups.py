@@ -148,19 +148,20 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                  결과가 mongodb등으로 옮겨가야 하므로, 사용하지 않도록 바꿔야 함.
     """
     os.makedirs(os.path.join(outdir, method), exist_ok=True)
-    ids = client["district"]
-    metroIds = ids["metro_district"]
-    localIds = ids["local_district"]
-    histdb = client["age_histtmp"]
-    statdb = client["age_stat"]
+    distdb = client["district"]
+    statdb = client["stats"]
+    metroIds = distdb["metro_district"]
+    localIds = distdb["local_district"]
+    histcollection = statdb["age_histtmp"]
+    statcollection = statdb["age_stattmp"]
     level = "1level" if cluster_by == "sdName" else "2level"
-    histcoll = histdb[folder_name + "_" + year + "_" + level + "_" + method]
+    histcoll = histcollection[folder_name + "_" + year + "_" + level + "_" + method]
     # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
     histcoll.delete_many({})
     # method = "equal"에서 써 줄 statistics가 들어있는 collection.
     statcoll = None
     if method == "equal":
-        statcoll = statdb[folder_name + "_" + year + "_" + level + "_" + method]
+        statcoll = statcollection[folder_name + "_" + year + "_" + level + "_" + method]
         statcoll.delete_many({})
     youngest_age = ("", 100)
     oldest_age = ("", 0)
@@ -254,12 +255,12 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
             )
         elif metroname in change_lvl2to1.values():
             print("sdName is ", metroname)
-            l1histcoll = histdb[folder_name + "_" + year + "_1level_" + method]
+            l1histcoll = histcollection[folder_name + "_" + year + "_1level_" + method]
             l1histcoll.delete_many({"metroId": metroId})  # 기존 정보를 삭제
             if method == "kmeans":
                 insert_data_to_mongo(metroId, histdata, l1histcoll)
             else:
-                l1statcoll = statdb[folder_name + "_" + year + "_1level_" + method]
+                l1statcoll = statcollection[folder_name + "_" + year + "_1level_" + method]
                 l1statcoll.delete_many({"metroId": metroId})
                 insert_data_to_mongo(
                     metroId,
