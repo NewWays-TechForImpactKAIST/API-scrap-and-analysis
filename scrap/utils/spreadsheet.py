@@ -24,7 +24,7 @@ from scrap.local_councils.jeolla import *
 from scrap.local_councils.gyeongsang import *
 from scrap.local_councils import *
 from requests.exceptions import Timeout
-from utils.email_result import email_result
+from scrap.utils.email_result import email_result
 
 # 구글로부터 권한을 요청할 어플리케이션 목록
 # 변경 시 token.json 삭제 후 재인증 필요
