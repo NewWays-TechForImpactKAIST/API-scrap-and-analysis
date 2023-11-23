@@ -7,6 +7,7 @@ import argparse
 
 from configurations.secrets import OpenDataPortalSecrets
 from .utils import save_to_excel, save_to_mongo, getLocalMetroMap
+from . import SG_TYPECODE, CANDIDATE_TYPECODE_TYPE
 
 
 BASE_URL = "http://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire"
@@ -88,4 +89,4 @@ if __name__ == "__main__":
     if args.save_method == "excel":
         save_to_excel(data_list, args.sgTypecode, is_elected=False)
     elif args.save_method == "mongo":
-        save_to_mongo(data_list, args.sgTypecode, "local_councilor_cand")
+        save_to_mongo(data_list, args.sgTypecode, CANDIDATE_TYPECODE_TYPE[args.sgTypecode])

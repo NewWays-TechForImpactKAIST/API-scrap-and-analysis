@@ -7,6 +7,7 @@ from typing import List, Dict
 
 from configurations.secrets import OpenDataPortalSecrets
 from .utils import save_to_excel, save_to_mongo, getLocalMetroMap
+from . import SG_TYPECODE, ELECTED_TYPECODE_TYPE
 
 
 BASE_URL = "http://apis.data.go.kr/9760000/WinnerInfoInqireService2/getWinnerInfoInqire"
@@ -85,4 +86,4 @@ if __name__ == "__main__":
     if args.save_method == "excel":
         save_to_excel(data_list, args.sgTypecode, is_elected=True)
     elif args.save_method == "mongo":
-        save_to_mongo(data_list, args.sgTypecode, "local_councilor")
+        save_to_mongo(data_list, args.sgTypecode, ELECTED_TYPECODE_TYPE[args.sgTypecode])

@@ -10,8 +10,14 @@ class CouncilType(str, Enum):
     """
 
     LOCAL_COUNCIL = "local_councilor"
+    LOCAL_COUNCIL_CAND = "local_councilor_candidate"
+
     NATIONAL_COUNCIL = "national_councilor"
+    NATIONAL_COUNCIL_CAND = "national_councilor_candidate"
+
     METROPOLITAN_COUNCIL = "metropolitan_councilor"
+    METROPOLITAN_COUNCIL_CAND = "metropolitan_councilor_candidate"
+
     LOCAL_LEADER = "local_leader"
     METRO_LEADER = "metro_leader"
     """

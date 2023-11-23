@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 from typing import List, Optional, Dict
 
-from . import BASE_DIR, SG_TYPECODE, SG_TYPECODE_TYPE
+from . import BASE_DIR, SG_TYPECODE
 from configurations.secrets import MongoDBSecrets
 from db.client import client
 from API.MongoDB import Councilor
