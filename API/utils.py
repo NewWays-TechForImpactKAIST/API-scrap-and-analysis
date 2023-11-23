@@ -36,10 +36,9 @@ def get_district_id(sd_name: str, wiw_name: str) -> Optional[int]:
     return LOCAL_METRO_ID_MAP[(sd_name, wiw_name)]
 
 
-def save_to_mongo(data: List[dict], sgTypecode: str) -> None:
+def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
     db = client["council"]
-    main_collection = db["local_councilor"]
-    # main_collection = db["test"]
+    main_collection = db[where]
 
     # TODO: Support other types of councils
     if sgTypecode in ["6", "9"]:
