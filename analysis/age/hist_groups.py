@@ -119,20 +119,23 @@ def local_to_metro_list(sdName, wiwName):
 
 
 def insert_data_to_mongo(
-    metroId, histdata, histcoll, localId=None, statdata=None, statcoll=None
+    dic, histdata, histcoll, localId=None, statdata=None, statcoll=None
 ):
     if localId is None:
-        histcoll.insert_one({"metroId": metroId, "data": histdata})
+        dic["data"] = histdata
+        histcoll.insert_one(dic)
         if statdata is not None:
             print(statdata)
-            statcoll.insert_one({"metroId": metroId, "data": statdata})
+            dic["data"] = statdata
+            statcoll.insert_one(dic)
     else:
-        histcoll.insert_one({"metroId": metroId, "localId": localId, "data": histdata})
+        dic["localId"] = localId
+        dic["data"] = histdata
+        histcoll.insert_one(dic)
         if statdata is not None:
             print(statdata)
-            statcoll.insert_one(
-                {"metroId": metroId, "localId": localId, "data": statdata}
-            )
+            dic["data"] = statdata
+            statcoll.insert_one(dic)
 
 
 def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name):
@@ -152,17 +155,21 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
     statdb = client["stats"]
     metroIds = distdb["metro_district"]
     localIds = distdb["local_district"]
-    histcollection = statdb["age_histtmp"]
-    statcollection = statdb["age_stattmp"]
-    level = "1level" if cluster_by == "sdName" else "2level"
-    histcoll = histcollection[folder_name + "_" + year + "_" + level + "_" + method]
+    histcoll = statdb["age_hist"]
+    statcoll = statdb["age_stat"] # method = "equal"에서 써 줄 통계.
+    councilorType = "elected" if folder_name[-2:] == "당선"\
+        else "candidate" if folder_name[-2:] == "후보"\
+        else ValueError("folder_name should end with '당선' or '후보'")
+    level = 1 if cluster_by == "sdName" else 2
+    basedic = {"councilorType": councilorType,
+                "year": year,
+                "level": level,
+                "method": method,
+                }
     # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
-    histcoll.delete_many({})
-    # method = "equal"에서 써 줄 statistics가 들어있는 collection.
-    statcoll = None
+    histcoll.delete_many(basedic)
     if method == "equal":
-        statcoll = statcollection[folder_name + "_" + year + "_" + level + "_" + method]
-        statcoll.delete_many({})
+        statcoll.delete_many(basedic)
     youngest_age = ("", 100)
     oldest_age = ("", 0)
     print(f"({year}), {n_clst} clusters")
@@ -171,7 +178,7 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
     # colors = cm.rainbow(np.linspace(0, 1, n_clst))
 
     # wiwName을 처리합니다
-    if level == "2level":
+    if level == 2:
         df["sdName"] = df[["sdName", "wiwName"]].apply(
             lambda x: local_to_metro_list(*x), axis=1
         )
@@ -248,28 +255,32 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
         # 지역 id를 잘 설정해줍니다.
         metroname = df_clst["sdName"].iloc[0]
         metroId = metroIds.find_one({"sdName": metroname})["metroId"]
-        if level == "1level":
+        if level == 1:
             print("sdName is ", metroname)
+            dic = basedic.copy()
+            dic["metroId"] = metroId
             insert_data_to_mongo(
-                metroId, histdata, histcoll, statdata=statdata, statcoll=statcoll
+                dic, histdata, histcoll, statdata=statdata, statcoll=statcoll
             )
         elif metroname in change_lvl2to1.values():
             print("sdName is ", metroname)
-            l1histcoll = histcollection[folder_name + "_" + year + "_1level_" + method]
-            l1histcoll.delete_many({"metroId": metroId})  # 기존 정보를 삭제
+            dic = basedic.copy()
+            dic["level"] = 1
+            dic["metroId"] = metroId
+            histcoll.delete_many(dic)  # 기존 정보를 삭제
             if method == "kmeans":
-                insert_data_to_mongo(metroId, histdata, l1histcoll)
+                insert_data_to_mongo(dic, histdata, histcoll)
             else:
-                l1statcoll = statcollection[
-                    folder_name + "_" + year + "_1level_" + method
-                ]
-                l1statcoll.delete_many({"metroId": metroId})
+                # l1statcoll = statcollection[
+                #     folder_name + "_" + year + "_1level_" + method
+                # ]
+                statcoll.delete_many(dic)
                 insert_data_to_mongo(
-                    metroId,
+                    dic,
                     histdata,
-                    l1histcoll,
+                    histcoll,
                     statdata=statdata,
-                    statcoll=l1statcoll,
+                    statcoll=statcoll,
                 )
         else:
             localname = df_clst["wiwName"].iloc[0]
@@ -277,8 +288,10 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
             localId = localIds.find_one({"sdName": metroname, "wiwName": localname})[
                 "localId"
             ]
+            dic = basedic.copy()
+            dic["metroId"] = metroId
             insert_data_to_mongo(
-                metroId,
+                dic,
                 histdata,
                 histcoll,
                 statdata=statdata,
