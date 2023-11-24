@@ -4,6 +4,7 @@ from db.types import CouncilType, Councilor
 from scrap.utils.types import ScrapResult
 from scrap.utils.requests import get_soup, get_selenium, By
 
+
 def ret_metro_councilors(cid, councilors):
     return ScrapResult(
         council_id=cid,
@@ -11,8 +12,10 @@ def ret_metro_councilors(cid, councilors):
         councilors=councilors,
     )
 
+
 def scrap_metro_1(
-    cid, url="https://www.smc.seoul.kr/main/memIntro01.do?menuId=001002001001",
+    cid,
+    url="https://www.smc.seoul.kr/main/memIntro01.do?menuId=001002001001",
 ) -> ScrapResult:
     """서울시 페이지에서 의원 상세약력 스크랩
 
@@ -75,7 +78,9 @@ def scrap_metro_2(cid, url="https://council.busan.go.kr/council/past02") -> Scra
     return ret_metro_councilors(cid, councilors)
 
 
-def scrap_metro_3(cid, url="https://council.daegu.go.kr/kr/member/active") -> ScrapResult:
+def scrap_metro_3(
+    cid, url="https://council.daegu.go.kr/kr/member/active"
+) -> ScrapResult:
     """대구시 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
@@ -99,7 +104,9 @@ def scrap_metro_3(cid, url="https://council.daegu.go.kr/kr/member/active") -> Sc
     return ret_metro_councilors(cid, councilors)
 
 
-def scrap_metro_4(cid, url="https://www.icouncil.go.kr/main/member/name.jsp") -> ScrapResult:
+def scrap_metro_4(
+    cid, url="https://www.icouncil.go.kr/main/member/name.jsp"
+) -> ScrapResult:
     """인천시 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
@@ -123,7 +130,9 @@ def scrap_metro_4(cid, url="https://www.icouncil.go.kr/main/member/name.jsp") ->
     return ret_metro_councilors(cid, councilors)
 
 
-def scrap_metro_5(cid, url="https://council.gwangju.go.kr/index.do?PID=029") -> ScrapResult:
+def scrap_metro_5(
+    cid, url="https://council.gwangju.go.kr/index.do?PID=029"
+) -> ScrapResult:
     """광주시 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
@@ -146,7 +155,8 @@ def scrap_metro_5(cid, url="https://council.gwangju.go.kr/index.do?PID=029") -> 
 
 
 def scrap_metro_6(
-    cid, url="https://council.daejeon.go.kr/svc/cmp/MbrListByPhoto.do",
+    cid,
+    url="https://council.daejeon.go.kr/svc/cmp/MbrListByPhoto.do",
 ) -> ScrapResult:
     """대전시 페이지에서 의원 상세약력 스크랩
 
@@ -170,7 +180,8 @@ def scrap_metro_6(
 
 
 def scrap_metro_7(
-    cid, url="https://www.council.ulsan.kr/kor/councillor/viewByPerson.do",
+    cid,
+    url="https://www.council.ulsan.kr/kor/councillor/viewByPerson.do",
 ) -> ScrapResult:
     """울산시 페이지에서 의원 상세약력 스크랩
 
@@ -193,7 +204,8 @@ def scrap_metro_7(
 
 
 def scrap_metro_8(
-    cid, url="https://council.sejong.go.kr/mnu/pom/introductionMemberByName.do",
+    cid,
+    url="https://council.sejong.go.kr/mnu/pom/introductionMemberByName.do",
 ) -> ScrapResult:
     """세종시 페이지에서 의원 상세약력 스크랩
 
@@ -225,7 +237,8 @@ def scrap_metro_8(
 
 
 def scrap_metro_9(
-    cid, url="https://www.ggc.go.kr/site/main/memberInfo/actvMmbr/list?cp=1&menu=consonant&sortOrder=MI_NAME&sortDirection=ASC",
+    cid,
+    url="https://www.ggc.go.kr/site/main/memberInfo/actvMmbr/list?cp=1&menu=consonant&sortOrder=MI_NAME&sortDirection=ASC",
 ) -> ScrapResult:
     """경기도 페이지에서 의원 상세약력 스크랩
 
@@ -257,7 +270,8 @@ def scrap_metro_9(
 
 
 def scrap_metro_10(
-    cid, url="https://council.chungbuk.kr/kr/member/active.do",
+    cid,
+    url="https://council.chungbuk.kr/kr/member/active.do",
 ) -> ScrapResult:
     """충청북도 페이지에서 의원 상세약력 스크랩
 
@@ -287,7 +301,8 @@ def scrap_metro_10(
 
 
 def scrap_metro_11(
-    cid, url="https://council.chungnam.go.kr/kr/member/name.do",
+    cid,
+    url="https://council.chungnam.go.kr/kr/member/name.do",
 ) -> ScrapResult:
     """충청남도 페이지에서 의원 상세약력 스크랩
 
@@ -317,7 +332,8 @@ def scrap_metro_11(
 
 
 def scrap_metro_12(
-    cid, url="https://www.assem.jeonbuk.kr/board/list.do?boardId=2018_assemblyman&searchType=assem_check&keyword=1&menuCd=DOM_000000103001000000&contentsSid=453",
+    cid,
+    url="https://www.assem.jeonbuk.kr/board/list.do?boardId=2018_assemblyman&searchType=assem_check&keyword=1&menuCd=DOM_000000103001000000&contentsSid=453",
 ) -> ScrapResult:
     """전라북도 페이지에서 의원 상세약력 스크랩
 
@@ -345,7 +361,8 @@ def scrap_metro_12(
 
 
 def scrap_metro_13(
-    cid, url="https://www.jnassembly.go.kr/profileHistory.es?mid=a10202010000&cs_daesoo=12",
+    cid,
+    url="https://www.jnassembly.go.kr/profileHistory.es?mid=a10202010000&cs_daesoo=12",
 ) -> ScrapResult:
     """전라남도 페이지에서 의원 상세약력 스크랩
 
@@ -399,7 +416,8 @@ def scrap_metro_14(cid, url="https://council.gb.go.kr/kr/member/name") -> ScrapR
 
 
 def scrap_metro_15(
-    cid, url="https://council.gyeongnam.go.kr/kr/member/active.do",
+    cid,
+    url="https://council.gyeongnam.go.kr/kr/member/active.do",
 ) -> ScrapResult:
     """경상남도 페이지에서 의원 상세약력 스크랩
 
@@ -430,7 +448,9 @@ def scrap_metro_15(
     return ret_metro_councilors(cid, councilors)
 
 
-def scrap_metro_16(cid, url="https://council.gangwon.kr/kr/member/name.do") -> ScrapResult:
+def scrap_metro_16(
+    cid, url="https://council.gangwon.kr/kr/member/name.do"
+) -> ScrapResult:
     """강원도 페이지에서 의원 상세약력 스크랩
 
     :param url: 의원 목록 사이트 url
@@ -457,7 +477,8 @@ def scrap_metro_16(cid, url="https://council.gangwon.kr/kr/member/name.do") -> S
 
 
 def scrap_metro_17(
-    cid, url="https://www.council.jeju.kr/cmember/active/name.do",
+    cid,
+    url="https://www.council.jeju.kr/cmember/active/name.do",
 ) -> ScrapResult:
     """제주도 페이지에서 의원 상세약력 스크랩
 

@@ -62,12 +62,15 @@ def google_authorization():
     return gspread.authorize(creds)
 
 
-def read_record_from_spreadsheet(link = "https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905") -> list[dict]:
+def read_record_from_spreadsheet(
+    link="https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905",
+) -> list[dict]:
     client = google_authorization()
     spreadsheet = client.open_by_url(link)
     worksheet = spreadsheet.get_worksheet(0)
 
     return worksheet.get_all_records()
+
 
 def scrap_all_metro_councils() -> None:
     data = read_record_from_spreadsheet()
@@ -81,9 +84,7 @@ def scrap_all_metro_councils() -> None:
         try:
             if hasattr(sys.modules[__name__], function_name):
                 function_to_call = getattr(sys.modules[__name__], function_name)  # type: ignore
-                result = str(
-                    function_to_call(n).councilors
-                )
+                result = str(function_to_call(n).councilors)
             else:
                 emsg: str = f"[scrap/metropolitan_council.py]에 {n}번 지역을 위한\
                       함수가 없네요."
@@ -110,6 +111,7 @@ def scrap_all_metro_councils() -> None:
         + emessages
     )
     email_result(emessages)
+
 
 def scrap_all_local_councils() -> None:
     # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
@@ -243,9 +245,11 @@ def scrap_all_local_councils() -> None:
     )
     email_result(emessages)
 
+
 def main() -> None:
     scrap_all_metro_councils()
     scrap_all_local_councils()
+
 
 if __name__ == "__main__":
     main()
