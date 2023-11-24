@@ -115,7 +115,7 @@ def add_councilors(
         # find the councilor in candidate
         query = {"localId": cid, "name": councilor.name}
         all_documents = list(candcoll.find(query))
-        assert (len(all_documents) <= 1, "신규의원을 같은 의회의 후보중에 찾는데, 동명이인이 있네요.")
+        assert len(all_documents) <= 1, "신규의원을 같은 의회의 후보중에 찾는데, 동명이인이 있네요."
         if len(all_documents) == 0:
             # no candidate found, report to user
             print(f"신규의원 {councilor.name}을 찾을 수 없습니다.")
