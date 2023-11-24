@@ -56,13 +56,17 @@ def cluster_data(method, n_clst, df):
         df["cluster_label"] = kmeans.labels_
     elif method == "equal":
         bins = [-np.inf] + quantiles + [np.inf]
-        df["cluster_label"] = pd.cut(df["age"], bins=bins, labels=False, include_lowest=True)
+        df["cluster_label"] = pd.cut(
+            df["age"], bins=bins, labels=False, include_lowest=True
+        )
         print(quantiles)
         print(unique_q_idx)
         df["cluster_label"] = df["cluster_label"].apply(lambda x: unique_q_idx[x])
         max_num = df["cluster_label"].max()
         if max_num != n_clst - 1:
-            df["cluster_label"] = df["cluster_label"].apply(lambda x: n_clst - 1 if x == max_num else x)
+            df["cluster_label"] = df["cluster_label"].apply(
+                lambda x: n_clst - 1 if x == max_num else x
+            )
 
     return df
 
@@ -271,7 +275,9 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
                 "minAge": int(age),
                 "maxAge": int(age) + 1,
                 "count": df_clst[df_clst["age"] == age].shape[0],
-                "ageGroup": int(df_clst.loc[df_clst["age"] == age].iloc[0]["cluster_label"])
+                "ageGroup": int(
+                    df_clst.loc[df_clst["age"] == age].iloc[0]["cluster_label"]
+                ),
             }
             for age in df_clst["age"].unique()
         ]
