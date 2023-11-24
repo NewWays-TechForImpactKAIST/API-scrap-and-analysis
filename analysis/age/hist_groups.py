@@ -39,7 +39,13 @@ def plot_young_and_old(youngest_cluster, oldest_cluster):
 
 
 def cluster_data(method, n_clst, df):
-    clst_labels = []
+    quantiles = np.quantile(df["age"], np.arange(0, 1, 1 / n_clst)[1:])
+    unique_q_idx = [0]
+    for i in range(1, len(quantiles)):
+        if quantiles[i] != quantiles[i - 1]:
+            unique_q_idx.append(i)
+    unique_q_idx.append(n_clst - 1)
+    quantiles = sorted(list(set(quantiles)))
     if method == "kmeans":
         ages_data = df[["age"]]
         # K-means 모델을 초기화하고 학습합니다.
@@ -47,30 +53,16 @@ def cluster_data(method, n_clst, df):
         kmeans.fit(ages_data)
 
         # 각 데이터 포인트가 속한 클러스터를 나타내는 레이블을 가져옵니다.
-        clst_labels = kmeans.labels_
+        df["cluster_label"] = kmeans.labels_
     elif method == "equal":
-        clst_labels = np.repeat(np.arange(n_clst), len(df) // n_clst)
-        clst_labels = np.append(clst_labels, np.arange(len(df) % n_clst))
-        clst_labels.sort()
-        clst_labels = np.array(clst_labels)
-    df["cluster_label"] = clst_labels
-    # 같은 나이는 같은 클러스터에 속하도록 합니다.
-    # 0번 클러스터는 생기도록 합니다.
-    for i in [0]:
-        max_age = df[df["cluster_label"] == i]["age"].max()
-        # when "age" == max_age, change "cluster_label" to be i
-        df.loc[df["age"] == max_age, "cluster_label"] = i
-    for i in range(2, n_clst):
-        min_age = df[df["cluster_label"] == i]["age"].min()
-        # when "age" == min_age, change "cluster_label" to be i
-        df.loc[df["age"] == min_age, "cluster_label"] = i
-    # (n_clst - 1)번 클러스터는 생기도록 합니다.
-    if df[df["cluster_label"] == (n_clst - 1)]["age"].shape[0] == 0:
-        for i in range(n_clst - 2, 0, -1):
-            cluster_to_exchange = df[df["cluster_label"] == i]
-            if not cluster_to_exchange.empty:
-                df.loc[cluster_to_exchange.index, "cluster_label"] = n_clst - 1
-                break
+        bins = [-np.inf] + quantiles + [np.inf]
+        df["cluster_label"] = pd.cut(df["age"], bins=bins, labels=False, include_lowest=True)
+        print(quantiles)
+        print(unique_q_idx)
+        df["cluster_label"] = df["cluster_label"].apply(lambda x: unique_q_idx[x])
+        max_num = df["cluster_label"].max()
+        if max_num != n_clst - 1:
+            df["cluster_label"] = df["cluster_label"].apply(lambda x: n_clst - 1 if x == max_num else x)
 
     return df
 
@@ -236,6 +228,8 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
     # df_age = pd.DataFrame(columns=["area", "age"])
     for area, df_clst in df.groupby(cluster_by):
         df_clst = cluster_data(method, n_clst, df_clst)
+        first_q = df_clst[df_clst["cluster_label"] == 0]["age"].max()
+        last_q = df_clst[df_clst["cluster_label"] == n_clst - 1]["age"].min()
         # 클러스터 중심 나이를 계산합니다.
         clst_age_mean = []
         for i in range(n_clst):
@@ -251,11 +245,6 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
             clst_age_mean.sort()
             # new_data = pd.DataFrame({"area": area, "age": clst_age_mean})
             # df_age = pd.concat([df_age, new_data], ignore_index=True)
-        elif method == "equal":
-            # firstquintile is the oldest age in the cluster_label == 0
-            # lastquintile is the youngest age in the cluster_label == n_clst - 1
-            firstquintile = df_clst[df_clst["cluster_label"] == 0]["age"].max()
-            lastquintile = df_clst[df_clst["cluster_label"] == n_clst - 1]["age"].min()
         # 지역의 가장 젊은, 나이든 그룹을 찾습니다
         yb_clst = df_clst[df_clst["cluster_label"] == clst_of_young]
         ob_clst = df_clst[df_clst["cluster_label"] == clst_of_old]
@@ -290,8 +279,8 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
         if method == "equal":
             statdata = [
                 {
-                    "firstquintile": int(firstquintile),
-                    "lastquintile": int(lastquintile),
+                    "firstquintile": int(first_q),
+                    "lastquintile": int(last_q),
                     "population": int(df_clst.shape[0]),
                 }
             ]
