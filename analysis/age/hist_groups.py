@@ -279,16 +279,12 @@ def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name
         # 히스토그램을 그립니다.
         histdata = [
             {
-                "minAge": age,
-                "maxAge": age + 1,
-                "count": count,
-                "ageGroup": age_group,
+                "minAge": int(age),
+                "maxAge": int(age) + 1,
+                "count": df_clst[df_clst["age"] == age].shape[0],
+                "ageGroup": int(df_clst.loc[df_clst["age"] == age].iloc[0]["cluster_label"])
             }
-            for age, count, age_group in zip(
-                range(df_clst["age"].min(), df_clst["age"].max() + 1),
-                df_clst.groupby("age").size(),
-                df_clst.groupby("age")["cluster_label"].first(),
-            )
+            for age in df_clst["age"].unique()
         ]
         statdata = None
         if method == "equal":
