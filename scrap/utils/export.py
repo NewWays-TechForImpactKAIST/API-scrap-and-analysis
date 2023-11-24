@@ -1,12 +1,13 @@
 import os
 import json
 from dataclasses import asdict
+from typing import Dict
 
 from scrap.utils.types import ScrapResult, ScrapBasicArgument
 
 
 def export_results_to_json(
-    results: dict[int, ScrapResult], output_path: str, current_time: str
+    results: Dict[int | str, ScrapResult], output_path: str, current_time: str
 ):
     os.makedirs(output_path, exist_ok=True)
     results = {
@@ -22,7 +23,7 @@ def export_results_to_json(
 
 
 def export_results_to_txt(
-    results: dict[int, ScrapResult], output_path: str, current_time: str
+    results: Dict[int | str, ScrapResult], output_path: str, current_time: str
 ):
     os.makedirs(output_path, exist_ok=True)
     results = {
