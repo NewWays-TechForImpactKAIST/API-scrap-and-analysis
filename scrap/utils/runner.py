@@ -128,7 +128,7 @@ class ScraperRunner:
         else:
             raise NotImplementedError(f"함수를 찾을 수 없습니다: {function_name}")
         return result
-    
+
     def run_heads(self) -> ScrapResult:
         raise NotImplementedError("단체장 스크랩")
 
@@ -152,7 +152,7 @@ class ScraperRunner:
 
         for cid in tqdm(cids):
             try:
-                result  = self.run_single_metro(cid)
+                result = self.run_single_metro(cid)
                 if "정보 없음" in str(result.councilors):
                     raise ValueError("정보 없음이 포함되어 있습니다.")
                 scrape_results[cid] = result
@@ -190,7 +190,9 @@ def main(args: Dict[str, str]) -> None:
         )
     else:
         runner = ScraperRunner(
-            None, None, None,
+            None,
+            None,
+            None,
             runner_kwargs,
         )
 
@@ -202,7 +204,7 @@ def main(args: Dict[str, str]) -> None:
     elif where == "heads":
         results = runner.run_heads()
     else:
-        assert(where == "national_council")
+        assert where == "national_council"
         results = runner.run_nationals()
 
     if args.get("update_mongo"):
@@ -231,8 +233,10 @@ def parse_cids(cids_str: Optional[str], where: str) -> list[int]:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="지방의회/광역의회/국회/단체장\
-                                     스크랩 스크립트 실행")
+    parser = argparse.ArgumentParser(
+        description="지방의회/광역의회/국회/단체장\
+                                     스크랩 스크립트 실행"
+    )
     parser.add_argument(
         "data_source",
         help="사용할 데이터 소스 ('google_sheets', 'mongodb')",
@@ -255,8 +259,18 @@ if __name__ == "__main__":
         default="json",
     )
     parser.add_argument("--output_path", help="스크랩 결과 저장 경로", default="output")
-    parser.add_argument("-rpath", "--runner_args_path", help="runner_args JSON 파일 경로", default="scrap/utils/runner_args.json")
-    parser.add_argument("-cpath", "--council_args_path", help="council_args JSON 파일 경로", default="scrap/utils/council_args.json")
+    parser.add_argument(
+        "-rpath",
+        "--runner_args_path",
+        help="runner_args JSON 파일 경로",
+        default="scrap/utils/runner_args.json",
+    )
+    parser.add_argument(
+        "-cpath",
+        "--council_args_path",
+        help="council_args JSON 파일 경로",
+        default="scrap/utils/council_args.json",
+    )
     args = vars(parser.parse_args())
 
     main(args)
