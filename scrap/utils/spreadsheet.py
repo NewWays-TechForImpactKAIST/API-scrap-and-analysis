@@ -23,6 +23,7 @@ from scrap.local_councils.chungcheong import *
 from scrap.local_councils.jeolla import *
 from scrap.local_councils.gyeongsang import *
 from scrap.local_councils import *
+from scrap.metropolitan_council import *
 from requests.exceptions import Timeout
 from scrap.utils.email_result import email_result
 
@@ -61,16 +62,56 @@ def google_authorization():
     return gspread.authorize(creds)
 
 
-def read_record_from_spreadsheet() -> list[dict]:
+def read_record_from_spreadsheet(link = "https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905") -> list[dict]:
     client = google_authorization()
-    link = "https://docs.google.com/spreadsheets/d/1fBDJjkw8FSN5wXrvos9Q2wDsyItkUtNFGOxUZYE-h0M/edit#gid=1127955905"  # T4I-의회목록
     spreadsheet = client.open_by_url(link)
     worksheet = spreadsheet.get_worksheet(0)
 
     return worksheet.get_all_records()
 
+def scrap_all_metro_councils() -> None:
+    data = read_record_from_spreadsheet()
+    result: str = ""
 
-def main() -> None:
+    parse_error_times = 0
+    timeouts = 0
+    N = 17
+    for n in range(1, N + 1):  # range(1, N + 1):
+        function_name = f"scrap_metro_{n}"
+        try:
+            if hasattr(sys.modules[__name__], function_name):
+                function_to_call = getattr(sys.modules[__name__], function_name)  # type: ignore
+                result = str(
+                    function_to_call(n).councilors
+                )
+            else:
+                emsg: str = f"[scrap/metropolitan_council.py]에 {n}번 지역을 위한\
+                      함수가 없네요."
+                add_error(n, emsg)
+            if "정보 없음" in result:
+                emsg = "스크랩 결과에 '정보 없음'이 포함되어 있습니다. 일부 인명에\
+                    대해 스크랩이 실패했다는 뜻이에요. 함수나 인자를 점검해 주세요."
+                parse_error_times += 1
+                errors.append(n)
+            # print(f"| {n} | {result}")
+        except Timeout:
+            emsg = f"{council_url}에 시도한 연결이 타임아웃됐어요."
+            timeouts += 1
+            add_error(n, emsg)
+        except Exception as e:
+            add_error(n, "기타 오류 - " + str(e))
+    emessages = (
+        f"""
+        총 실행 횟수: {N}
+        에러: {enumbers}, 총 {len(enumbers)}회
+        그 중 '정보 없음' 횟수: {parse_error_times}
+        타임아웃 횟수: {timeouts}
+    """
+        + emessages
+    )
+    email_result(emessages)
+
+def scrap_all_local_councils() -> None:
     # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
     euc_kr = [
         6,
@@ -202,6 +243,9 @@ def main() -> None:
     )
     email_result(emessages)
 
+def main() -> None:
+    scrap_all_metro_councils()
+    scrap_all_local_councils()
 
 if __name__ == "__main__":
     main()

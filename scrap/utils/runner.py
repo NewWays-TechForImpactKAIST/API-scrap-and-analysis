@@ -27,6 +27,7 @@ from scrap.local_councils.chungcheong import *
 from scrap.local_councils.jeolla import *
 from scrap.local_councils.gyeongsang import *
 from scrap.local_councils import *
+from scrap.metropolitan_council import *
 from requests.exceptions import Timeout
 
 
@@ -41,12 +42,15 @@ class ScraperRunner:
         data_source: str,
         kwargs: Dict[str, str] = {},
     ):
-        with open(runner_args_path, "r") as f:
-            self.runner_args = json.load(f)
-        with open(council_args_path, "r") as f:
-            self.council_args = json.load(f)
+        if runner_args_path is None or council_args_path is None or data_source is None:
+            pass
+        else:
+            with open(runner_args_path, "r") as f:
+                self.runner_args = json.load(f)
+            with open(council_args_path, "r") as f:
+                self.council_args = json.load(f)
 
-        self.get_records_from_data_source(data_source)
+            self.get_records_from_data_source(data_source)
 
         self.setup_logging(kwargs.get("log_path"), kwargs.get("current_time"))
         self.error_log = dict()
@@ -116,12 +120,39 @@ class ScraperRunner:
 
         return result
 
+    def run_single_metro(self, n: int) -> ScrapResult:
+        function_name = f"scrap_metro_{n}"
+        if hasattr(sys.modules[__name__], function_name):
+            function_to_call = getattr(sys.modules[__name__], function_name)
+            result = function_to_call(n)
+        else:
+            raise NotImplementedError(f"함수를 찾을 수 없습니다: {function_name}")
+        return result
+    
+    def run_heads(self) -> ScrapResult:
+        raise NotImplementedError("단체장 스크랩")
+
+    def run_nationals(self) -> ScrapResult:
+        raise NotImplementedError("국회 스크랩")
+
     def run_all_councils(self, cids: Iterable[int]) -> Dict[int, ScrapResult]:
         scrape_results = dict()
 
         for cid in tqdm(cids):
             try:
                 result = self.run_single_council(cid)
+                if "정보 없음" in str(result.councilors):
+                    raise ValueError("정보 없음이 포함되어 있습니다.")
+                scrape_results[cid] = result
+            except Exception as e:
+                self.handle_errors(cid, e)
+
+    def run_all_metros(self, cids: Iterable[int]) -> Dict[int, ScrapResult]:
+        scrape_results = dict()
+
+        for cid in tqdm(cids):
+            try:
+                result  = self.run_single_metro(cid)
                 if "정보 없음" in str(result.councilors):
                     raise ValueError("정보 없음이 포함되어 있습니다.")
                 scrape_results[cid] = result
@@ -143,16 +174,36 @@ def main(args: Dict[str, str]) -> None:
         "log_path": args.get("log_path"),
         "current_time": current_time,
     }
+    where = "local_council"
+    if args.get("where") == "1":
+        where = "metro_council"
+    elif args.get("where") == "3":
+        where = "heads"
+    elif args.get("where") == "4":
+        where = "national_council"
+    if where == "local_council":
+        runner = ScraperRunner(
+            args["runner_args_path"],
+            args["council_args_path"],
+            args["data_source"],
+            runner_kwargs,
+        )
+    else:
+        runner = ScraperRunner(
+            None, None, None,
+            runner_kwargs,
+        )
 
-    runner = ScraperRunner(
-        args["runner_args_path"],
-        args["council_args_path"],
-        args["data_source"],
-        runner_kwargs,
-    )
-
-    cids_to_run = parse_cids(args.get("cids"))
-    results = runner.run_all_councils(cids_to_run)
+    cids_to_run = parse_cids(args.get("cids"), where)
+    if where == "local_council":
+        results = runner.run_all_councils(cids_to_run)
+    elif where == "metro_council":
+        results = runner.run_all_metros(cids_to_run)
+    elif where == "heads":
+        results = runner.run_heads()
+    else:
+        assert(where == "national_council")
+        results = runner.run_nationals()
 
     if args.get("update_mongo"):
         for result in results.values():
@@ -166,23 +217,29 @@ def main(args: Dict[str, str]) -> None:
             export_results_to_txt(results, args.get("output_path"), current_time)
 
 
-def parse_cids(cids_str: Optional[str]) -> list[int]:
+def parse_cids(cids_str: Optional[str], where: str) -> list[int]:
     if cids_str:
         return [int(cid.strip()) for cid in cids_str.split(",")]
-    else:
+    elif where == "metro_council":
+        return range(1, 18)
+    elif where == "local_council":
         return range(1, 227)
+    elif where == "heads":
+        raise NotImplementedError("단체장 스크랩은 몇부터 몇까지죠?")
+    elif where == "national_council":
+        raise NotImplementedError("국회 스크랩은 몇부터 몇까지죠?")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="지방의회 스크랩 스크립트 실행")
-    parser.add_argument("runner_args_path", help="runner_args JSON 파일 경로")
-    parser.add_argument("council_args_path", help="council_args JSON 파일 경로")
+    parser = argparse.ArgumentParser(description="지방의회/광역의회/국회/단체장\
+                                     스크랩 스크립트 실행")
     parser.add_argument(
         "data_source",
         help="사용할 데이터 소스 ('google_sheets', 'mongodb')",
         choices=["google_sheets", "mongodb"],
         default="google_sheets",
     )
+    parser.add_argument("-w", "--where", help="1 = 광역의회, 2 = 지방의회, 3 = 단체장, 4 = 국회")
     parser.add_argument("-c", "--cids", help="스크랩할 지방의회 ID 목록 (쉼표로 구분)", default=None)
     parser.add_argument("-l", "--log_path", help="로그 파일 경로", default="logs")
     parser.add_argument(
@@ -198,6 +255,8 @@ if __name__ == "__main__":
         default="json",
     )
     parser.add_argument("--output_path", help="스크랩 결과 저장 경로", default="output")
+    parser.add_argument("-rpath", "--runner_args_path", help="runner_args JSON 파일 경로", default="scrap/utils/runner_args.json")
+    parser.add_argument("-cpath", "--council_args_path", help="council_args JSON 파일 경로", default="scrap/utils/council_args.json")
     args = vars(parser.parse_args())
 
     main(args)
