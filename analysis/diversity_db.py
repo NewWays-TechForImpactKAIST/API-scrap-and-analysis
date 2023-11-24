@@ -26,6 +26,8 @@ def gini_simpson(data, stair=0, opts=True):
 
     if opts:
         num_cats = len([c for c in counts.values() if c > 0])
+        if num_cats <= 1:
+            return 0.0
         max_gs_idx = (num_cats - 1) / num_cats * total / (total - 1)
         gs_idx /= max_gs_idx
 
@@ -63,7 +65,7 @@ def save_to_mongo(localId: int, factor: str, stair=0, opts=False) -> None:
     )
 
 
-def calculate_rank(factor: str) -> None:
+def calculate_rank_local(factor: str) -> None:
     result = client["stats"]["diversity_index"].aggregate(
         [
             {"$sort": {f"{factor}DiversityIndex": -1}},
@@ -80,11 +82,76 @@ def calculate_rank(factor: str) -> None:
         )
 
 
+def calculate_age_diversity_rank_history() -> None:
+    for councilor_type in ["elected", "candidate"]:
+        for localId in range(1, 227):
+            docs = client["stats"]["age_hist"].find(
+                {
+                    "councilorType": councilor_type,
+                    "method": "equal",
+                    "level": 2,
+                    "localId": localId,
+                }
+            )
+            for doc in docs:
+                diversity_index = gini_simpson(
+                    [
+                        group["minAge"]
+                        for group in doc["data"]
+                        for _ in range(group["count"])
+                    ],
+                    stair=10,
+                )
+                client["stats"]["age_hist"].find_one_and_update(
+                    {
+                        "councilorType": councilor_type,
+                        "method": "equal",
+                        "level": 2,
+                        "localId": localId,
+                        "year": doc["year"],
+                    },
+                    {"$set": {"diversityIndex": diversity_index}},
+                )
+
+        years = list({doc["year"] for doc in client["stats"]["age_hist"].find()})
+
+        for year in years:
+            result = client["stats"]["age_hist"].aggregate(
+                [
+                    {
+                        "$match": {
+                            "councilorType": councilor_type,
+                            "method": "equal",
+                            "level": 2,
+                            "year": year,
+                        }
+                    },
+                    {"$sort": {"diversityIndex": -1}},
+                    {"$group": {"_id": "", "items": {"$push": "$$ROOT"}}},
+                    {"$unwind": {"path": "$items", "includeArrayIndex": "items.rank"}},
+                    {"$replaceRoot": {"newRoot": "$items"}},
+                    {"$addFields": {"rank": {"$add": ["$rank", 1]}}},
+                ]
+            )
+            for doc in result:
+                client["stats"]["age_hist"].find_one_and_update(
+                    {
+                        "councilorType": councilor_type,
+                        "method": "equal",
+                        "level": 2,
+                        "localId": doc["localId"],
+                        "year": year,
+                    },
+                    {"$set": {"diversityRank": int(doc["rank"])}},
+                )
+
+
 if __name__ == "__main__":
-    for localId in range(1, 227):
-        save_to_mongo(localId, "age", stair=10)
-        save_to_mongo(localId, "gender")
-        save_to_mongo(localId, "party")
-    calculate_rank("age")
-    calculate_rank("gender")
-    calculate_rank("party")
+    # for localId in range(1, 227):
+    #     save_to_mongo(localId, "age", stair=10)
+    #     save_to_mongo(localId, "gender")
+    #     save_to_mongo(localId, "party")
+    # calculate_rank_local("age")
+    # calculate_rank_local("gender")
+    # calculate_rank_local("party")
+    calculate_age_diversity_rank_history()
