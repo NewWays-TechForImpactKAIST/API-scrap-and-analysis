@@ -37,3 +37,11 @@ class EmailSecrets:
     sender_email = str(os.getenv("SCRAP_SENDER_EMAIL") or "")
     receiver_email = str(os.getenv("SCRAP_RECEIVER_EMAIL") or "")
     password = str(os.getenv("SCRAP_EMAIL_PASSWORD") or "")
+
+
+class WebhookSecrets:
+    """
+    스크랩 결과 웹훅 전송에 필요한 키를 정의합니다.
+    """
+
+    webhook_url = str(os.getenv("WEBHOOK_URL") or "")

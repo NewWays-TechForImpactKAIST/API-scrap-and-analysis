@@ -10,6 +10,8 @@ from collections.abc import Iterable
 from tqdm import tqdm
 from abc import *
 
+from configurations.secrets import WebhookSecrets
+
 from scrap.utils.export import export_results_to_json, export_results_to_txt
 from scrap.utils.database import save_to_database
 from scrap.utils.types import ScrapResult, ScrapBasicArgument
@@ -31,6 +33,7 @@ from scrap.local_councils import *
 from scrap.metropolitan_council import *
 from scrap.national_council import *
 from scrap.group_head import *
+from requests import post
 from requests.exceptions import Timeout
 
 
@@ -64,6 +67,16 @@ class BaseScraper(metaclass=ABCMeta):
         elif isinstance(error, ValueError) and "정보 없음" in str(error):
             self.parseerror_count += 1
         logging.error(f"| {cid} | 오류: {error}")
+
+    def send_webhook(self, message: str) -> None:
+        webhook_url = WebhookSecrets.webhook_url
+        payload = {"text": message}
+
+        response = requests.post(webhook_url, json=payload)
+        if response.status_code != 200:
+            raise ValueError(
+                f"Request to slack returned an error {response.status_code}, the response is:\n{response.text}"
+            )
 
     @abstractmethod
     def run(self) -> Dict[str, ScrapResult]:
@@ -137,9 +150,9 @@ class LocalCouncilScraper(BaseScraper):
             except Exception as e:
                 self.handle_errors(cid, e)
 
-        logging.info(
-            f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
-        )
+        result_summary = f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
+        logging.info(result_summary)
+        self.send_webhook("지방의회 스크랩 결과\n" + result_summary)
 
         return scrape_results
 
@@ -169,9 +182,9 @@ class MetroCouncilScraper(BaseScraper):
             except Exception as e:
                 self.handle_errors(cid, e)
 
-        logging.info(
-            f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
-        )
+        result_summary = f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
+        logging.info(result_summary)
+        self.send_webhook("광역의회 스크랩 결과\n" + result_summary)
 
         return scrape_results
 
