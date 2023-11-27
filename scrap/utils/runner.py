@@ -10,6 +10,8 @@ from collections.abc import Iterable
 from tqdm import tqdm
 from abc import *
 
+from configurations.secrets import WebhookSecrets
+
 from scrap.utils.export import export_results_to_json, export_results_to_txt
 from scrap.utils.database import save_to_database
 from scrap.utils.types import ScrapResult, ScrapBasicArgument
@@ -30,6 +32,7 @@ from scrap.local_councils.gyeongsang import *
 from scrap.local_councils import *
 from scrap.metropolitan_council import *
 from scrap.national_council import *
+from requests import post
 from scrap.group_head import *
 from requests.exceptions import Timeout
 
@@ -64,6 +67,16 @@ class BaseScraper(metaclass=ABCMeta):
         elif isinstance(error, ValueError) and "정보 없음" in str(error):
             self.parseerror_count += 1
         logging.error(f"| {cid} | 오류: {error}")
+
+    def send_webhook(self, message: str) -> None:
+        webhook_url = WebhookSecrets.webhook_url
+        payload = {"text": message}
+
+        response = requests.post(webhook_url, json=payload)
+        if response.status_code != 200:
+            raise ValueError(
+                f"Request to slack returned an error {response.status_code}, the response is:\n{response.text}"
+            )
 
     @abstractmethod
     def run(self) -> Dict[str, ScrapResult]:
@@ -125,7 +138,7 @@ class LocalCouncilScraper(BaseScraper):
 
         return result
 
-    def run(self, cids: Iterable[int]) -> Dict[int, ScrapResult]:
+    def run(self, cids: Iterable[int], enable_webhook: bool) -> Dict[int, ScrapResult]:
         scrape_results = dict()
 
         for cid in tqdm(cids):
@@ -137,9 +150,10 @@ class LocalCouncilScraper(BaseScraper):
             except Exception as e:
                 self.handle_errors(cid, e)
 
-        logging.info(
-            f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
-        )
+        result_summary = f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
+        logging.info(result_summary)
+        if enable_webhook:
+            self.send_webhook("지방의회 스크랩 결과\n" + result_summary)
 
         return scrape_results
 
@@ -157,7 +171,7 @@ class MetroCouncilScraper(BaseScraper):
             raise NotImplementedError(f"함수를 찾을 수 없습니다: {function_name}")
         return result
 
-    def run(self, cids: Iterable[int]) -> Dict[int, ScrapResult]:
+    def run(self, cids: Iterable[int], enable_webhook: bool) -> Dict[int, ScrapResult]:
         scrape_results = dict()
 
         for cid in tqdm(cids):
@@ -169,9 +183,10 @@ class MetroCouncilScraper(BaseScraper):
             except Exception as e:
                 self.handle_errors(cid, e)
 
-        logging.info(
-            f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
-        )
+        result_summary = f"| 총 실행 횟수: {len(cids)} | 에러: {list(self.error_log.keys())}, 총 {len(self.error_log)}회 | 그 중 정보 없음 횟수: {self.parseerror_count} | 타임아웃 횟수: {self.timeout_count} |"
+        logging.info(result_summary)
+        if enable_webhook:
+            self.send_webhook("광역의회 스크랩 결과\n" + result_summary)
 
         return scrape_results
 
@@ -234,23 +249,24 @@ def main(args: Dict[str, str]) -> None:
     runner = ScraperFactory(where, runner_kwargs).create_scraper()
 
     cids_to_run = parse_cids(args.get("cids"), where)
+    enable_webhook = args.get("disable-webhook")
     if cids_to_run:
-        results = runner.run(cids_to_run)
+        results = runner.run(cids_to_run, enable_webhook)
     else:
         results = runner.run()
 
-    if args.get("update_mongo"):
+    if args.get("update-mongo"):
         for result in results.values():
             save_to_database(result)
 
-    if args.get("output_store"):
-        if args.get("output_format") == "json":
-            export_results_to_json(results, args.get("output_path"), current_time)
-        elif args.get("output_format") == "txt":
-            export_results_to_txt(results, args.get("output_path"), current_time)
+    if args.get("output-store"):
+        if args.get("output-format") == "json":
+            export_results_to_json(results, args.get("output-path"), current_time)
+        elif args.get("output-format") == "txt":
+            export_results_to_txt(results, args.get("output-path"), current_time)
 
 
-def parse_cids(cids_str: Optional[str], where: str) -> Optional[List[int]]:
+def parse_cids(cids_str: Optional[str], where: str) -> Optional[Iterable[int]]:
     if cids_str and where in ["local", "metro"]:
         return [int(cid.strip()) for cid in cids_str.split(",")]
     elif where == "metro":
@@ -280,18 +296,18 @@ if __name__ == "__main__":
     )
     parser.add_argument("-l", "--log_path", help="로그 파일 경로", default="logs")
     parser.add_argument(
-        "-m", "--update_mongo", help="스크랩 결과를 MongoDB에 업데이트", action="store_true"
+        "-m", "--update-mongo", help="스크랩 결과를 MongoDB에 업데이트", action="store_true"
     )
     parser.add_argument(
-        "-o", "--output_store", help="스크랩 결과를 로컬에 저장", action="store_true"
+        "-o", "--output-store", help="스크랩 결과를 로컬에 저장", action="store_true"
     )
     parser.add_argument(
-        "--output_format",
+        "--output-format",
         help="스크랩 결과 저장 형식 ('json', 'txt')",
         choices=["json", "txt"],
         default="json",
     )
-    parser.add_argument("--output_path", help="스크랩 결과 저장 경로", default="output")
+    parser.add_argument("--output-path", help="스크랩 결과 저장 경로", default="output")
     parser.add_argument(
         "-c", "--cids", help="스크랩할 의회 ID 목록 (','로 구분, 지방/광역의회만 해당)", default=None
     )
@@ -304,6 +320,11 @@ if __name__ == "__main__":
         "--council-args-path",
         help="지방의회 스크랩 시 사용할 council_args JSON 파일 경로",
         default="scrap/utils/scrap_args.json",
+    )
+    parser.add_argument(
+        "--disable-webhook",
+        help="스크랩 결과 웹훅 전송 비활성화",
+        action="store_false",
     )
     args = vars(parser.parse_args())
 
