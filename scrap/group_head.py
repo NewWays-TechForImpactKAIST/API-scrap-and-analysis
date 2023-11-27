@@ -3,11 +3,12 @@
 """
 from time import sleep
 
-from db.types import Councilor
+from db.types import CouncilType, Councilor
+from scrap.utils.types import ScrapResult
 from scrap.utils.requests import get_selenium, By
 
 
-def scrap_group_heads(
+def scrap_group_leaders(
     url="https://laiis.go.kr/lips/mlo/lcl/groupHeadList.do",
 ) -> tuple[list[tuple[str, Councilor]], list[tuple[str, Councilor]]]:
     """내고장알리미를 이용해 광역/기초단체장 인적사항 스크랩
@@ -63,9 +64,22 @@ def scrap_group_heads(
             )
 
         browser.get(url)
-
-    return (metro_heads, local_heads)
+    results = dict()
+    for (area, councilor) in metro_heads:
+        results[area] = ScrapResult(
+            council_id=area,
+            council_type=CouncilType.METRO_LEADER,
+            councilors=councilor,
+        )
+    for (local_area_name, councilor) in local_heads:
+        print(local_area_name)
+        results[local_area_name] = ScrapResult(
+            council_id=local_area_name,
+            council_type=CouncilType.LOCAL_LEADER,
+            councilors=councilor,
+        )
+    return results
 
 
 if __name__ == "__main__":
-    print(scrap_group_heads())
+    print(scrap_group_leaders())
