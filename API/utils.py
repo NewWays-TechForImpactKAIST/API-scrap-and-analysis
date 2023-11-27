@@ -50,8 +50,8 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
                 main_collection.update_one(
                     {
                         "name": entry["name"],
-                        "local_id": district_id["local_id"],
-                        "metro_id": district_id["metro_id"],
+                        "localId": district_id["localId"],
+                        "metroId": district_id["metroId"],
                     },
                     {"$set": Councilor.from_dict(entry).to_dict()},
                     upsert=True,
@@ -65,8 +65,8 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
             main_collection.update_one(
                 {
                     "name": entry["name"],
-                    "local_id": 0,
-                    "metro_id": 0,
+                    "localId": 0,
+                    "metroId": 0,
                 },
                 {"$set": Councilor.from_dict(entry).to_dict()},
                 upsert=True,
@@ -102,8 +102,8 @@ def getLocalMetroMap() -> Dict[str, str]:
     )
     return {
         (item["sdName"], item["wiwName"]): {
-            "local_id": item["localId"],
-            "metro_id": item["metroId"],
+            "localId": item["localId"],
+            "metroId": item["metroId"],
         }
         for item in result
     }
