@@ -5,6 +5,7 @@ import warnings
 from matplotlib import font_manager
 from analysis.age.most_common_age_group import most_common_age_group
 from analysis.age.hist_groups import cluster
+from analysis.age import BasicArgument
 
 # 경고 무시
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -15,36 +16,47 @@ font_name = font_manager.FontProperties(
     fname=os.path.join(BASE_DIR, "_data", "NanumSquareL.ttf")
 ).get_name()
 
+councilordict = {
+    "시도의원": "metro_councilor",
+    "광역의원비례대표": "metro_councilor",
+    "구시군의회의원": "local_councilor",
+    "기초의원비례대표": "local_councilor",
+}
 
-def main(N=5):
+def main(N=5, folder_name="To_be_filled"):
     ## TO-DO: excel말고 mongodb에서 받아오도록 합니다.
     ## 이 링크에 구현될 save_to_mongo함수 참고 : https://github.com/NewWays-TechForImpactKAIST/API-scrap-and-analysis//blob/bd817e9a15086d313d9615b2515a81e0dbd73850/API/utils.py#L34
-    for folder_name in ["지선-당선", "지선-후보"]:
-        for cluster_by in ["sdName", "wiwName"]:
-            # folder_name = input("_data 내의 폴더 이름은 무엇인가요?")
-            # cluster_by = input("구역을 나눌 기준을 입력해주세요 (sdName 즉 시/도 또는 wiwName 즉 기초단체단위): ")
-            datadir = os.path.join(BASE_DIR, "_data", folder_name)
-            outdir = os.path.join(
-                BASE_DIR, "output", f"age_all_{cluster_by}", folder_name
+    ## 1. 지역의회
+    # cluster_by = input("구역을 나눌 기준을 입력해주세요 (sdName 즉 시/도 또는 wiwName 즉 기초단체단위): ")
+    cluster_by = "sdName"
+    assert cluster_by in ["sdName", "wiwName"]
+    level = 1 if cluster_by == "sdName" else 2
+    datadir = os.path.join(BASE_DIR, "_data", folder_name)
+    for d in os.listdir(datadir):
+        # xlsx 파일을 읽어옵니다.
+        if not d.endswith(".xlsx"):
+            continue
+        df = pd.read_excel(os.path.join(datadir, d))
+        # 필요한 열만 추출합니다.
+        if level == 1:
+            df = df[["sgId", "sdName", "name", "age", "gender"]]
+        else:
+            df = df[["sgId", "sdName", "wiwName", "name", "age", "gender"]]
+        df = df.sort_values(by="age")
+        is_elected = (
+            True
+            if "당선" in d
+            else False
+            if "후보" in d
+            else ValueError("엑셀파일 이름에 '당선'이든지 '후보'가 있어야 합니다.")
+        )
+        councilorType = councilordict[d.split('[')[-1].split(']')[0]]
+        for method in ["kmeans", "equal"]:
+            basedic = BasicArgument(councilorType=councilorType, is_elected=is_elected, level=level, method=method)
+            cluster(
+                df, N, basedic
             )
-
-            for d in os.listdir(datadir):
-                # xlsx 파일을 읽어옵니다.
-                if not d.endswith(".xlsx"):
-                    continue
-                df = pd.read_excel(os.path.join(datadir, d))
-
-                # 필요한 열만 추출합니다.
-                df = df[["sdName", "wiwName", "name", "age", "gender"]]
-                df = df.sort_values(by="age")
-                year = int(d[7:11])
-                # most_common_age_group(df, year)
-                cluster(
-                    df, year, N, "kmeans", cluster_by, outdir, font_name, folder_name
-                )
-                cluster(
-                    df, year, N, "equal", cluster_by, outdir, font_name, folder_name
-                )
+    ## 2. 광역의회
 
 
 main()
