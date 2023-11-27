@@ -26,6 +26,7 @@ ELECTED_TYPECODE_TYPE = {
     "4": CouncilType.LOCAL_LEADER,
     "5": CouncilType.METROPOLITAN_COUNCIL,
     "6": CouncilType.LOCAL_COUNCIL,
+    "8": CouncilType.METROPOLITAN_COUNCIL,
     "9": CouncilType.LOCAL_COUNCIL,
 }
 CANDIDATE_TYPECODE_TYPE = {

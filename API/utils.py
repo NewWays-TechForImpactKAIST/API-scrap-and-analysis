@@ -60,7 +60,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
                 print(
                     f"Warning: '{entry['sdName']} {entry['wiwName']}'에 해당하는 지역 ID가 존재하지 않습니다."
                 )
-    elif sgTypecode == "5":
+    elif sgTypecode in ["5", "8"]:
         main_collection = db["metro_councilor"]
         for entry in data:
             entry["wiwName"] = change_local_name(entry["sdName"], entry["wiwName"])
