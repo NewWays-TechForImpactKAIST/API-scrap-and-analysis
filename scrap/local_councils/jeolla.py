@@ -14,6 +14,7 @@ from scrap.local_councils.basic import (
 party_keywords = getPartyList()
 party_keywords.append("무소속")
 
+
 def scrap_154(
     url,
     cid,
@@ -337,6 +338,7 @@ def scrap_167(
 
 #     return ret_local_councilors(cid, councilors)
 
+
 def scrap_175(
     url,
     cid,
@@ -346,7 +348,9 @@ def scrap_175(
     browser = get_selenium(url)
     councilors: list[Councilor] = []
     for profileList in browser.find_elements(By.CSS_SELECTOR, "ul[id='councilList']"):
-        for profile in profileList.find_elements(By.CSS_SELECTOR, "ul[class='name_51']"):
+        for profile in profileList.find_elements(
+            By.CSS_SELECTOR, "ul[class='name_51']"
+        ):
             name_tag = profile.find_element(By.TAG_NAME, "li")
             name = name_tag.text.strip() if name_tag else "이름 정보 없음"
 
@@ -361,6 +365,7 @@ def scrap_175(
             councilors.append(Councilor(name, party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_177(
     url,
@@ -393,8 +398,12 @@ def scrap_178(
     """전라남도 완도군"""
     browser = get_selenium(url)
     councilors: list[Councilor] = []
-    for profileList in browser.find_elements(By.CSS_SELECTOR, "div[class='congressperson_list']"):
-        for profile in profileList.find_elements(By.CSS_SELECTOR, "div[class='col-lg-6']"):
+    for profileList in browser.find_elements(
+        By.CSS_SELECTOR, "div[class='congressperson_list']"
+    ):
+        for profile in profileList.find_elements(
+            By.CSS_SELECTOR, "div[class='col-lg-6']"
+        ):
             name_tag = profile.find_element(By.TAG_NAME, "strong")
             name = name_tag.text.strip() if name_tag else "이름 정보 없음"
             profile_link = sel_find(profile, "a", class_="icon_btn")

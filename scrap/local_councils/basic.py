@@ -151,7 +151,9 @@ def extract_party(string):
     return None
 
 
-def goto_profilesite(profile, wrapper_element, wrapper_class_, wrapper_txt, url, inner_euckr=False):
+def goto_profilesite(
+    profile, wrapper_element, wrapper_class_, wrapper_txt, url, inner_euckr=False
+):
     # 의원 프로필에서 프로필보기 링크를 가져옴
     parsed_url = urlparse(url)
     base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
@@ -224,7 +226,9 @@ def getpty(profile, element, class_, wrapper_element, wrapper_class_, wrapper_tx
             raise Exception("[basic.py] 정당 정보 파싱 불가")
 
 
-def getpty_easy(profile, wrapper_element, wrapper_class_, wrapper_txt, url, inner_euckr=False):
+def getpty_easy(
+    profile, wrapper_element, wrapper_class_, wrapper_txt, url, inner_euckr=False
+):
     # 의원 프로필에서 의원이 몸담는 정당 이름을 가져옴
     if wrapper_element is not None:
         profile = goto_profilesite(
@@ -253,7 +257,9 @@ def sel_getpty_easy(
         return party
 
 
-def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8", inner_euckr=False) -> ScrapResult:
+def scrap_basic(
+    url, cid, args: ScrapBasicArgument, encoding="utf-8", inner_euckr=False
+) -> ScrapResult:
     """의원 상세약력 스크랩
     :param url: 의원 목록 사이트 url
     :param cid: 의회 id
@@ -293,7 +299,12 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8", inner_euck
         except Exception as e:
             try:
                 party = getpty_easy(
-                    profile, args.pty_wrapelt, args.pty_wrapcls, args.pty_wraptxt, url, inner_euckr
+                    profile,
+                    args.pty_wrapelt,
+                    args.pty_wrapcls,
+                    args.pty_wraptxt,
+                    url,
+                    inner_euckr,
                 )
             except Exception:
                 raise RuntimeError("[basic.py] 의원 정당을 가져오는데 실패했습니다. 이유: " + str(e))
