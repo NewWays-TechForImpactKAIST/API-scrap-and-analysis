@@ -123,6 +123,7 @@ def getLocalMetroMap() -> Dict[str, str]:
         for item in result
     }
 
+
 def getLocalMetroMap() -> Dict[str, str]:
     db = client["district"]
     result = db["local_district"].aggregate(
@@ -145,6 +146,7 @@ def getLocalMetroMap() -> Dict[str, str]:
         for item in result
     }
 
+
 def change_local_name(sdName, wiwName):
     """
     1. 만약 '시' 와 '구'가 모두 wiwName에 있다면, '시' 까지만 쓰기
@@ -161,7 +163,8 @@ def change_local_name(sdName, wiwName):
         return wiwName.split("시")[0] + "시"
     else:
         return wiwName
-    
+
+
 change_city_name = {
     ("충청남도", "당진군"): "당진시",
     ("경상남도", "마산시"): "창원시",
