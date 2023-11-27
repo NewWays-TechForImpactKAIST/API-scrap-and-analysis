@@ -94,11 +94,12 @@ def calculate_rank_local(factor: str) -> None:
 
 
 def calculate_age_diversity_rank_history_local() -> None:
-    for councilor_type in ["elected", "candidate"]:
+    for is_elected in [True, False]:
         for localId in range(1, 227):
             docs = client["stats"]["age_hist"].find(
                 {
-                    "councilorType": councilor_type,
+                    "councilorType": "local_councilor",
+                    "is_elected": is_elected,
                     "method": "equal",
                     "level": 2,
                     "localId": localId,
@@ -115,7 +116,8 @@ def calculate_age_diversity_rank_history_local() -> None:
                 )
                 client["stats"]["age_hist"].find_one_and_update(
                     {
-                        "councilorType": councilor_type,
+                        "councilorType": "local_councilor",
+                        "is_elected": is_elected,
                         "method": "equal",
                         "level": 2,
                         "localId": localId,
@@ -131,7 +133,8 @@ def calculate_age_diversity_rank_history_local() -> None:
                 [
                     {
                         "$match": {
-                            "councilorType": councilor_type,
+                            "councilorType": "local_councilor",
+                            "is_elected": is_elected,
                             "method": "equal",
                             "level": 2,
                             "year": year,
@@ -147,7 +150,8 @@ def calculate_age_diversity_rank_history_local() -> None:
             for doc in result:
                 client["stats"]["age_hist"].find_one_and_update(
                     {
-                        "councilorType": councilor_type,
+                        "councilorType": "local_councilor",
+                        "is_elected": is_elected,
                         "method": "equal",
                         "level": 2,
                         "localId": doc["localId"],
@@ -196,13 +200,14 @@ def calculate_rank_metro(factor: str) -> None:
 
 
 def calculate_age_diversity_rank_history_metro() -> None:
-    for councilor_type in ["elected", "candidate"]:
+    for is_elected in [True, False]:
         for metroId in range(1, 18):
             docs = client["stats"]["age_hist"].find(
                 {
-                    "councilorType": councilor_type,
+                    "councilorType": "metro_councilor",
                     "method": "equal",
                     "level": 1,
+                    "is_elected": is_elected,
                     "metroId": metroId,
                 }
             )
@@ -217,9 +222,10 @@ def calculate_age_diversity_rank_history_metro() -> None:
                 )
                 client["stats"]["age_hist"].find_one_and_update(
                     {
-                        "councilorType": councilor_type,
+                        "councilorType": "metro_councilor",
                         "method": "equal",
                         "level": 1,
+                        "is_elected": is_elected,
                         "metroId": metroId,
                         "year": doc["year"],
                     },
@@ -233,9 +239,10 @@ def calculate_age_diversity_rank_history_metro() -> None:
                 [
                     {
                         "$match": {
-                            "councilorType": councilor_type,
+                            "councilorType": "metro_councilor",
                             "method": "equal",
                             "level": 1,
+                            "is_elected": is_elected,
                             "year": year,
                         }
                     },
@@ -249,9 +256,10 @@ def calculate_age_diversity_rank_history_metro() -> None:
             for doc in result:
                 client["stats"]["age_hist"].find_one_and_update(
                     {
-                        "councilorType": councilor_type,
+                        "councilorType": "metro_councilor",
                         "method": "equal",
                         "level": 1,
+                        "is_elected": is_elected,
                         "metroId": doc["metroId"],
                         "year": year,
                     },
@@ -267,7 +275,7 @@ if __name__ == "__main__":
     # calculate_rank_local("age")
     # calculate_rank_local("gender")
     # calculate_rank_local("party")
-    calculate_age_diversity_rank_history_local()
+    # calculate_age_diversity_rank_history_local()
 
     # for metroId in range(1, 18):
     #     if metroId in [8, 17]:
@@ -278,4 +286,4 @@ if __name__ == "__main__":
     # calculate_rank_metro("age")
     # calculate_rank_metro("gender")
     # calculate_rank_metro("party")
-    # calculate_age_diversity_rank_history_metro()
+    calculate_age_diversity_rank_history_metro()
