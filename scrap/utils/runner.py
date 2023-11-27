@@ -106,8 +106,10 @@ class LocalCouncilScraper(BaseScraper):
     # Helper Functions
     def is_euc_kr(self, n: int) -> bool:
         return n in self.runner_args["euc_kr"]
+
     def inner_euckr(self, n: int) -> bool:
         return n in self.runner_args["inner_euckr"]
+
     def is_special_function(self, n: int) -> bool:
         return n in self.runner_args["special_functions"]
 
@@ -136,7 +138,9 @@ class LocalCouncilScraper(BaseScraper):
             if self.is_selenium_basic(cid):
                 result = sel_scrap_basic(council_url, cid, council_args)
             else:
-                result = scrap_basic(council_url, cid, council_args, encoding, inner_euckr)
+                result = scrap_basic(
+                    council_url, cid, council_args, encoding, inner_euckr
+                )
 
         return result
 

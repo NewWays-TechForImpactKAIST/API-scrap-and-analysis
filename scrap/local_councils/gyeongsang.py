@@ -13,6 +13,7 @@ from scrap.local_councils.basic import (
 party_keywords = getPartyList()
 party_keywords.append("무소속")
 
+
 def scrap_186(
     url,
     cid,
@@ -124,6 +125,7 @@ def scrap_191(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_192(
     url,
     cid,
@@ -142,10 +144,10 @@ def scrap_192(
         base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
         profile_url = base_url + profile_link["href"]
         profile = get_soup(profile_url, verify=False, encoding="euc-kr")
-        party=""
+        party = ""
         for keyword in party_keywords:
             if keyword in profile.text:
-                party=keyword
+                party = keyword
                 break
         councilors.append(Councilor(name=name, jdName=party))
 
@@ -225,11 +227,13 @@ def scrap_197(
     """경상북도 경산시"""
     soup = get_soup(url, verify=False, encoding="euc-kr")
     councilors: List[Councilor] = []
-    for profile in soup.find_all('div', class_='memberL') + soup.find_all('div', class_='memberR'):
-        party = profile.find_previous('h4', class_='title').text.strip()
-        assert(party in party_keywords)
-        name = profile.find('dt').text.strip()
-        
+    for profile in soup.find_all("div", class_="memberL") + soup.find_all(
+        "div", class_="memberR"
+    ):
+        party = profile.find_previous("h4", class_="title").text.strip()
+        assert party in party_keywords
+        name = profile.find("dt").text.strip()
+
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
@@ -323,14 +327,15 @@ def scrap_202(
         base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
         profile_url = base_url + link
         profile = get_soup(profile_url, verify=False, encoding="euc-kr")
-        party=""
+        party = ""
         for keyword in party_keywords:
             if keyword in profile.text:
-                party=keyword
+                party = keyword
                 break
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_203(
     url,
@@ -353,6 +358,7 @@ def scrap_203(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_204(
     url,
     cid,
@@ -369,18 +375,19 @@ def scrap_204(
         base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
         profile_url = base_url + link
         profile = get_soup(profile_url, verify=False)
-        link = profile.find('a', text='의원소개', href=True)
-        profile_url = base_url + link['href']
+        link = profile.find("a", text="의원소개", href=True)
+        profile_url = base_url + link["href"]
         profile = get_soup(profile_url, verify=False)
 
-        party=""
+        party = ""
         for keyword in party_keywords:
             if keyword in profile.text:
-                party=keyword
+                party = keyword
                 break
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_206(
     url,

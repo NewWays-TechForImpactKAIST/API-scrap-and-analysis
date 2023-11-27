@@ -116,6 +116,7 @@ def scrap_all_metro_councils() -> None:
     # )
     # email_result(emessages)
 
+
 def scrap_all_local_councils() -> None:
     # TODO - 홈페이지 위 charset=euc-kr 등을 인식해 바로 가져오기.
     euc_kr = [
@@ -138,7 +139,7 @@ def scrap_all_local_councils() -> None:
         202,
         222,
     ]
-    inner_euckr=[200]
+    inner_euckr = [200]
     special_functions = (
         list(range(1, 57))
         + [62, 63, 64, 88, 97, 103, 107]
@@ -153,14 +154,18 @@ def scrap_all_local_councils() -> None:
             188,
             189,
             190,
-            191,192,
+            191,
+            192,
             194,
             195,
-            196,197,
+            196,
+            197,
             198,
             199,
-            201,202,
-            203,204,
+            201,
+            202,
+            203,
+            204,
             206,
             208,
             209,
@@ -225,7 +230,9 @@ def scrap_all_local_councils() -> None:
                 result = str(sel_scrap_basic(council_url, n, council_args).councilors)
             else:
                 result = str(
-                    scrap_basic(council_url, n, council_args, encoding, inner_euckr).councilors
+                    scrap_basic(
+                        council_url, n, council_args, encoding, inner_euckr
+                    ).councilors
                 )
             if "정보 없음" in result:
                 emsg = "스크랩 결과에 '정보 없음'이 포함되어 있습니다. 일부 인명에\
@@ -241,7 +248,7 @@ def scrap_all_local_councils() -> None:
         except Exception as e:
             print(e)
         print(result)
-            # add_error(n, "기타 오류 - " + str(e))
+        # add_error(n, "기타 오류 - " + str(e))
     # emessages = (
     #     f"""
     #     총 실행 횟수: {N}
