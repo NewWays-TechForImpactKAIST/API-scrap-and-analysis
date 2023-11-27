@@ -30,6 +30,7 @@ ELECTED_TYPECODE_TYPE = {
     "8": CouncilType.METROPOLITAN_COUNCIL,
     "9": CouncilType.LOCAL_COUNCIL,
 }
+
 CANDIDATE_TYPECODE_TYPE = {
     "2": CouncilType.NATIONAL_COUNCIL_CAND,
     # "3": CouncilType.METRO_LEADER_CAND,
