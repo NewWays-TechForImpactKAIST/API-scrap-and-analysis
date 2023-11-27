@@ -54,7 +54,7 @@ def fetch_all_data(
     sgIds: List[str], sgTypecodes: str, drop_columns: List[str]
 ) -> List[dict]:
     data_list = []
-    for sgTypecode in sgTypecodes.split(","):    
+    for sgTypecode in sgTypecodes.split(","):
         for sgId in sgIds:
             data_list.extend(fetch_data(sgId, sgTypecode, drop_columns=drop_columns))
 
@@ -90,6 +90,4 @@ if __name__ == "__main__":
         if args.save_method == "excel":
             save_to_excel(data_list, sgTypecode, is_elected=True)
         elif args.save_method == "mongo":
-            save_to_mongo(
-                data_list, sgTypecode, ELECTED_TYPECODE_TYPE[sgTypecode]
-            )
+            save_to_mongo(data_list, sgTypecode, ELECTED_TYPECODE_TYPE[sgTypecode])

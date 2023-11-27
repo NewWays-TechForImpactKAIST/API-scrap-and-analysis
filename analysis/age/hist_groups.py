@@ -9,6 +9,7 @@ from analysis.age.draw import make_scatterplot, make_hist
 from db.client import client
 from analysis.age import BasicArgument
 
+
 def plot_young_and_old(youngest_cluster, oldest_cluster):
     try:
         sns.histplot(
@@ -184,7 +185,7 @@ def cluster(df_original, n_clst, basedic):
     """구역별 그룹을 만듭니다.
     df_original: 데이터프레임
     n_clst: 그룹 수
-    basedic: 기본 정보가 담긴 딕셔너리 
+    basedic: 기본 정보가 담긴 딕셔너리
     """
     distdb = client["district"]
     statdb = client["stats"]
@@ -230,7 +231,9 @@ def cluster(df_original, n_clst, basedic):
             for i in range(n_clst):
                 clst_data = df_clst[df_clst["cluster_label"] == i]
                 # print(f"Cluster {i} in {area}: {clst_data['age'].min()} - {clst_data['age'].max()}")
-                cluster_center_age = round(clst_data["age"].mean(), 2)  # 나이를 소수점 2자리까지 반올림
+                cluster_center_age = round(
+                    clst_data["age"].mean(), 2
+                )  # 나이를 소수점 2자리까지 반올림
                 clst_age_mean.append(cluster_center_age)
             clst_of_young = 0
             clst_of_old = n_clst - 1
@@ -243,7 +246,9 @@ def cluster(df_original, n_clst, basedic):
             # 지역의 가장 젊은, 나이든 그룹을 찾습니다
             yb_clst = df_clst[df_clst["cluster_label"] == clst_of_young]
             ob_clst = df_clst[df_clst["cluster_label"] == clst_of_old]
-            print(f"Youngest in {area}: {yb_clst['age'].min()} - {yb_clst['age'].max()}")
+            print(
+                f"Youngest in {area}: {yb_clst['age'].min()} - {yb_clst['age'].max()}"
+            )
             print(f"Oldest in {area}: {ob_clst['age'].min()} - {ob_clst['age'].max()}")
             # 그룹의 성비를 계산합니다.
             young_group_sexratio = (
@@ -266,7 +271,9 @@ def cluster(df_original, n_clst, basedic):
                     "minAge": int(age),
                     "maxAge": int(age) + 1,
                     "count": df_clst[df_clst["age"] == age].shape[0],
-                    "ageGroup": int(df_clst.loc[df_clst["age"] == age].iloc[0]["cluster_label"])
+                    "ageGroup": int(
+                        df_clst.loc[df_clst["age"] == age].iloc[0]["cluster_label"]
+                    ),
                 }
                 for age in df_clst["age"].unique()
             ]
@@ -312,9 +319,9 @@ def cluster(df_original, n_clst, basedic):
             else:
                 localname = df_clst["wiwName"].iloc[0]
                 print("sdName is ", metroname, "wiwName is", localname)
-                localId = localIds.find_one({"sdName": metroname, "wiwName": localname})[
-                    "localId"
-                ]
+                localId = localIds.find_one(
+                    {"sdName": metroname, "wiwName": localname}
+                )["localId"]
                 dic = basedic.__dict__.copy()
                 dic["metroId"] = metroId
                 insert_data_to_mongo(
@@ -326,7 +333,9 @@ def cluster(df_original, n_clst, basedic):
                     localId=localId,
                 )
 
-            print(f"Number of data points per cluster for {area}, method {basedic.method}")
+            print(
+                f"Number of data points per cluster for {area}, method {basedic.method}"
+            )
             for cluster_label in range(n_clst):
                 closest_data_count = sum(df_clst["cluster_label"] == cluster_label)
                 print(

@@ -23,6 +23,7 @@ councilordict = {
     "기초의원비례대표": "local_councilor",
 }
 
+
 def main(N=5, folder_name="To_be_filled"):
     ## TO-DO: excel말고 mongodb에서 받아오도록 합니다.
     ## 이 링크에 구현될 save_to_mongo함수 참고 : https://github.com/NewWays-TechForImpactKAIST/API-scrap-and-analysis//blob/bd817e9a15086d313d9615b2515a81e0dbd73850/API/utils.py#L34
@@ -33,9 +34,9 @@ def main(N=5, folder_name="To_be_filled"):
     level = 1 if cluster_by == "sdName" else 2
     datadir = os.path.join(BASE_DIR, "_data", folder_name)
     # for d in os.listdir(datadir):
-        # xlsx 파일을 읽어옵니다.
-        # if not d.endswith(".xlsx"):
-        #     continue
+    # xlsx 파일을 읽어옵니다.
+    # if not d.endswith(".xlsx"):
+    #     continue
     # df = pd.read_excel(os.path.join(datadir, d))
     # d = "[당선][시도의원].xlsx"
     d = "[당선][구시군의회의원].xlsx"
@@ -57,12 +58,15 @@ def main(N=5, folder_name="To_be_filled"):
         if "후보" in d
         else ValueError("엑셀파일 이름에 '당선'이든지 '후보'가 있어야 합니다.")
     )
-    councilorType = councilordict[d.split('[')[-1].split(']')[0]]
+    councilorType = councilordict[d.split("[")[-1].split("]")[0]]
     for method in ["kmeans", "equal"]:
-        basedic = BasicArgument(councilorType=councilorType, is_elected=is_elected, level=level, method=method)
-        cluster(
-            df, N, basedic
+        basedic = BasicArgument(
+            councilorType=councilorType,
+            is_elected=is_elected,
+            level=level,
+            method=method,
         )
+        cluster(df, N, basedic)
     ## 2. 광역의회
 
 
