@@ -41,7 +41,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
     main_collection = db[where]
 
     # TODO: Support other types of councils
-    if sgTypecode in ["8", "5", "2", "7", "6", "9"]:
+    if sgTypecode in ["8", "5", "2","6", "9"]:
         for entry in data:
             entry["wiwName"] = change_local_name(entry["sdName"], entry["wiwName"])
             district_id = get_district_id(entry["sdName"], entry["wiwName"])
@@ -60,6 +60,18 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
                 print(
                     f"Warning: '{entry['sdName']} {entry['wiwName']}'에 해당하는 지역 ID가 존재하지 않습니다."
                 )
+    elif sgTypecode in ["7"]:
+        for entry in data:
+
+            main_collection.update_one(
+                {
+                    "name": entry["name"],
+                    "localId": 0,
+                    "metroId": 0,
+                },
+                {"$set": Councilor.from_dict(entry).to_dict()},
+                upsert=True,
+            )
     else:
         raise NotImplementedError("현재 구시군의회의원(6) 및 기초의원비례대표(9)만 구현되어 있습니다.")
 
