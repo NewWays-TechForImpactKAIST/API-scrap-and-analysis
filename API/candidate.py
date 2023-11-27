@@ -62,7 +62,7 @@ def fetch_all_data(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="공공데이터포털 API로부터 후보자 정보를 가져옵니다.")
-    parser.add_argument("sgTypecode", type=str, help="원하는 sgTypecode 하나를 입력하세요")
+    parser.add_argument("sgTypecodes", type=str, help="원하는 sgTypecode를 ','로 구분하여 입력하세요")
     parser.add_argument("sgIds", type=str, help="원하는 sgId를 ','로 구분하여 입력하세요")
     parser.add_argument(
         "--drop-columns",
@@ -84,11 +84,13 @@ if __name__ == "__main__":
     sgIds = args.sgIds.split(",")
     drop_columns = args.drop_columns.split(",") if args.drop_columns else []
 
-    data_list = fetch_all_data(sgIds, args.sgTypecode, drop_columns=drop_columns)
-
-    if args.save_method == "excel":
-        save_to_excel(data_list, args.sgTypecode, is_elected=False)
-    elif args.save_method == "mongo":
-        save_to_mongo(
-            data_list, args.sgTypecode, CANDIDATE_TYPECODE_TYPE[args.sgTypecode]
-        )
+    data_list = fetch_all_data(sgIds, args.sgTypecodes, drop_columns=drop_columns)
+    for sgTypecode in args.sgTypecodes.split(","):
+        if sgTypecode not in SG_TYPECODE:
+            raise ValueError(f"Invalid sgTypecode: {sgTypecode}")
+        if args.save_method == "excel":
+            save_to_excel(data_list, sgTypecode, is_elected=False)
+        elif args.save_method == "mongo":
+            save_to_mongo(
+                data_list, sgTypecode, CANDIDATE_TYPECODE_TYPE[sgTypecode]
+            )
