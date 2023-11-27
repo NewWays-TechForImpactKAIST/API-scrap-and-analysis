@@ -181,7 +181,7 @@ def insert_data_to_mongo(
             )
 
 
-def cluster(df_original, n_clst, basedic, clean_flag = True):
+def cluster(df_original, n_clst, basedic, clean_flag=True):
     """구역별 그룹을 만듭니다.
     df_original: 데이터프레임
     n_clst: 그룹 수
