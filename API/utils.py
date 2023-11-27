@@ -41,9 +41,8 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
     main_collection = db[where]
 
     # TODO: Support other types of councils
-    if sgTypecode in ["8", "5", "2","6", "9"]:
+    if sgTypecode in ["8", "5", "2", "6", "9"]:
         for entry in data:
-            print(entry)
             entry["wiwName"] = change_local_name(entry["sdName"], entry["wiwName"])
             district_id = get_district_id(entry["sdName"], entry["wiwName"])
 
@@ -63,12 +62,11 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
                 )
     elif sgTypecode in ["7"]:
         for entry in data:
-
             main_collection.update_one(
                 {
                     "name": entry["name"],
-                    "localId": 0,
-                    "metroId": 0,
+                    "local_id": 0,
+                    "metro_id": 0,
                 },
                 {"$set": Councilor.from_dict(entry).to_dict()},
                 upsert=True,
@@ -104,8 +102,8 @@ def getLocalMetroMap() -> Dict[str, str]:
     )
     return {
         (item["sdName"], item["wiwName"]): {
-            "localId": item["localId"],
-            "metroId": item["metroId"],
+            "local_id": item["localId"],
+            "metro_id": item["metroId"],
         }
         for item in result
     }
