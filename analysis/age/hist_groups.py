@@ -197,10 +197,12 @@ def cluster(df_original, n_clst, basedic):
     if basedic.method == "equal":
         statcoll.delete_many(basedic.__dict__)
     # 연도별로 데이터 찾아서 넣기!
-    years = [int(sgId//10000) for sgId in df_original["sgId"].unique()]
+    df_original["year"] = df_original["sgId"] // 10000
+    df_original = df_original[df_original["year"].isin([2010, 2014, 2018, 2022])]
+    years = df_original["year"].unique()
     for year in years:
-        basedic.year = year
-        df = df_original[df_original["sgId"] // 10000 == year]
+        basedic.year = int(year)
+        df = df_original[df_original["year"] == year]
         youngest_age = ("", 100)
         oldest_age = ("", 0)
         print(f"year {year}, {n_clst} clusters")
