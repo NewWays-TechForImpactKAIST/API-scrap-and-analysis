@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 from matplotlib import cm
 from analysis.age.draw import make_scatterplot, make_hist
 from db.client import client
+from analysis.age import BasicArgument
 
 
 def plot_young_and_old(youngest_cluster, oldest_cluster):
@@ -39,7 +40,13 @@ def plot_young_and_old(youngest_cluster, oldest_cluster):
 
 
 def cluster_data(method, n_clst, df):
-    clst_labels = []
+    quantiles = np.quantile(df["age"], np.arange(0, 1, 1 / n_clst)[1:])
+    unique_q_idx = [0]
+    for i in range(1, len(quantiles)):
+        if quantiles[i] != quantiles[i - 1]:
+            unique_q_idx.append(i)
+    unique_q_idx.append(n_clst - 1)
+    quantiles = sorted(list(set(quantiles)))
     if method == "kmeans":
         ages_data = df[["age"]]
         # K-means 모델을 초기화하고 학습합니다.
@@ -47,30 +54,20 @@ def cluster_data(method, n_clst, df):
         kmeans.fit(ages_data)
 
         # 각 데이터 포인트가 속한 클러스터를 나타내는 레이블을 가져옵니다.
-        clst_labels = kmeans.labels_
+        df["cluster_label"] = kmeans.labels_
     elif method == "equal":
-        clst_labels = np.repeat(np.arange(n_clst), len(df) // n_clst)
-        clst_labels = np.append(clst_labels, np.arange(len(df) % n_clst))
-        clst_labels.sort()
-        clst_labels = np.array(clst_labels)
-    df["cluster_label"] = clst_labels
-    # 같은 나이는 같은 클러스터에 속하도록 합니다.
-    # 0번 클러스터는 생기도록 합니다.
-    for i in [0]:
-        max_age = df[df["cluster_label"] == i]["age"].max()
-        # when "age" == max_age, change "cluster_label" to be i
-        df.loc[df["age"] == max_age, "cluster_label"] = i
-    for i in range(2, n_clst):
-        min_age = df[df["cluster_label"] == i]["age"].min()
-        # when "age" == min_age, change "cluster_label" to be i
-        df.loc[df["age"] == min_age, "cluster_label"] = i
-    # (n_clst - 1)번 클러스터는 생기도록 합니다.
-    if df[df["cluster_label"] == (n_clst - 1)]["age"].shape[0] == 0:
-        for i in range(n_clst - 2, 0, -1):
-            cluster_to_exchange = df[df["cluster_label"] == i]
-            if not cluster_to_exchange.empty:
-                df.loc[cluster_to_exchange.index, "cluster_label"] = n_clst - 1
-                break
+        bins = [-np.inf] + quantiles + [np.inf]
+        df["cluster_label"] = pd.cut(
+            df["age"], bins=bins, labels=False, include_lowest=True
+        )
+        print(quantiles)
+        print(unique_q_idx)
+        df["cluster_label"] = df["cluster_label"].apply(lambda x: unique_q_idx[x])
+        max_num = df["cluster_label"].max()
+        if max_num != n_clst - 1:
+            df["cluster_label"] = df["cluster_label"].apply(
+                lambda x: n_clst - 1 if x == max_num else x
+            )
 
     return df
 
@@ -126,6 +123,7 @@ def insert_data_to_mongo(
         histcoll.find_one_and_update(
             {
                 "councilorType": dic["councilorType"],
+                "is_elected": dic["is_elected"],
                 "year": dic["year"],
                 "level": dic["level"],
                 "method": dic["method"],
@@ -140,6 +138,7 @@ def insert_data_to_mongo(
             statcoll.find_one_and_update(
                 {
                     "councilorType": dic["councilorType"],
+                    "is_elected": dic["is_elected"],
                     "year": dic["year"],
                     "level": dic["level"],
                     "method": dic["method"],
@@ -154,6 +153,7 @@ def insert_data_to_mongo(
         histcoll.find_one_and_update(
             {
                 "councilorType": dic["councilorType"],
+                "is_elected": dic["is_elected"],
                 "year": dic["year"],
                 "level": dic["level"],
                 "method": dic["method"],
@@ -169,6 +169,7 @@ def insert_data_to_mongo(
             statcoll.find_one_and_update(
                 {
                     "councilorType": dic["councilorType"],
+                    "is_elected": dic["is_elected"],
                     "year": dic["year"],
                     "level": dic["level"],
                     "method": dic["method"],
@@ -180,207 +181,165 @@ def insert_data_to_mongo(
             )
 
 
-def cluster(df, year, n_clst, method, cluster_by, outdir, font_name, folder_name):
+def cluster(df_original, n_clst, basedic, clean_flag=True):
     """구역별 그룹을 만듭니다.
-    df: 데이터프레임
-    year: 선거 연도
+    df_original: 데이터프레임
     n_clst: 그룹 수
-    method: "kmeans" 또는 "equal"
-    cluster_by: "sdName" (1단계) 또는 "wiwName" (2단계)
-    outdir: 출력 디렉토리
-    font_name: 폰트 이름
-    folder_name: 출력 디렉토리의 하위 디렉토리 이름. 현재 '지선-당선' 또는 '지선-후보'.
-                 결과가 mongodb등으로 옮겨가야 하므로, 사용하지 않도록 바꿔야 함.
+    basedic: 기본 정보가 담긴 딕셔너리
     """
-    os.makedirs(os.path.join(outdir, method), exist_ok=True)
     distdb = client["district"]
     statdb = client["stats"]
     metroIds = distdb["metro_district"]
     localIds = distdb["local_district"]
     histcoll = statdb["age_hist"]
     statcoll = statdb["age_stat"]  # method = "equal"에서 써 줄 통계.
-    councilorType = (
-        "elected"
-        if folder_name[-2:] == "당선"
-        else "candidate"
-        if folder_name[-2:] == "후보"
-        else ValueError("folder_name should end with '당선' or '후보'")
-    )
-    level = 1 if cluster_by == "sdName" else 2
-    basedic = {
-        "councilorType": councilorType,
-        "year": year,
-        "level": level,
-        "method": method,
-    }
     # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
-    # histcoll.delete_many(basedic)
-    # if method == "equal":
-    #     statcoll.delete_many(basedic)
-    youngest_age = ("", 100)
-    oldest_age = ("", 0)
-    print(f"({year}), {n_clst} clusters")
-    print(f"{'-' * 20}")
-    # # Get a colormap for generating unique colors for clusters
-    # colors = cm.rainbow(np.linspace(0, 1, n_clst))
+    if clean_flag:
+        histcoll.delete_many(basedic.__dict__)
+        if basedic.method == "equal":
+            statcoll.delete_many(basedic.__dict__)
+    # 연도별로 데이터 찾아서 넣기!
+    df_original = df_original[df_original["year"].isin([2010, 2014, 2018, 2022])]
+    years = df_original["year"].unique()
+    for year in years:
+        basedic.year = int(year)
+        df = df_original[df_original["year"] == year]
+        youngest_age = ("", 100)
+        oldest_age = ("", 0)
+        print(f"year {year}, {n_clst} clusters")
+        print(f"{'-' * 20}")
+        # # Get a colormap for generating unique colors for clusters
+        # colors = cm.rainbow(np.linspace(0, 1, n_clst))
 
-    # wiwName을 처리합니다
-    if level == 2:
-        df["sdName"] = df[["sdName", "wiwName"]].apply(
-            lambda x: local_to_metro_list(*x), axis=1
-        )
-        df["wiwName"] = df[["sdName", "wiwName"]].apply(
-            lambda x: change_local_name(*x), axis=1
-        )
-    # # 데이터프레임에서 시도별로 묶은 후 나이 열만 가져옵니다.
-    # df_age = pd.DataFrame(columns=["area", "age"])
-    for area, df_clst in df.groupby(cluster_by):
-        df_clst = cluster_data(method, n_clst, df_clst)
-        # 클러스터 중심 나이를 계산합니다.
-        clst_age_mean = []
-        for i in range(n_clst):
-            clst_data = df_clst[df_clst["cluster_label"] == i]
-            # print(f"Cluster {i} in {area}: {clst_data['age'].min()} - {clst_data['age'].max()}")
-            cluster_center_age = round(clst_data["age"].mean(), 2)  # 나이를 소수점 2자리까지 반올림
-            clst_age_mean.append(cluster_center_age)
-        clst_of_young = 0
-        clst_of_old = n_clst - 1
-        if method == "kmeans":
-            clst_of_young = clst_age_mean.index(min(clst_age_mean))
-            clst_of_old = clst_age_mean.index(max(clst_age_mean))
-            clst_age_mean.sort()
-            # new_data = pd.DataFrame({"area": area, "age": clst_age_mean})
-            # df_age = pd.concat([df_age, new_data], ignore_index=True)
-        elif method == "equal":
-            # firstquintile is the oldest age in the cluster_label == 0
-            # lastquintile is the youngest age in the cluster_label == n_clst - 1
-            firstquintile = df_clst[df_clst["cluster_label"] == 0]["age"].max()
-            lastquintile = df_clst[df_clst["cluster_label"] == n_clst - 1]["age"].min()
-        # 지역의 가장 젊은, 나이든 그룹을 찾습니다
-        yb_clst = df_clst[df_clst["cluster_label"] == clst_of_young]
-        ob_clst = df_clst[df_clst["cluster_label"] == clst_of_old]
-        print(f"Youngest in {area}: {yb_clst['age'].min()} - {yb_clst['age'].max()}")
-        print(f"Oldest in {area}: {ob_clst['age'].min()} - {ob_clst['age'].max()}")
-        # 그룹의 성비를 계산합니다.
-        young_group_sexratio = (
-            yb_clst[yb_clst["gender"] == "여"].shape[0] / yb_clst.shape[0]
-        )
-        old_group_sexratio = (
-            ob_clst[ob_clst["gender"] == "여"].shape[0] / ob_clst.shape[0]
-        )
-        print(
-            f"젊은 층의 성비는 여자가 {young_group_sexratio}, 노인층의 성비는 여자가 {old_group_sexratio}"
-        )
-        # 년도의 가장 젊은, 나이든 그룹이 있는 지역을 찾습니다
-        if clst_age_mean[0] < youngest_age[1]:
-            youngest_age = (area, clst_age_mean[0])
-        if clst_age_mean[-1] > oldest_age[1]:
-            oldest_age = (area, clst_age_mean[-1])
-        # 히스토그램을 그립니다.
-        histdata = [
-            {
-                "minAge": age,
-                "maxAge": age + 1,
-                "count": count,
-                "ageGroup": age_group,
-            }
-            for age, count, age_group in zip(
-                range(df_clst["age"].min(), df_clst["age"].max() + 1),
-                df_clst.groupby("age").size(),
-                df_clst.groupby("age")["cluster_label"].first(),
+        # wiwName을 처리합니다
+        if basedic.level == 2:
+            df["sdName"] = df[["sdName", "wiwName"]].apply(
+                lambda x: local_to_metro_list(*x), axis=1
             )
-        ]
-        statdata = None
-        if method == "equal":
-            statdata = [
+            df["wiwName"] = df[["sdName", "wiwName"]].apply(
+                lambda x: change_local_name(*x), axis=1
+            )
+        # # 데이터프레임에서 시도별로 묶은 후 나이 열만 가져옵니다.
+        # df_age = pd.DataFrame(columns=["area", "age"])
+        cluster_by = "sdName" if basedic.level == 1 else "wiwName"
+        for area, df_clst in df.groupby(cluster_by):
+            df_clst = cluster_data(basedic.method, n_clst, df_clst)
+            first_q = df_clst[df_clst["cluster_label"] == 0]["age"].max()
+            last_q = df_clst[df_clst["cluster_label"] == n_clst - 1]["age"].min()
+            # 클러스터 중심 나이를 계산합니다.
+            clst_age_mean = []
+            for i in range(n_clst):
+                clst_data = df_clst[df_clst["cluster_label"] == i]
+                # print(f"Cluster {i} in {area}: {clst_data['age'].min()} - {clst_data['age'].max()}")
+                cluster_center_age = round(
+                    clst_data["age"].mean(), 2
+                )  # 나이를 소수점 2자리까지 반올림
+                clst_age_mean.append(cluster_center_age)
+            clst_of_young = 0
+            clst_of_old = n_clst - 1
+            if basedic.method == "kmeans":
+                clst_of_young = clst_age_mean.index(min(clst_age_mean))
+                clst_of_old = clst_age_mean.index(max(clst_age_mean))
+                clst_age_mean.sort()
+                # new_data = pd.DataFrame({"area": area, "age": clst_age_mean})
+                # df_age = pd.concat([df_age, new_data], ignore_index=True)
+            # 지역의 가장 젊은, 나이든 그룹을 찾습니다
+            yb_clst = df_clst[df_clst["cluster_label"] == clst_of_young]
+            ob_clst = df_clst[df_clst["cluster_label"] == clst_of_old]
+            print(
+                f"Youngest in {area}: {yb_clst['age'].min()} - {yb_clst['age'].max()}"
+            )
+            print(f"Oldest in {area}: {ob_clst['age'].min()} - {ob_clst['age'].max()}")
+            # 그룹의 성비를 계산합니다.
+            young_group_sexratio = (
+                yb_clst[yb_clst["gender"] == "여"].shape[0] / yb_clst.shape[0]
+            )
+            old_group_sexratio = (
+                ob_clst[ob_clst["gender"] == "여"].shape[0] / ob_clst.shape[0]
+            )
+            print(
+                f"젊은 층의 성비는 여자가 {young_group_sexratio}, 노인층의 성비는 여자가 {old_group_sexratio}"
+            )
+            # 년도의 가장 젊은, 나이든 그룹이 있는 지역을 찾습니다
+            if clst_age_mean[0] < youngest_age[1]:
+                youngest_age = (area, clst_age_mean[0])
+            if clst_age_mean[-1] > oldest_age[1]:
+                oldest_age = (area, clst_age_mean[-1])
+            # 히스토그램을 그립니다.
+            histdata = [
                 {
-                    "firstquintile": int(firstquintile),
-                    "lastquintile": int(lastquintile),
-                    "population": int(df_clst.shape[0]),
+                    "minAge": int(age),
+                    "maxAge": int(age) + 1,
+                    "count": df_clst[df_clst["age"] == age].shape[0],
+                    "ageGroup": int(
+                        df_clst.loc[df_clst["age"] == age].iloc[0]["cluster_label"]
+                    ),
                 }
+                for age in df_clst["age"].unique()
             ]
-        # 지역 id를 잘 설정해줍니다.
-        metroname = df_clst["sdName"].iloc[0]
-        metroId = metroIds.find_one({"sdName": metroname})["metroId"]
-        if level == 1:
-            print("sdName is ", metroname)
-            dic = basedic.copy()
-            dic["metroId"] = metroId
-            insert_data_to_mongo(
-                dic, histdata, histcoll, statdata=statdata, statcoll=statcoll
-            )
-        elif metroname in change_lvl2to1.values():
-            print("sdName is ", metroname)
-            dic = basedic.copy()
-            dic["level"] = 1
-            dic["metroId"] = metroId
-            # histcoll.delete_many(dic)  # 기존 정보를 삭제
-            if method == "kmeans":
-                insert_data_to_mongo(dic, histdata, histcoll)
+            statdata = None
+            if basedic.method == "equal":
+                statdata = [
+                    {
+                        "firstquintile": int(first_q),
+                        "lastquintile": int(last_q),
+                        "population": int(df_clst.shape[0]),
+                    }
+                ]
+            # 지역 id를 잘 설정해줍니다.
+            metroname = df_clst["sdName"].iloc[0]
+            metroId = metroIds.find_one({"sdName": metroname})["metroId"]
+            if basedic.level == 1:
+                print("sdName is ", metroname)
+                dic = basedic.__dict__.copy()
+                dic["metroId"] = metroId
+                insert_data_to_mongo(
+                    dic, histdata, histcoll, statdata=statdata, statcoll=statcoll
+                )
+            elif metroname in change_lvl2to1.values():
+                print("sdName is ", metroname)
+                dic = basedic.__dict__.copy()
+                dic["level"] = 1
+                dic["metroId"] = metroId
+                # histcoll.delete_many(dic)  # 기존 정보를 삭제
+                if basedic.method == "kmeans":
+                    insert_data_to_mongo(dic, histdata, histcoll)
+                else:
+                    # l1statcoll = statcollection[
+                    #     folder_name + "_" + year + "_1level_" + method
+                    # ]
+                    # statcoll.delete_many(dic)
+                    insert_data_to_mongo(
+                        dic,
+                        histdata,
+                        histcoll,
+                        statdata=statdata,
+                        statcoll=statcoll,
+                    )
             else:
-                # l1statcoll = statcollection[
-                #     folder_name + "_" + year + "_1level_" + method
-                # ]
-                # statcoll.delete_many(dic)
+                localname = df_clst["wiwName"].iloc[0]
+                print("sdName is ", metroname, "wiwName is", localname)
+                localId = localIds.find_one(
+                    {"sdName": metroname, "wiwName": localname}
+                )["localId"]
+                dic = basedic.__dict__.copy()
+                dic["metroId"] = metroId
                 insert_data_to_mongo(
                     dic,
                     histdata,
                     histcoll,
                     statdata=statdata,
                     statcoll=statcoll,
+                    localId=localId,
                 )
-        else:
-            localname = df_clst["wiwName"].iloc[0]
-            print("sdName is ", metroname, "wiwName is", localname)
-            localId = localIds.find_one({"sdName": metroname, "wiwName": localname})[
-                "localId"
-            ]
-            dic = basedic.copy()
-            dic["metroId"] = metroId
-            insert_data_to_mongo(
-                dic,
-                histdata,
-                histcoll,
-                statdata=statdata,
-                statcoll=statcoll,
-                localId=localId,
-            )
 
-        # # 그리기
-        # package = (
-        #     outdir,
-        #     df_clst,
-        #     year,
-        #     area,
-        #     n_clst,
-        #     method,
-        #     cluster_by,
-        #     folder_name,
-        #     colors,
-        #     font_name,
-        # )
-        # make_hist(package)
-
-        print(f"Number of data points per cluster for {area}, method {method}")
-        for cluster_label in range(n_clst):
-            closest_data_count = sum(df_clst["cluster_label"] == cluster_label)
             print(
-                f"Cluster {cluster_label}: Age {clst_age_mean[cluster_label]}, {closest_data_count} closest data points"
+                f"Number of data points per cluster for {area}, method {basedic.method}"
             )
-    print(f"Youngest in {youngest_age[0]}: {youngest_age[1]}")
-    print(f"Oldest in {oldest_age[0]}: {oldest_age[1]}")
-
-    # # 그리기
-    # package = (
-    #     outdir,
-    #     df.shape[0],
-    #     year,
-    #     df_age,
-    #     n_clst,
-    #     method,
-    #     cluster_by,
-    #     folder_name,
-    #     colors,
-    #     font_name,
-    # )
-    # make_scatterplot(package)
+            for cluster_label in range(n_clst):
+                closest_data_count = sum(df_clst["cluster_label"] == cluster_label)
+                print(
+                    f"Cluster {cluster_label}: Age {clst_age_mean[cluster_label]}, {closest_data_count} closest data points"
+                )
+        print(f"Youngest in {youngest_age[0]}: {youngest_age[1]}")
+        print(f"Oldest in {oldest_age[0]}: {oldest_age[1]}")

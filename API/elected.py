@@ -41,6 +41,7 @@ def fetch_data(
     data_list = []
     for item in root.findall(".//item"):
         data_entry = {child.tag: child.text for child in item}
+        data_entry["year"] = sgId[:4]
 
         for column in drop_columns:
             data_entry.pop(column)
@@ -51,18 +52,19 @@ def fetch_data(
 
 
 def fetch_all_data(
-    sgIds: List[str], sgTypecode: str, drop_columns: List[str]
+    sgIds: List[str], sgTypecodes: str, drop_columns: List[str]
 ) -> List[dict]:
     data_list = []
-    for sgId in sgIds:
-        data_list.extend(fetch_data(sgId, sgTypecode, drop_columns=drop_columns))
+    for sgTypecode in sgTypecodes.split(","):
+        for sgId in sgIds:
+            data_list.extend(fetch_data(sgId, sgTypecode, drop_columns=drop_columns))
 
     return data_list
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="공공데이터포털 API로부터 당선자 정보를 가져옵니다.")
-    parser.add_argument("sgTypecode", type=str, help="원하는 sgTypecode 하나를 입력하세요")
+    parser.add_argument("sgTypecodes", type=str, help="원하는 sgTypecode를 ','로 구분하여 입력하세요")
     parser.add_argument("sgIds", type=str, help="원하는 sgId를 ','로 구분하여 입력하세요")
     parser.add_argument(
         "--drop-columns",
@@ -82,10 +84,11 @@ if __name__ == "__main__":
     sgIds = args.sgIds.split(",")
     drop_columns = args.drop_columns.split(",") if args.drop_columns else []
 
-    data_list = fetch_all_data(sgIds, args.sgTypecode, drop_columns=drop_columns)
-    if args.save_method == "excel":
-        save_to_excel(data_list, args.sgTypecode, is_elected=True)
-    elif args.save_method == "mongo":
-        save_to_mongo(
-            data_list, args.sgTypecode, ELECTED_TYPECODE_TYPE[args.sgTypecode]
-        )
+    data_list = fetch_all_data(sgIds, args.sgTypecodes, drop_columns=drop_columns)
+    for sgTypecode in args.sgTypecodes.split(","):
+        if sgTypecode not in SG_TYPECODE:
+            raise ValueError(f"Invalid sgTypecode: {sgTypecode}")
+        if args.save_method == "excel":
+            save_to_excel(data_list, sgTypecode, is_elected=True)
+        elif args.save_method == "mongo":
+            save_to_mongo(data_list, sgTypecode, ELECTED_TYPECODE_TYPE[sgTypecode])
