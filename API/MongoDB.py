@@ -15,6 +15,7 @@ class Councilor:
     job: str
     eduId: int
     edu: str
+    year: str
 
     @classmethod
     def from_dict(cls, data: dict):
@@ -31,6 +32,7 @@ class Councilor:
             job=data.get("job"),
             eduId=int(data.get("eduId")),
             edu=data.get("edu"),
+            year=data.get("year"),
         )
 
     def to_dict(self):
@@ -47,4 +49,5 @@ class Councilor:
             "job": self.job,
             "eduId": self.eduId,
             "edu": self.edu,
+            "year": self.year,
         }

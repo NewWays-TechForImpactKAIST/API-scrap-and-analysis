@@ -41,6 +41,7 @@ def fetch_data(
     data_list = []
     for item in root.findall(".//item"):
         data_entry = {child.tag: child.text for child in item}
+        data_entry["year"] = sgId[:4]
 
         for column in drop_columns:
             data_entry.pop(column)
