@@ -23,29 +23,15 @@ councilordict = {
     "기초의원비례대표": "local_councilor",
 }
 
-
-def main(N=5, folder_name="To_be_filled"):
+def run(cluster_by, filenames, N=5, folder_name="To_be_filled"):
     ## TO-DO: excel말고 mongodb에서 받아오도록 합니다.
-    ## 이 링크에 구현될 save_to_mongo함수 참고 : https://github.com/NewWays-TechForImpactKAIST/API-scrap-and-analysis//blob/bd817e9a15086d313d9615b2515a81e0dbd73850/API/utils.py#L34
-    ## 1. 지역의회
-    # cluster_by = input("구역을 나눌 기준을 입력해주세요 (sdName 즉 시/도 또는 wiwName 즉 기초단체단위): ")
-    cluster_by = "wiwName"
     assert cluster_by in ["sdName", "wiwName"]
     level = 1 if cluster_by == "sdName" else 2
     datadir = os.path.join(BASE_DIR, "_data", folder_name)
-    # for d in os.listdir(datadir):
-    # xlsx 파일을 읽어옵니다.
-    # if not d.endswith(".xlsx"):
-    #     continue
-    # df = pd.read_excel(os.path.join(datadir, d))
-    # d = "[당선][시도의원].xlsx"
-    d = "[당선][구시군의회의원].xlsx"
-    df_1 = pd.read_excel(os.path.join(datadir, d))
-    # d = "[당선][광역의원비례대표].xlsx"
-    d = "[당선][기초의원비례대표].xlsx"
-    df_2 = pd.read_excel(os.path.join(datadir, d))
-    df = pd.concat([df_1, df_2])
-    # 필요한 열만 추출합니다.
+    df = pd.DataFrame()
+    for d in filenames:
+        df_new = pd.read_excel(os.path.join(datadir, d))
+        df = pd.concat([df, df_new])
     if level == 1:
         df = df[["sgId", "sdName", "name", "age", "gender"]]
     else:
@@ -67,7 +53,13 @@ def main(N=5, folder_name="To_be_filled"):
             method=method,
         )
         cluster(df, N, basedic)
-    ## 2. 광역의회
+def main(N=5):
+    run("sdName", ["[당선][시도의원].xlsx", "[당선][광역의원비례대표].xlsx"])
+    run("sdName", ["[후보][시도의원].xlsx", "[후보][광역의원비례대표].xlsx"])
+    run("sdName", ["[당선][구시군의회의원].xlsx", "[당선][기초의원비례대표].xlsx"])
+    run("sdName", ["[후보][구시군의회의원].xlsx", "[후보][기초의원비례대표].xlsx"])
+    run("wiwName", ["[당선][구시군의회의원].xlsx", "[당선][기초의원비례대표].xlsx"])
+    run("wiwName", ["[후보][구시군의회의원].xlsx", "[후보][기초의원비례대표].xlsx"])
 
 
 main()

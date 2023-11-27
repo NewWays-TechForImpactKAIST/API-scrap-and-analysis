@@ -51,11 +51,12 @@ def fetch_data(
 
 
 def fetch_all_data(
-    sgIds: List[str], sgTypecode: str, drop_columns: List[str]
+    sgIds: List[str], sgTypecodes: str, drop_columns: List[str]
 ) -> List[dict]:
     data_list = []
-    for sgId in sgIds:
-        data_list.extend(fetch_data(sgId, sgTypecode, drop_columns=drop_columns))
+    for sgTypecode in sgTypecodes.split(","):
+        for sgId in sgIds:
+            data_list.extend(fetch_data(sgId, sgTypecode, drop_columns=drop_columns))
 
     return data_list
 
