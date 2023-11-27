@@ -23,6 +23,7 @@ councilordict = {
     "기초의원비례대표": "local_councilor",
 }
 
+
 def run(cluster_by, filenames, N=5, folder_name="To_be_filled"):
     ## TO-DO: excel말고 mongodb에서 받아오도록 합니다.
     assert cluster_by in ["sdName", "wiwName"]
@@ -53,6 +54,8 @@ def run(cluster_by, filenames, N=5, folder_name="To_be_filled"):
             method=method,
         )
         cluster(df, N, basedic)
+
+
 def main(N=5):
     run("sdName", ["[당선][시도의원].xlsx", "[당선][광역의원비례대표].xlsx"])
     run("sdName", ["[후보][시도의원].xlsx", "[후보][광역의원비례대표].xlsx"])
