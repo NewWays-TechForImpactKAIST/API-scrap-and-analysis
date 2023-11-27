@@ -30,6 +30,7 @@ from scrap.local_councils.gyeongsang import *
 from scrap.local_councils import *
 from scrap.metropolitan_council import *
 from scrap.national_council import *
+from scrap.group_head import *
 from requests.exceptions import Timeout
 
 
@@ -190,12 +191,19 @@ class NationalCouncilScraper(BaseScraper):
         return result
 
 
-class HeadsScraper(BaseScraper):
+class LeadersScraper(BaseScraper):
     def __init__(self, kwargs: Dict[str, str] = {}):
         super().__init__(kwargs)
 
     def run(self) -> Dict[str, ScrapResult]:
-        raise NotImplementedError("단체장 스크랩은 아직 구현되지 않았습니다.")
+        result = dict()
+
+        try:
+            results = scrap_group_leaders()
+        except Exception as e:
+            self.handle_errors("단체장", e)
+
+        return results
 
 
 class ScraperFactory:
@@ -208,8 +216,8 @@ class ScraperFactory:
             return LocalCouncilScraper(self.kwargs)
         elif self.where == "metro":
             return MetroCouncilScraper(self.kwargs)
-        elif self.where == "heads":
-            return HeadsScraper(self.kwargs)
+        elif self.where == "leaders":
+            return LeadersScraper(self.kwargs)
         elif self.where == "national":
             return NationalCouncilScraper(self.kwargs)
         else:
@@ -251,16 +259,16 @@ def parse_cids(cids_str: Optional[str], where: str) -> Optional[List[int]]:
         return range(1, 227)
     elif where == "national":
         return None
-    elif where == "heads":
-        raise NotImplementedError("단체장 스크랩은 몇부터 몇까지죠?")
+    elif where == "leaders":
+        return None
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="지방의회 / 광역의회 / 국회 / 단체장 스크랩 스크립트 실행")
-    parser.add_argument(
-        "where",
-        help="스크랩할 의회 종류 (지방의회: 'local', 광역의회: 'metro', 국회: 'national', 단체장: 'heads')",
-        choices=["local", "metro", "national", "heads"],
+    parser.add_argument( "-w", 
+        "--where",
+        help="스크랩할 의회 종류 (지방의회: 'local', 광역의회: 'metro', 국회: 'national', 단체장: 'leaders')",
+        choices=["local", "metro", "national", "leaders"],
         default="local",
     )
     parser.add_argument(
