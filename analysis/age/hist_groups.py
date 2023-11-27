@@ -181,7 +181,7 @@ def insert_data_to_mongo(
             )
 
 
-def cluster(df_original, n_clst, basedic):
+def cluster(df_original, n_clst, basedic, clean_flag = True):
     """구역별 그룹을 만듭니다.
     df_original: 데이터프레임
     n_clst: 그룹 수
@@ -194,11 +194,11 @@ def cluster(df_original, n_clst, basedic):
     histcoll = statdb["age_hist"]
     statcoll = statdb["age_stat"]  # method = "equal"에서 써 줄 통계.
     # 기존 histogram 정보는 삭제 (나이별로 넣는 것이기 때문에 찌꺼기값 존재가능)
-    histcoll.delete_many(basedic.__dict__)
-    if basedic.method == "equal":
-        statcoll.delete_many(basedic.__dict__)
+    if clean_flag:
+        histcoll.delete_many(basedic.__dict__)
+        if basedic.method == "equal":
+            statcoll.delete_many(basedic.__dict__)
     # 연도별로 데이터 찾아서 넣기!
-    df_original["year"] = df_original["sgId"] // 10000
     df_original = df_original[df_original["year"].isin([2010, 2014, 2018, 2022])]
     years = df_original["year"].unique()
     for year in years:
