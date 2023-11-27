@@ -41,7 +41,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
     main_collection = db[where]
 
     # TODO: Support other types of councils
-    if sgTypecode in ["6", "9"]:
+    if sgTypecode in ["8","5","2","7","6", "9"]:
         for entry in data:
             entry["wiwName"] = change_local_name(entry["sdName"], entry["wiwName"])
             district_id = get_district_id(entry["sdName"], entry["wiwName"])
@@ -52,32 +52,6 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
                         "name": entry["name"],
                         "localId": district_id["localId"],
                         "metroId": district_id["metroId"],
-                    },
-                    {"$set": Councilor.from_dict(entry).to_dict()},
-                    upsert=True,
-                )
-            else:
-                print(
-                    f"Warning: '{entry['sdName']} {entry['wiwName']}'에 해당하는 지역 ID가 존재하지 않습니다."
-                )
-    elif sgTypecode in ["5", "8"]:
-        main_collection = db["metro_councilor"]
-        for entry in data:
-            entry["wiwName"] = change_local_name(entry["sdName"], entry["wiwName"])
-            district_id = get_district_id(entry["sdName"], entry["wiwName"])
-
-            if not district_id:
-                print(
-                    f"Warning: '{entry['sdName']} {entry['wiwName']}'에 해당하는 지역 ID가 존재하지 않습니다."
-                )
-                continue
-
-            if district_id:
-                main_collection.update_one(
-                    {
-                        "name": entry["name"],
-                        "local_id": district_id["local_id"],
-                        "metro_id": district_id["metro_id"],
                     },
                     {"$set": Councilor.from_dict(entry).to_dict()},
                     upsert=True,
@@ -119,29 +93,6 @@ def getLocalMetroMap() -> Dict[str, str]:
         (item["sdName"], item["wiwName"]): {
             "localId": item["localId"],
             "metroId": item["metroId"],
-        }
-        for item in result
-    }
-
-
-def getLocalMetroMap() -> Dict[str, str]:
-    db = client["district"]
-    result = db["local_district"].aggregate(
-        [
-            {
-                "$project": {
-                    "localId": 1,
-                    "metroId": 1,
-                    "sdName": 1,
-                    "wiwName": 1,
-                }
-            },
-        ]
-    )
-    return {
-        (item["sdName"], item["wiwName"]): {
-            "local_id": item["localId"],
-            "metro_id": item["metroId"],
         }
         for item in result
     }
