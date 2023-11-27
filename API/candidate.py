@@ -91,6 +91,4 @@ if __name__ == "__main__":
         if args.save_method == "excel":
             save_to_excel(data_list, sgTypecode, is_elected=False)
         elif args.save_method == "mongo":
-            save_to_mongo(
-                data_list, sgTypecode, CANDIDATE_TYPECODE_TYPE[sgTypecode]
-            )
+            save_to_mongo(data_list, sgTypecode, CANDIDATE_TYPECODE_TYPE[sgTypecode])

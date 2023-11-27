@@ -65,13 +65,13 @@ def scrap_group_leaders(
 
         browser.get(url)
     results = dict()
-    for (area, councilor) in metro_heads:
+    for area, councilor in metro_heads:
         results[area] = ScrapResult(
             council_id=area,
             council_type=CouncilType.METRO_LEADER,
             councilors=councilor,
         )
-    for (local_area_name, councilor) in local_heads:
+    for local_area_name, councilor in local_heads:
         print(local_area_name)
         results[local_area_name] = ScrapResult(
             council_id=local_area_name,

@@ -265,7 +265,8 @@ def parse_cids(cids_str: Optional[str], where: str) -> Optional[List[int]]:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="지방의회 / 광역의회 / 국회 / 단체장 스크랩 스크립트 실행")
-    parser.add_argument( "-w", 
+    parser.add_argument(
+        "-w",
         "--where",
         help="스크랩할 의회 종류 (지방의회: 'local', 광역의회: 'metro', 국회: 'national', 단체장: 'leaders')",
         choices=["local", "metro", "national", "leaders"],
