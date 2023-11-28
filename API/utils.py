@@ -72,7 +72,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
                 upsert=True,
             )
     else:
-        raise NotImplementedError("현재 구시군의회의원(6) 및 기초의원비례대표(9)만 구현되어 있습니다.")
+        raise NotImplementedError(f"아직 구현되지 않은 sgTypecode: {sgTypecode}")
 
     print(f"데이터를 성공적으로 MongoDB '{main_collection.name}' 컬렉션에 저장하였습니다.")
 
