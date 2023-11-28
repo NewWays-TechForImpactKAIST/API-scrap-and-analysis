@@ -255,10 +255,10 @@ def main(args: Dict[str, str]) -> None:
     where = args.get("where")
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M")
     
-    json_import_path = args.get("import-from-json")
+    json_import_path = args.get("import_from_json")
     if json_import_path:
-        if not args.get("update-mongo"):
-            raise ValueError("JSON 파일에서 가져온 결과를 MongoDB에 업데이트하려면 --update-mongo 옵션을 사용해야 합니다.")
+        if not args.get("update_mongo"):
+            raise ValueError("JSON 파일에서 가져온 결과를 MongoDB에 업데이트하려면 --update-mongo (-m) 옵션을 사용해야 합니다.")
 
         print("JSON 파일에서 결과를 가져옵니다. 다른 스크랩 관련 옵션은 무시됩니다.")
         results = import_results_from_json(json_import_path, where)
@@ -267,21 +267,21 @@ def main(args: Dict[str, str]) -> None:
         runner = ScraperFactory(where, runner_kwargs).create_scraper()
 
         cids_to_run = parse_cids(args.get("cids"), where)
-        enable_webhook = args.get("disable-webhook")
+        enable_webhook = args.get("disable_webhook")
         if cids_to_run:
             results = runner.run(cids_to_run, enable_webhook)
         else:
             results = runner.run()
 
-    if args.get("update-mongo"):
+    if args.get("update_mongo"):
         for result in results.values():
             save_to_database(result)
 
-    if args.get("output-store"):
-        if args.get("output-format") == "json":
-            export_results_to_json(results, args.get("output-path"), current_time)
-        elif args.get("output-format") == "txt":
-            export_results_to_txt(results, args.get("output-path"), current_time)
+    if args.get("output_store"):
+        if args.get("output_format") == "json":
+            export_results_to_json(results, args.get("output_path"), current_time)
+        elif args.get("output_format") == "txt":
+            export_results_to_txt(results, args.get("output_path"), current_time)
 
 
 def parse_cids(cids_str: Optional[str], where: str) -> Optional[Iterable[int]]:
