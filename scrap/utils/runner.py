@@ -12,7 +12,11 @@ from abc import *
 
 from configurations.secrets import WebhookSecrets
 
-from scrap.utils.export import export_results_to_json, export_results_to_txt
+from scrap.utils.data_io import (
+    export_results_to_json,
+    export_results_to_txt,
+    import_results_from_json,
+)
 from scrap.utils.database import save_to_database
 from scrap.utils.types import ScrapResult, ScrapBasicArgument
 from scrap.utils.spreadsheet import read_record_from_spreadsheet
@@ -250,26 +254,36 @@ def main(args: Dict[str, str]) -> None:
 
     where = args.get("where")
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M")
-    runner_kwargs = args | {"current_time": current_time}
 
-    runner = ScraperFactory(where, runner_kwargs).create_scraper()
+    json_import_path = args.get("import_from_json")
+    if json_import_path:
+        if not args.get("update_mongo"):
+            raise ValueError(
+                "JSON 파일에서 가져온 결과를 MongoDB에 업데이트하려면 --update-mongo (-m) 옵션을 사용해야 합니다."
+            )
 
-    cids_to_run = parse_cids(args.get("cids"), where)
-    enable_webhook = args.get("disable-webhook")
-    if cids_to_run:
-        results = runner.run(cids_to_run, enable_webhook)
+        print("JSON 파일에서 결과를 가져옵니다. 다른 스크랩 관련 옵션은 무시됩니다.")
+        results = import_results_from_json(json_import_path, where)
     else:
-        results = runner.run()
+        runner_kwargs = args | {"current_time": current_time}
+        runner = ScraperFactory(where, runner_kwargs).create_scraper()
 
-    if args.get("update-mongo"):
+        cids_to_run = parse_cids(args.get("cids"), where)
+        enable_webhook = args.get("disable_webhook")
+        if cids_to_run:
+            results = runner.run(cids_to_run, enable_webhook)
+        else:
+            results = runner.run()
+
+    if args.get("update_mongo"):
         for result in results.values():
             save_to_database(result)
 
-    if args.get("output-store"):
-        if args.get("output-format") == "json":
-            export_results_to_json(results, args.get("output-path"), current_time)
-        elif args.get("output-format") == "txt":
-            export_results_to_txt(results, args.get("output-path"), current_time)
+    if args.get("output_store"):
+        if args.get("output_format") == "json":
+            export_results_to_json(results, args.get("output_path"), current_time)
+        elif args.get("output_format") == "txt":
+            export_results_to_txt(results, args.get("output_path"), current_time)
 
 
 def parse_cids(cids_str: Optional[str], where: str) -> Optional[Iterable[int]]:
@@ -293,6 +307,9 @@ if __name__ == "__main__":
         help="스크랩할 의회 종류 (지방의회: 'local', 광역의회: 'metro', 국회: 'national', 단체장: 'leaders')",
         choices=["local", "metro", "national", "leaders"],
         default="local",
+    )
+    parser.add_argument(
+        "--import-from-json", help="경로에서 JSON 파일을 읽어와 결과를 받아옴", default=None
     )
     parser.add_argument(
         "--data-source",

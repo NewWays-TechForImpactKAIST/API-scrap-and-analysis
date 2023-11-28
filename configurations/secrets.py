@@ -26,7 +26,7 @@ class OpenDataPortalSecrets:
     공공데이터포털(data.go.kr) API 호출에 필요한 서비스 키를 정의합니다.
     """
 
-    service_key = str(os.getenv("OPEN_DATA_SERICE_KEY") or "")
+    service_key = str(os.getenv("OPEN_DATA_SERVICE_KEY") or "")
 
 
 class EmailSecrets:
