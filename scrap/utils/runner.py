@@ -254,11 +254,13 @@ def main(args: Dict[str, str]) -> None:
 
     where = args.get("where")
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M")
-    
+
     json_import_path = args.get("import_from_json")
     if json_import_path:
         if not args.get("update_mongo"):
-            raise ValueError("JSON 파일에서 가져온 결과를 MongoDB에 업데이트하려면 --update-mongo (-m) 옵션을 사용해야 합니다.")
+            raise ValueError(
+                "JSON 파일에서 가져온 결과를 MongoDB에 업데이트하려면 --update-mongo (-m) 옵션을 사용해야 합니다."
+            )
 
         print("JSON 파일에서 결과를 가져옵니다. 다른 스크랩 관련 옵션은 무시됩니다.")
         results = import_results_from_json(json_import_path, where)

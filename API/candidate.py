@@ -79,8 +79,6 @@ if __name__ == "__main__":
     )
     parser.add_argument("--output-path", help="API 요청 결과 저장 경로", default="output")
 
-
-
     args = vars(parser.parse_args())
     print(args)
     sgIds = args.get("sgIds").split(",")
@@ -90,7 +88,9 @@ if __name__ == "__main__":
         drop_columns = []
     print(drop_columns)
 
-    data_list = fetch_all_data(sgIds, args.get("sgTypecodes"), drop_columns=drop_columns)
+    data_list = fetch_all_data(
+        sgIds, args.get("sgTypecodes"), drop_columns=drop_columns
+    )
 
     for sgTypecode in args.get("sgTypecodes").split(","):
         if sgTypecode not in SG_TYPECODE:

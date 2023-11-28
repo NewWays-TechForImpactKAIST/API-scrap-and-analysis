@@ -41,7 +41,9 @@ def export_results_to_txt(
             f.write(f"| {cid} | {councilors}\n")
 
 
-def import_results_from_json(input_path: str, council_type: str) -> Dict[str, ScrapResult]:
+def import_results_from_json(
+    input_path: str, council_type: str
+) -> Dict[str, ScrapResult]:
     with open(input_path, "r", encoding="utf-8") as f:
         results = json.load(f)
 
