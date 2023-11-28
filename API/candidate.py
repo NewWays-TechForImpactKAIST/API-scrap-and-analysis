@@ -68,28 +68,36 @@ if __name__ == "__main__":
     parser.add_argument(
         "--drop-columns",
         type=str,
-        default="num,huboid,hanjaName,status",
+        default="num,huboid,hanjaName,status,gihoSangse",
         help="제거할 열 이름을 ','로 구분하여 입력하세요",
     )
     parser.add_argument(
-        "--save-method",
-        type=str,
-        # TODO: Add MongoDB support
-        # choices=["excel", "mongo"],
-        choices=["excel"],
-        default="excel",
-        help="데이터 저장 방식: 'excel' (현재는 excel만 지원)",
+        "-m", "--update-mongo", help="API 요청 결과를 MongoDB에 업데이트", action="store_true"
     )
+    parser.add_argument(
+        "-o", "--output-store", help="API 요청 결과를 로컬에 저장", action="store_true"
+    )
+    parser.add_argument("--output-path", help="API 요청 결과 저장 경로", default="output")
 
-    args = parser.parse_args()
-    sgIds = args.sgIds.split(",")
-    drop_columns = args.drop_columns.split(",") if args.drop_columns else []
 
-    data_list = fetch_all_data(sgIds, args.sgTypecodes, drop_columns=drop_columns)
-    for sgTypecode in args.sgTypecodes.split(","):
+
+    args = vars(parser.parse_args())
+    print(args)
+    sgIds = args.get("sgIds").split(",")
+    if args.get("drop_columns"):
+        drop_columns = args.get("drop_columns").split(",")
+    else:
+        drop_columns = []
+    print(drop_columns)
+
+    data_list = fetch_all_data(sgIds, args.get("sgTypecodes"), drop_columns=drop_columns)
+
+    for sgTypecode in args.get("sgTypecodes").split(","):
         if sgTypecode not in SG_TYPECODE:
             raise ValueError(f"Invalid sgTypecode: {sgTypecode}")
-        if args.save_method == "excel":
-            save_to_excel(data_list, sgTypecode, is_elected=False)
-        elif args.save_method == "mongo":
+
+        if args.get("update_mongo"):
             save_to_mongo(data_list, sgTypecode, CANDIDATE_TYPECODE_TYPE[sgTypecode])
+
+        if args.get("output_store"):
+            save_to_excel(data_list, sgTypecode, is_elected=False)
