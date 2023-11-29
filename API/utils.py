@@ -49,6 +49,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
             if district_id:
                 main_collection.update_one(
                     {
+                        "year": entry["year"],
                         "name": entry["name"],
                         "localId": district_id["localId"],
                         "metroId": district_id["metroId"],
@@ -64,6 +65,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
         for entry in data:
             main_collection.update_one(
                 {
+                    "year": entry["year"],
                     "name": entry["name"],
                     "localId": 0,
                     "metroId": 0,
