@@ -226,6 +226,97 @@ def party_hist(councilor_type: str, level: int, is_elected: bool, filenames: lis
             )
 
 
+# ===================================================
+#  Age history calculations for national councilors
+# ===================================================
+
+
+def age_hist_national(is_elected: bool, filenames: list[str]):
+    datadir = os.path.join(BASE_DIR, "_data")
+    df = pd.DataFrame()
+
+    for d in filenames:
+        df_new = pd.read_excel(os.path.join(datadir, d))
+        df = pd.concat([df, df_new])
+
+    df = df[["sgId", "name", "age"]].groupby(by=["sgId", "age"]).count().reset_index()
+    df["cumsum"] = df.groupby(by="sgId")["name"].cumsum()
+    df["quintile"] = pd.qcut(df["cumsum"], q=5, labels=[0, 1, 2, 3, 4])
+
+    total = (
+        df[["sgId", "name"]]
+        .groupby(by=["sgId"])
+        .sum()
+        .rename(columns={"name": "total"})
+    )
+    first_quintile = (
+        df.loc[df["quintile"] == 0]
+        .groupby(by=["sgId"])
+        .max()[["age"]]
+        .rename(columns={"age": "q1"})
+    )
+    last_quintile = (
+        df.loc[df["quintile"] == 4]
+        .groupby(by=["sgId"])
+        .min()[["age"]]
+        .rename(columns={"age": "q5"})
+    )
+    quintiles = pd.concat([total, first_quintile, last_quintile], axis=1)
+
+    hist_data: dict[int, list[dict]] = {}
+    for _, row in df.iterrows():
+        year = int(str(row["sgId"])[:4])
+        age = int(row["age"])
+        cnt = int(row["name"])
+        age_group = int(row["quintile"])
+
+        if year in hist_data:
+            hist_data[year].append(
+                {"minAge": age, "maxAge": age + 1, "count": cnt, "ageGroup": age_group}
+            )
+        else:
+            hist_data[year] = [
+                {"minAge": age, "maxAge": age + 1, "count": cnt, "ageGroup": age_group}
+            ]
+
+    stat_data: dict[int, dict] = {}
+    for sgId, row in quintiles.iterrows():
+        year = int(str(sgId)[:4])
+        stat_data[year] = {
+            "firstquintile": int(row["q1"]),
+            "lastquintile": int(row["q5"]),
+            "population": int(row["total"]),
+        }
+
+    age_hist_collection = client["stats"].get_collection("age_hist")
+    for year, docs in hist_data.items():
+        age_hist_collection.find_one_and_update(
+            {
+                "councilorType": "national_councilor",
+                "is_elected": is_elected,
+                "level": 0,
+                "method": "equal",
+                "year": year,
+            },
+            {"$set": {"data": docs}},
+            upsert=True,
+        )
+
+    age_stat_collection = client["stats"].get_collection("age_stat")
+    for year, doc in stat_data.items():
+        age_stat_collection.find_one_and_update(
+            {
+                "councilorType": "national_councilor",
+                "is_elected": is_elected,
+                "level": 0,
+                "method": "equal",
+                "year": year,
+            },
+            {"$set": {"data": [doc]}},
+            upsert=True,
+        )
+
+
 def main():
     gender_hist(
         "local_councilor", 2, True, ["[당선][구시군의회의원].xlsx", "[당선][기초의원비례대표].xlsx"]
@@ -254,6 +345,9 @@ def main():
 
     party_hist("national_councilor", 0, True, ["[당선][국회의원].xlsx"])
     party_hist("national_councilor", 0, False, ["[후보][국회의원].xlsx"])
+
+    age_hist_national(True, ["[당선][국회의원].xlsx"])
+    age_hist_national(False, ["[후보][국회의원].xlsx"])
 
 
 if __name__ == "__main__":
