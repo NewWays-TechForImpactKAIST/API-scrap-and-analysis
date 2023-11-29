@@ -27,7 +27,7 @@
 3. 레포지토리 클론
    - 아래 명령을 실행하여 레포지토리를 클론합니다.
    ```bash
-    git clone https://github.com/NewWays-TechForImpactKAIST/main
+    git clone https://github.com/NewWays-TechForImpactKAIST/API-scrap-and-analysis.git
     ```
 4. 필요한 패키지 설치
    - requirements.txt에 명시된 패키지를 설치합니다.
