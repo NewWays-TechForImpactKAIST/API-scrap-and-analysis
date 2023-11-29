@@ -38,6 +38,7 @@ def gender_hist(
     district_db = client["district"]
     gender_hist_collection = client["stats"].get_collection("gender_hist")
 
+    df["wiwName"] = df["wiwName"].apply(lambda x: x if isinstance(x, str) else "")
     df["sdName"] = df[["sdName", "wiwName"]].apply(
         lambda x: local_to_metro_list(*x), axis=1
     )
@@ -145,6 +146,7 @@ def party_hist(councilor_type: str, level: int, is_elected: bool, filenames: lis
     district_db = client["district"]
     party_hist_collection = client["stats"].get_collection("party_hist")
 
+    df["wiwName"] = df["wiwName"].apply(lambda x: x if isinstance(x, str) else "")
     df["sdName"] = df[["sdName", "wiwName"]].apply(
         lambda x: local_to_metro_list(*x), axis=1
     )
@@ -225,22 +227,30 @@ def party_hist(councilor_type: str, level: int, is_elected: bool, filenames: lis
 
 
 def main():
-    gender_hist("local_councilor", 2, True, ["[당선][구시군의회의원].xlsx"])
-    gender_hist("local_councilor", 2, False, ["[후보][구시군의회의원].xlsx"])
+    gender_hist(
+        "local_councilor", 2, True, ["[당선][구시군의회의원].xlsx", "[당선][기초의원비례대표].xlsx"]
+    )
+    gender_hist(
+        "local_councilor", 2, False, ["[후보][구시군의회의원].xlsx", "[후보][기초의원비례대표].xlsx"]
+    )
 
-    gender_hist("metro_councilor", 1, True, ["[당선][시도의원].xlsx"])
-    gender_hist("metro_councilor", 1, False, ["[후보][시도의원].xlsx"])
+    gender_hist("metro_councilor", 1, True, ["[당선][시도의원].xlsx", "[당선][광역의원비례대표].xlsx"])
+    gender_hist("metro_councilor", 1, False, ["[후보][시도의원].xlsx", "[후보][광역의원비례대표].xlsx"])
 
     gender_hist("national_councilor", 0, True, ["[당선][국회의원].xlsx"])
     gender_hist("national_councilor", 0, False, ["[후보][국회의원].xlsx"])
 
     gender_hist_add_zero()
 
-    party_hist("local_councilor", 2, True, ["[당선][구시군의회의원].xlsx"])
-    party_hist("local_councilor", 2, False, ["[후보][구시군의회의원].xlsx"])
+    party_hist(
+        "local_councilor", 2, True, ["[당선][구시군의회의원].xlsx", "[당선][기초의원비례대표].xlsx"]
+    )
+    party_hist(
+        "local_councilor", 2, False, ["[후보][구시군의회의원].xlsx", "[후보][기초의원비례대표].xlsx"]
+    )
 
-    party_hist("metro_councilor", 1, True, ["[당선][시도의원].xlsx"])
-    party_hist("metro_councilor", 1, False, ["[후보][시도의원].xlsx"])
+    party_hist("metro_councilor", 1, True, ["[당선][시도의원].xlsx", "[당선][광역의원비례대표].xlsx"])
+    party_hist("metro_councilor", 1, False, ["[후보][시도의원].xlsx", "[후보][광역의원비례대표].xlsx"])
 
     party_hist("national_councilor", 0, True, ["[당선][국회의원].xlsx"])
     party_hist("national_councilor", 0, False, ["[후보][국회의원].xlsx"])

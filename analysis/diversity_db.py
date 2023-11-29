@@ -351,14 +351,14 @@ def calculate_age_diversity_rank_history_national() -> None:
 
 
 def main():
-    # for localId in range(1, 227):
-    #     save_to_mongo_local(localId, "age", stair=10)
-    #     save_to_mongo_local(localId, "gender")
-    #     save_to_mongo_local(localId, "party")
-    # calculate_rank_local("age")
-    # calculate_rank_local("gender")
-    # calculate_rank_local("party")
-    # calculate_age_diversity_rank_history_local()
+    for localId in range(1, 227):
+        save_to_mongo_local(localId, "age", stair=10)
+        save_to_mongo_local(localId, "gender")
+        save_to_mongo_local(localId, "party")
+    calculate_rank_local("age")
+    calculate_rank_local("gender")
+    calculate_rank_local("party")
+    calculate_age_diversity_rank_history_local()
 
     for metroId in range(1, 18):
         if metroId in [17]:
@@ -371,10 +371,10 @@ def main():
     calculate_rank_metro("party")
     calculate_age_diversity_rank_history_metro()
 
-    # save_to_mongo_national("age", stair=10)
-    # save_to_mongo_national("gender")
-    # save_to_mongo_national("party")
-    # calculate_age_diversity_rank_history_national()
+    save_to_mongo_national("age", stair=10)
+    save_to_mongo_national("gender")
+    save_to_mongo_national("party")
+    calculate_age_diversity_rank_history_national()
 
 
 if __name__ == "__main__":
