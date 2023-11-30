@@ -6,6 +6,7 @@ from db.client import client
 from analysis.age.hist_groups import (
     local_to_metro_list,
     change_local_name,
+    cluster_data
 )
 
 # 경고 무시
@@ -232,64 +233,49 @@ def party_hist(councilor_type: str, level: int, is_elected: bool, filenames: lis
 
 
 def age_hist_national(is_elected: bool, filenames: list[str]):
+    age_hist_collection = client["stats"].get_collection("age_hist")
+    age_stat_collection = client["stats"].get_collection("age_stat")
+    # paramter
+    method = "equal"
+    n_clst = 5
+    
     datadir = os.path.join(BASE_DIR, "_data")
-    df = pd.DataFrame()
+    df_original = pd.DataFrame()
 
     for d in filenames:
         df_new = pd.read_excel(os.path.join(datadir, d))
-        df = pd.concat([df, df_new])
-
-    df = df[["sgId", "name", "age"]].groupby(by=["sgId", "age"]).count().reset_index()
-    df["cumsum"] = df.groupby(by="sgId")["name"].cumsum()
-    df["quintile"] = pd.qcut(df["cumsum"], q=5, labels=[0, 1, 2, 3, 4])
-
-    total = (
-        df[["sgId", "name"]]
-        .groupby(by=["sgId"])
-        .sum()
-        .rename(columns={"name": "total"})
-    )
-    first_quintile = (
-        df.loc[df["quintile"] == 0]
-        .groupby(by=["sgId"])
-        .max()[["age"]]
-        .rename(columns={"age": "q1"})
-    )
-    last_quintile = (
-        df.loc[df["quintile"] == 4]
-        .groupby(by=["sgId"])
-        .min()[["age"]]
-        .rename(columns={"age": "q5"})
-    )
-    quintiles = pd.concat([total, first_quintile, last_quintile], axis=1)
-
-    hist_data: dict[int, list[dict]] = {}
-    for _, row in df.iterrows():
-        year = int(str(row["sgId"])[:4])
-        age = int(row["age"])
-        cnt = int(row["name"])
-        age_group = int(row["quintile"])
-
-        if year in hist_data:
-            hist_data[year].append(
-                {"minAge": age, "maxAge": age + 1, "count": cnt, "ageGroup": age_group}
-            )
-        else:
-            hist_data[year] = [
-                {"minAge": age, "maxAge": age + 1, "count": cnt, "ageGroup": age_group}
+        df_original = pd.concat([df_original, df_new])
+    # df_original = df_original[["sgId", "name", "age"]].groupby(by=["sgId", "age"]).count().reset_index()
+    df_original["year"] = df_original["sgId"] // 10000
+    df_original = df_original[df_original["year"].isin([2008, 2012, 2016, 2020, 2024])]
+    years = df_original["year"].unique()
+    for year in years:
+        year = int(year)
+        df = df_original[df_original["year"] == year]
+        df = cluster_data(method, n_clst, df)
+        first_q = df[df["cluster_label"] == 0]["age"].max()
+        last_q = df[df["cluster_label"] == n_clst - 1]["age"].min()
+        # 히스토그램을 그립니다.
+        histdata = [
+            {
+                "minAge": int(age),
+                "maxAge": int(age) + 1,
+                "count": df[df["age"] == age].shape[0],
+                "ageGroup": int(
+                    df.loc[df["age"] == age].iloc[0]["cluster_label"]
+                ),
+            }
+            for age in df["age"].unique()
+        ]
+        statdata = None
+        if method == "equal":
+            statdata = [
+                {
+                    "firstquintile": int(first_q),
+                    "lastquintile": int(last_q),
+                    "population": int(df.shape[0]),
+                }
             ]
-
-    stat_data: dict[int, dict] = {}
-    for sgId, row in quintiles.iterrows():
-        year = int(str(sgId)[:4])
-        stat_data[year] = {
-            "firstquintile": int(row["q1"]),
-            "lastquintile": int(row["q5"]),
-            "population": int(row["total"]),
-        }
-
-    age_hist_collection = client["stats"].get_collection("age_hist")
-    for year, docs in hist_data.items():
         age_hist_collection.find_one_and_update(
             {
                 "councilorType": "national_councilor",
@@ -298,23 +284,21 @@ def age_hist_national(is_elected: bool, filenames: list[str]):
                 "method": "equal",
                 "year": year,
             },
-            {"$set": {"data": docs}},
+            {"$set": {"data": histdata}},
             upsert=True,
         )
-
-    age_stat_collection = client["stats"].get_collection("age_stat")
-    for year, doc in stat_data.items():
-        age_stat_collection.find_one_and_update(
-            {
-                "councilorType": "national_councilor",
-                "is_elected": is_elected,
-                "level": 0,
-                "method": "equal",
-                "year": year,
-            },
-            {"$set": {"data": [doc]}},
-            upsert=True,
-        )
+        if method == "equal":
+            age_stat_collection.find_one_and_update(
+                {
+                    "councilorType": "national_councilor",
+                    "is_elected": is_elected,
+                    "level": 0,
+                    "method": "equal",
+                    "year": year,
+                },
+                {"$set": {"data": statdata}},
+                upsert=True,
+            )
 
 
 def main():
