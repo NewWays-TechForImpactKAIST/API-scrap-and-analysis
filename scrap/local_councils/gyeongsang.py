@@ -388,6 +388,7 @@ def scrap_204(
 
     return ret_local_councilors(cid, councilors)
 
+
 def scrap_205(
     url,
     cid,
@@ -399,14 +400,15 @@ def scrap_205(
     soup = get_soup(url, verify=False)
     councilors: List[Councilor] = []
     profile_list = soup.find("div", id="content_box")
-    for name_tag in profile_list.find_all('h3'):
+    for name_tag in profile_list.find_all("h3"):
         name = name_tag.get_text(strip=True).split("(")[0] if name_tag else "이름 정보 없음"
-        ul = name_tag.find_next('ul')
-        li_party = ul.find('li', string='소속정당')
-        party = li_party.text.split(' : ')[-1].strip()
+        ul = name_tag.find_next("ul")
+        li_party = ul.find("li", string="소속정당")
+        party = li_party.text.split(" : ")[-1].strip()
     councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
+
 
 def scrap_206(
     url,
