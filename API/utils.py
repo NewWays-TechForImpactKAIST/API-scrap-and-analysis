@@ -40,7 +40,7 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
     db = client["council"]
     main_collection = db[where]
 
-    # TODO: Support other types of councils
+    # TODO: Support other types of test
     if sgTypecode in ["6", "9"]:
         for entry in data:
             entry["wiwName"] = change_local_name(entry["sdName"], entry["wiwName"])
