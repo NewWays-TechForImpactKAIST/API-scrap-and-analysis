@@ -26,7 +26,7 @@ ELECTED_TYPECODE_TYPE = {
     "4": CouncilType.LOCAL_LEADER,
     "5": CouncilType.METROPOLITAN_COUNCIL,
     "6": CouncilType.LOCAL_COUNCIL,
-    "7": CouncilType.NATIONAL_COUNCIL_GLOBAL,
+    "7": CouncilType.NATIONAL_COUNCIL,
     "8": CouncilType.METROPOLITAN_COUNCIL,
     "9": CouncilType.LOCAL_COUNCIL,
 }
