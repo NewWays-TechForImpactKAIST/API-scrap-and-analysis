@@ -6,7 +6,7 @@ from db.client import client
 from analysis.age.hist_groups import (
     local_to_metro_list,
     change_local_name,
-    cluster_data
+    cluster_data,
 )
 
 # 경고 무시
@@ -238,7 +238,7 @@ def age_hist_national(is_elected: bool, filenames: list[str]):
     # paramter
     method = "equal"
     n_clst = 5
-    
+
     datadir = os.path.join(BASE_DIR, "_data")
     df_original = pd.DataFrame()
 
@@ -261,9 +261,7 @@ def age_hist_national(is_elected: bool, filenames: list[str]):
                 "minAge": int(age),
                 "maxAge": int(age) + 1,
                 "count": df[df["age"] == age].shape[0],
-                "ageGroup": int(
-                    df.loc[df["age"] == age].iloc[0]["cluster_label"]
-                ),
+                "ageGroup": int(df.loc[df["age"] == age].iloc[0]["cluster_label"]),
             }
             for age in df["age"].unique()
         ]
