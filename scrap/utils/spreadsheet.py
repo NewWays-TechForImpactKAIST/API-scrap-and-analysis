@@ -166,6 +166,7 @@ def scrap_all_local_councils() -> None:
             202,
             203,
             204,
+            205,
             206,
             208,
             209,
@@ -189,7 +190,7 @@ def scrap_all_local_councils() -> None:
     parse_error_times = 0
     timeouts = 0
     N = 226
-    for n in [204]:
+    for n in [205]:
         if n in no_information + error_unsolved:
             emsg: str = (
                 (

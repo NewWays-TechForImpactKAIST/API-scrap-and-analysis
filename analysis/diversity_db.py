@@ -60,7 +60,7 @@ def shannon(data, stair=0, opts=True):
 # ====================================
 
 
-def save_to_mongo_local(localId: int, factor: str, stair=0, opts=False) -> None:
+def save_to_mongo_local(localId: int, factor: str, stair=0, opts=True) -> None:
     factor_field = {"age": "age", "gender": "gender", "party": "jdName"}
     data = [
         councilor[factor_field[factor]]
@@ -166,7 +166,7 @@ def calculate_age_diversity_rank_history_local() -> None:
 # ====================================
 
 
-def save_to_mongo_metro(metroId: int, factor: str, stair=0, opts=False) -> None:
+def save_to_mongo_metro(metroId: int, factor: str, stair=0, opts=True) -> None:
     factor_field = {"age": "age", "gender": "gender", "party": "jdName"}
     data = [
         councilor[factor_field[factor]]
@@ -267,23 +267,115 @@ def calculate_age_diversity_rank_history_metro() -> None:
                 )
 
 
-if __name__ == "__main__":
-    # for localId in range(1, 227):
-    #     save_to_mongo_local(localId, "age", stair=10)
-    #     save_to_mongo_local(localId, "gender")
-    #     save_to_mongo_local(localId, "party")
-    # calculate_rank_local("age")
-    # calculate_rank_local("gender")
-    # calculate_rank_local("party")
-    # calculate_age_diversity_rank_history_local()
+# =====================================
+# National council diversity statistics
+# =====================================
 
-    # for metroId in range(1, 18):
-    #     if metroId in [8, 17]:
-    #         continue
-    #     save_to_mongo_metro(metroId, "age", stair=10)
-    #     save_to_mongo_metro(metroId, "gender")
-    #     save_to_mongo_metro(metroId, "party")
-    # calculate_rank_metro("age")
-    # calculate_rank_metro("gender")
-    # calculate_rank_metro("party")
+
+def save_to_mongo_national(factor: str, stair=0, opts=True) -> None:
+    factor_field = {"age": "age", "gender": "gender", "party": "jdName"}
+    data = [
+        councilor[factor_field[factor]]
+        for councilor in client["council"]["national_councilor"].find()
+    ] + [
+        councilor[factor_field[factor]]
+        for councilor in client["council"]["national_councilor_global"].find()
+    ]
+    print(f"National {factor}")
+    print(data)
+    client["stats"].get_collection("diversity_index").update_one(
+        {"national": True},
+        {"$set": {f"{factor}DiversityIndex": gini_simpson(data, stair, opts)}},
+        upsert=True,
+    )
+
+
+def calculate_age_diversity_rank_history_national() -> None:
+    for is_elected in [True, False]:
+        docs = client["stats"]["age_hist"].find(
+            {
+                "councilorType": "national_councilor",
+                "method": "equal",
+                "is_elected": is_elected,
+            }
+        )
+        for doc in docs:
+            diversity_index = gini_simpson(
+                [
+                    group["minAge"]
+                    for group in doc["data"]
+                    for _ in range(group["count"])
+                ],
+                stair=10,
+            )
+            client["stats"]["age_hist"].find_one_and_update(
+                {
+                    "councilorType": "national_councilor",
+                    "method": "equal",
+                    "is_elected": is_elected,
+                    "year": doc["year"],
+                },
+                {"$set": {"diversityIndex": diversity_index}},
+            )
+
+        years = list({doc["year"] for doc in client["stats"]["age_hist"].find()})
+
+        for year in years:
+            result = client["stats"]["age_hist"].aggregate(
+                [
+                    {
+                        "$match": {
+                            "councilorType": "national_councilor",
+                            "method": "equal",
+                            "is_elected": is_elected,
+                            "year": year,
+                        }
+                    },
+                    {"$sort": {"diversityIndex": -1}},
+                    {"$group": {"_id": "", "items": {"$push": "$$ROOT"}}},
+                    {"$unwind": {"path": "$items", "includeArrayIndex": "items.rank"}},
+                    {"$replaceRoot": {"newRoot": "$items"}},
+                    {"$addFields": {"rank": {"$add": ["$rank", 1]}}},
+                ]
+            )
+            for doc in result:
+                client["stats"]["age_hist"].find_one_and_update(
+                    {
+                        "councilorType": "national_councilor",
+                        "method": "equal",
+                        "is_elected": is_elected,
+                        "year": year,
+                    },
+                    {"$set": {"diversityRank": int(doc["rank"])}},
+                )
+
+
+def main():
+    for localId in range(1, 227):
+        save_to_mongo_local(localId, "age", stair=10)
+        save_to_mongo_local(localId, "gender")
+        save_to_mongo_local(localId, "party")
+    calculate_rank_local("age")
+    calculate_rank_local("gender")
+    calculate_rank_local("party")
+    calculate_age_diversity_rank_history_local()
+
+    for metroId in range(1, 18):
+        if metroId in [17]:
+            continue
+        save_to_mongo_metro(metroId, "age", stair=10)
+        save_to_mongo_metro(metroId, "gender")
+        save_to_mongo_metro(metroId, "party")
+    calculate_rank_metro("age")
+    calculate_rank_metro("gender")
+    calculate_rank_metro("party")
     calculate_age_diversity_rank_history_metro()
+
+    save_to_mongo_national("age", stair=10)
+    save_to_mongo_national("gender")
+    save_to_mongo_national("party")
+    calculate_age_diversity_rank_history_national()
+
+
+if __name__ == "__main__":
+    main()

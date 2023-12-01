@@ -43,12 +43,15 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
     # TODO: Support other types of councils
     if sgTypecode in ["8", "5", "2", "6", "9"]:
         for entry in data:
+            if entry["wiwName"] == None:
+                print(entry)
             entry["wiwName"] = change_local_name(entry["sdName"], entry["wiwName"])
             district_id = get_district_id(entry["sdName"], entry["wiwName"])
 
             if district_id:
                 main_collection.update_one(
                     {
+                        "year": entry["year"],
                         "name": entry["name"],
                         "localId": district_id["localId"],
                         "metroId": district_id["metroId"],
@@ -62,8 +65,10 @@ def save_to_mongo(data: List[dict], sgTypecode: str, where: str) -> None:
                 )
     elif sgTypecode in ["7"]:
         for entry in data:
+            entry["wiwName"] = "전국"
             main_collection.update_one(
                 {
+                    "year": entry["year"],
                     "name": entry["name"],
                     "localId": 0,
                     "metroId": 0,
