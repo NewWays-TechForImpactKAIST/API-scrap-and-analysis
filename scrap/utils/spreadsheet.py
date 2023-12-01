@@ -88,29 +88,33 @@ def scrap_all_metro_councils() -> None:
             else:
                 emsg: str = f"[scrap/metropolitan_council.py]에 {n}번 지역을 위한\
                       함수가 없네요."
-                add_error(n, emsg)
+                # add_error(n, emsg)
+                print(emsg)
             if "정보 없음" in result:
                 emsg = "스크랩 결과에 '정보 없음'이 포함되어 있습니다. 일부 인명에\
                     대해 스크랩이 실패했다는 뜻이에요. 함수나 인자를 점검해 주세요."
                 parse_error_times += 1
-                errors.append(n)
+                # errors.append(n)
+                print(emsg)
             # print(f"| {n} | {result}")
         except Timeout:
-            emsg = f"{council_url}에 시도한 연결이 타임아웃됐어요."
+            emsg = f"시도한 연결이 타임아웃됐어요."
             timeouts += 1
-            add_error(n, emsg)
+            print(emsg)
+            # add_error(n, emsg)
         except Exception as e:
-            add_error(n, "기타 오류 - " + str(e))
-    emessages = (
-        f"""
-        총 실행 횟수: {N}
-        에러: {enumbers}, 총 {len(enumbers)}회
-        그 중 '정보 없음' 횟수: {parse_error_times}
-        타임아웃 횟수: {timeouts}
-    """
-        + emessages
-    )
-    email_result(emessages)
+            print(e)
+            # add_error(n, "기타 오류 - " + str(e))
+    # emessages = (
+    #     f"""
+    #     총 실행 횟수: {N}
+    #     에러: {enumbers}, 총 {len(enumbers)}회
+    #     그 중 '정보 없음' 횟수: {parse_error_times}
+    #     타임아웃 횟수: {timeouts}
+    # """
+    #     + emessages
+    # )
+    # email_result(emessages)
 
 
 def scrap_all_local_councils() -> None:
@@ -131,10 +135,11 @@ def scrap_all_local_councils() -> None:
         167,
         176,
         181,
-        197,
+        200,
         202,
         222,
     ]
+    inner_euckr = [200]
     special_functions = (
         list(range(1, 57))
         + [62, 63, 64, 88, 97, 103, 107]
@@ -150,13 +155,18 @@ def scrap_all_local_councils() -> None:
             189,
             190,
             191,
+            192,
             194,
             195,
             196,
+            197,
             198,
             199,
             201,
+            202,
             203,
+            204,
+            205,
             206,
             208,
             209,
@@ -166,7 +176,7 @@ def scrap_all_local_councils() -> None:
         + [222, 223, 224, 226]
     )
     selenium_basic = [76, 78, 101, 169, 173, 177]
-    no_information = [18, 29, 106, 111, 172, 181, 185, 187, 197, 200, 204, 207]
+    no_information = [18, 29, 106, 111, 172, 181, 185, 187, 207]
     error_unsolved = [170, 171]
     f = open(JSON_PATH, "r")
     args = json.load(f)
@@ -180,7 +190,7 @@ def scrap_all_local_councils() -> None:
     parse_error_times = 0
     timeouts = 0
     N = 226
-    for n in range(1, N + 1):  # range(1, N + 1):
+    for n in [205]:
         if n in no_information + error_unsolved:
             emsg: str = (
                 (
@@ -192,9 +202,10 @@ def scrap_all_local_councils() -> None:
                 + " 링크: "
                 + data[n - 1]["URL"]
             )
-            add_error(n, emsg)
+            # add_error(n, emsg)
             continue
         encoding = "euc-kr" if n in euc_kr else "utf-8"
+        inner_euckr = True if n in inner_euckr else False
         council_url: str = ""
         try:
             council_url = data[n - 1]["URL"]
@@ -215,39 +226,44 @@ def scrap_all_local_councils() -> None:
                         명시되어 있는데 함수가 정의되어 있지 않네요. [scrap/utils/\
                         spreadsheet.py의 special_functions에 함수 번호를 빼고 \
                         다시 시도해 보시겠어요?]"
-                    add_error(n, emsg)
+                    # add_error(n, emsg)
             elif n in selenium_basic:
                 result = str(sel_scrap_basic(council_url, n, council_args).councilors)
             else:
                 result = str(
-                    scrap_basic(council_url, n, council_args, encoding).councilors
+                    scrap_basic(
+                        council_url, n, council_args, encoding, inner_euckr
+                    ).councilors
                 )
             if "정보 없음" in result:
                 emsg = "스크랩 결과에 '정보 없음'이 포함되어 있습니다. 일부 인명에\
                     대해 스크랩이 실패했다는 뜻이에요. 함수나 인자를 점검해 주세요."
                 parse_error_times += 1
-                errors.append(n)
+                print(emsg)
+                # errors.append(n)
             # print(f"| {n} | {result}")
         except Timeout:
             emsg = f"{council_url}에 시도한 연결이 타임아웃됐어요."
             timeouts += 1
-            add_error(n, emsg)
+            # add_error(n, emsg)
         except Exception as e:
-            add_error(n, "기타 오류 - " + str(e))
-    emessages = (
-        f"""
-        총 실행 횟수: {N}
-        에러: {enumbers}, 총 {len(enumbers)}회
-        그 중 '정보 없음' 횟수: {parse_error_times}
-        타임아웃 횟수: {timeouts}
-    """
-        + emessages
-    )
-    email_result(emessages)
+            print(e)
+        print(result)
+        # add_error(n, "기타 오류 - " + str(e))
+    # emessages = (
+    #     f"""
+    #     총 실행 횟수: {N}
+    #     에러: {enumbers}, 총 {len(enumbers)}회
+    #     그 중 '정보 없음' 횟수: {parse_error_times}
+    #     타임아웃 횟수: {timeouts}
+    # """
+    #     + emessages
+    # )
+    # email_result(emessages)
 
 
 def main() -> None:
-    scrap_all_metro_councils()
+    # scrap_all_metro_councils()
     scrap_all_local_councils()
 
 

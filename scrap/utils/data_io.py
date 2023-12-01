@@ -3,7 +3,8 @@ import json
 from dataclasses import asdict
 from typing import Dict
 
-from scrap.utils.types import ScrapResult, ScrapBasicArgument
+from scrap.utils.types import ScrapResult
+from db.types import Councilor
 
 
 def export_results_to_json(
@@ -38,3 +39,21 @@ def export_results_to_txt(
         for cid, councilors in results.items():
             councilors = "\n".join([c.to_txt() for c in councilors])
             f.write(f"| {cid} | {councilors}\n")
+
+
+def import_results_from_json(
+    input_path: str, council_type: str
+) -> Dict[str, ScrapResult]:
+    with open(input_path, "r", encoding="utf-8") as f:
+        results = json.load(f)
+
+    results = {
+        k: ScrapResult(
+            council_id=k,
+            council_type=council_type,
+            councilors=[Councilor(**c) for c in v],
+        )
+        for k, v in results.items()
+    }
+
+    return results

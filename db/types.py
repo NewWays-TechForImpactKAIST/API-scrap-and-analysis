@@ -14,6 +14,8 @@ class CouncilType(str, Enum):
 
     NATIONAL_COUNCIL = "national_councilor"
     NATIONAL_COUNCIL_CAND = "national_councilor_candidate"
+    NATIONAL_COUNCIL_GLOBAL = "national_councilor_global"
+    NATIONAL_COUNCIL_GLOBAL_CAND = "national_councilor_global_candidate"
 
     METROPOLITAN_COUNCIL = "metropolitan_councilor"
     METROPOLITAN_COUNCIL_CAND = "metropolitan_councilor_candidate"

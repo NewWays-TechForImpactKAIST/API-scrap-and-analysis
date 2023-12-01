@@ -124,9 +124,6 @@ def sel_getname(profile, element, class_, wrapper_element, wrapper_class_):
             name = strong_element.text.strip()
     except NoSuchElementException:
         pass
-    # print(name+"\n")
-    if name == "":
-        return "231114"
     name = name.split("(")[0].split(":")[-1].strip()  # 이름 뒷 한자이름, 앞 '이   름:' 제거
     # TODO : 만약 이름이 우연히 아래 단어를 포함하는 경우를 생각해볼만 함.
     if len(name) > 3:
@@ -154,7 +151,9 @@ def extract_party(string):
     return None
 
 
-def goto_profilesite(profile, wrapper_element, wrapper_class_, wrapper_txt, url):
+def goto_profilesite(
+    profile, wrapper_element, wrapper_class_, wrapper_txt, url, inner_euckr=False
+):
     # 의원 프로필에서 프로필보기 링크를 가져옴
     parsed_url = urlparse(url)
     base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
@@ -169,7 +168,10 @@ def goto_profilesite(profile, wrapper_element, wrapper_class_, wrapper_txt, url)
     #     base_url = base_url + '/'
     profile_url = base_url + profile_link["href"]
     try:
-        profile = get_soup(profile_url, verify=False)
+        if inner_euckr:
+            profile = get_soup(profile_url, verify=False, encoding="euc-kr")
+        else:
+            profile = get_soup(profile_url, verify=False)
     except Exception:
         raise RuntimeError("[basic.py] '//'가 있진 않나요?", " url: ", profile_url)
     return profile
@@ -212,7 +214,7 @@ def getpty(profile, element, class_, wrapper_element, wrapper_class_, wrapper_tx
         )
     )
     if party_pulp_list == []:
-        raise RuntimeError("[basic.py] 정당정보 regex 실패")
+        raise Exception("[basic.py] 정당정보 regex 실패")
     party_pulp = party_pulp_list[0]
     party_string = party_pulp.get_text(strip=True).split(" ")[-1]
     while True:
@@ -221,14 +223,16 @@ def getpty(profile, element, class_, wrapper_element, wrapper_class_, wrapper_tx
         if (party_pulp := party_pulp.find_next("span")) is not None:
             party_string = party_pulp.text.strip().split(" ")[-1]
         else:
-            return "[basic.py] 정당 정보 파싱 불가"
+            raise Exception("[basic.py] 정당 정보 파싱 불가")
 
 
-def getpty_easy(profile, wrapper_element, wrapper_class_, wrapper_txt, url):
+def getpty_easy(
+    profile, wrapper_element, wrapper_class_, wrapper_txt, url, inner_euckr=False
+):
     # 의원 프로필에서 의원이 몸담는 정당 이름을 가져옴
     if wrapper_element is not None:
         profile = goto_profilesite(
-            profile, wrapper_element, wrapper_class_, wrapper_txt, url
+            profile, wrapper_element, wrapper_class_, wrapper_txt, url, inner_euckr
         )
     party = extract_party(profile.text)
     assert party is not None
@@ -253,7 +257,9 @@ def sel_getpty_easy(
         return party
 
 
-def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapResult:
+def scrap_basic(
+    url, cid, args: ScrapBasicArgument, encoding="utf-8", inner_euckr=False
+) -> ScrapResult:
     """의원 상세약력 스크랩
     :param url: 의원 목록 사이트 url
     :param cid: 의회 id
@@ -293,7 +299,12 @@ def scrap_basic(url, cid, args: ScrapBasicArgument, encoding="utf-8") -> ScrapRe
         except Exception as e:
             try:
                 party = getpty_easy(
-                    profile, args.pty_wrapelt, args.pty_wrapcls, args.pty_wraptxt, url
+                    profile,
+                    args.pty_wrapelt,
+                    args.pty_wrapcls,
+                    args.pty_wraptxt,
+                    url,
+                    inner_euckr,
                 )
             except Exception:
                 raise RuntimeError("[basic.py] 의원 정당을 가져오는데 실패했습니다. 이유: " + str(e))
@@ -331,8 +342,6 @@ def sel_scrap_basic(url, cid, args: ScrapBasicArgument) -> ScrapResult:
             raise RuntimeError(
                 "[basic.py/selenium] 의원 이름을 가져오는데 실패했습니다. 이유 : " + str(e)
             )
-        if name == "231114":
-            continue
         try:
             party = sel_getpty_easy(
                 profile, args.pty_wrapelt, args.pty_wrapcls, args.pty_wraptxt, url

@@ -644,13 +644,21 @@
         "pty_elt": "ul",
         "pty_cls": "dot"
     },
-    "177": {
-        "pf_elt": "li",
-        "pf_cls": "item_box",
+    "180": {
+        "pf_elt": "dl",
+        "pf_cls": "ml_desc",
         "pf_memlistelt": "ul",
-        "pf_memlistcls": "memlist",
-        "name_elt": "h5",
-        "name_cls": "dd",
-        "pty_elt": "dl"
+        "pf_memlistcls": "member_list",
+        "name_elt": "dt",
+        "pty_elt": "dd",
+        "pty_cls": "ml_data"
+    },
+    "200": {
+        "pf_elt": "dl",
+        "pf_memlistelt": "div",
+        "pf_memlistcls": "list",
+        "name_elt": "dd",
+        "name_cls": "name",
+        "pty_wrapelt": "a"
     }
 }

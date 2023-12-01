@@ -7,8 +7,12 @@ from scrap.local_councils.basic import (
     extract_party,
     find,
     findall,
+    sel_find,
     regex_pattern,
 )
+
+party_keywords = getPartyList()
+party_keywords.append("무소속")
 
 
 def scrap_154(
@@ -335,30 +339,53 @@ def scrap_167(
 #     return ret_local_councilors(cid, councilors)
 
 
+def scrap_175(
+    url,
+    cid,
+    args: ArgsType = None,
+) -> ScrapResult:
+    """전라남도 화순군"""
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
+    for profileList in browser.find_elements(By.CSS_SELECTOR, "ul[id='councilList']"):
+        for profile in profileList.find_elements(
+            By.CSS_SELECTOR, "ul[class='name_51']"
+        ):
+            name_tag = profile.find_element(By.TAG_NAME, "li")
+            name = name_tag.text.strip() if name_tag else "이름 정보 없음"
+
+            profile_link = sel_find(profile, "a")
+            page_content = get_selenium(profile_link.get_attribute("href")).page_source
+            party = ""
+            for keyword in party_keywords:
+                if keyword in page_content:
+                    party = keyword
+                    break
+
+            councilors.append(Councilor(name, party))
+
+    return ret_local_councilors(cid, councilors)
+
+
 def scrap_177(
     url,
     cid,
     args: ArgsType = None,
 ) -> ScrapResult:
     """전라남도 강진군"""
-    soup = get_soup(url, verify=False)
-    councilors: List[Councilor] = []
-    mlist = soup.find_all("ul", class_="memlist")[0]
-
-    for profile in mlist.find_all("li", recursive=False):
-        info = profile.find("ul", class_="info")
-        name = (
-            info.find("h5").get_text(strip=True)
-            if info.find("h5").get_text(strip=True)
-            else "이름 정보 없음"
-        )
-
-        li = info.find_all("li", recursive=False)[6]
-        party = "정당 정보 없음"
-        party_dd = li.find("dd")
-        if party_dd:
-            party = party_dd.get_text(strip=True)
-        councilors.append(Councilor(name=name, jdName=party))
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
+    for profileList in browser.find_elements(By.CSS_SELECTOR, "ul[id='memlist']"):
+        for profile in profileList.find_elements(By.CSS_SELECTOR, "ul[class='info']"):
+            name_tag = profile.find_element(By.TAG_NAME, "h5")
+            name = name_tag.text.strip() if name_tag else "이름 정보 없음"
+            party = ""
+            for keyword in party_keywords:
+                if keyword in profile.text:
+                    party = keyword
+                    break
+            party = "정당 정보 없음"
+            councilors.append(Councilor(name, party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -369,14 +396,24 @@ def scrap_178(
     args: ArgsType = None,
 ) -> ScrapResult:
     """전라남도 완도군"""
-    councilors: List[Councilor] = []
-
-    result = requests.get(url)
-    result_json = result.json()
-    for profile in result_json["list"]:
-        name = profile["cmNm"]
-        party = profile["mpParty"]
-        councilors.append(Councilor(name=name, jdName=party))
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
+    for profileList in browser.find_elements(
+        By.CSS_SELECTOR, "div[class='congressperson_list']"
+    ):
+        for profile in profileList.find_elements(
+            By.CSS_SELECTOR, "div[class='col-lg-6']"
+        ):
+            name_tag = profile.find_element(By.TAG_NAME, "strong")
+            name = name_tag.text.strip() if name_tag else "이름 정보 없음"
+            profile_link = sel_find(profile, "a", class_="icon_btn")
+            page_content = get_selenium(profile_link.get_attribute("href")).page_source
+            party = ""
+            for keyword in party_keywords:
+                if keyword in page_content:
+                    party = keyword
+                    break
+            councilors.append(Councilor(name, party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -395,9 +432,10 @@ def scrap_179(
         name = name_tag.get_text(strip=True) if name_tag else "이름 정보 없음"
 
         party = "정당 정보 없음"
-        party_info = profile.find("span", string="소속정당 :")
-        if party_info:
-            party = party_info.find_next("span").get_text(strip=True)
+        for keyword in party_keywords:
+            if keyword in profile.text:
+                party = keyword
+                break
         councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)

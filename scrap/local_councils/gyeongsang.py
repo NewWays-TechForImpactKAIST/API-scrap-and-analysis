@@ -10,6 +10,9 @@ from scrap.local_councils.basic import (
     regex_pattern,
 )
 
+party_keywords = getPartyList()
+party_keywords.append("무소속")
+
 
 def scrap_186(
     url,
@@ -123,6 +126,34 @@ def scrap_191(
     return ret_local_councilors(cid, councilors)
 
 
+def scrap_192(
+    url,
+    cid,
+    args: ArgsType = None,
+) -> ScrapResult:
+    """경상북도 구미시"""
+    soup = get_soup(url, verify=False, encoding="euc-kr")
+    councilors: List[Councilor] = []
+    for profile in soup.find_all("div", class_="profile"):
+        name_tag = profile.find("li", class_="name")
+        name = name_tag.get_text(strip=True).split("(")[0] if name_tag else "이름 정보 없음"
+
+        party = "정당 정보 없음"
+        profile_link = profile.find_all("a")[1]
+        parsed_url = urlparse(url)
+        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+        profile_url = base_url + profile_link["href"]
+        profile = get_soup(profile_url, verify=False, encoding="euc-kr")
+        party = ""
+        for keyword in party_keywords:
+            if keyword in profile.text:
+                party = keyword
+                break
+        councilors.append(Councilor(name=name, jdName=party))
+
+    return ret_local_councilors(cid, councilors)
+
+
 def scrap_194(
     url,
     cid,
@@ -188,6 +219,26 @@ def scrap_196(
     return ret_local_councilors(cid, councilors)
 
 
+def scrap_197(
+    url,
+    cid,
+    args: ArgsType = None,
+) -> ScrapResult:
+    """경상북도 경산시"""
+    soup = get_soup(url, verify=False, encoding="euc-kr")
+    councilors: List[Councilor] = []
+    for profile in soup.find_all("div", class_="memberL") + soup.find_all(
+        "div", class_="memberR"
+    ):
+        party = profile.find_previous("h4", class_="title").text.strip()
+        assert party in party_keywords
+        name = profile.find("dt").text.strip()
+
+        councilors.append(Councilor(name=name, jdName=party))
+
+    return ret_local_councilors(cid, councilors)
+
+
 def scrap_198(
     url,
     cid,
@@ -216,18 +267,18 @@ def scrap_199(
     args: ArgsType = None,
 ) -> ScrapResult:
     """경상북도 고령군"""
-    soup = get_soup(url, verify=False)
-    councilors: List[Councilor] = []
-    for profile in soup.find_all("div", class_="profile"):
-        name_tag = profile.find("em", class_="name")
-        name = name_tag.get_text(strip=True).split("\r")[0] if name_tag else "이름 정보 없음"
-
+    browser = get_selenium(url)
+    councilors: list[Councilor] = []
+    for profile in browser.find_elements(By.CSS_SELECTOR, "div[class='profile']"):
+        name_tag = profile.find_element(By.CSS_SELECTOR, "em[class='name']")
+        name = name_tag.text.strip().split("\r")[0] if name_tag else "이름 정보 없음"
+        party = ""
+        for keyword in party_keywords:
+            if keyword in profile.text:
+                party = keyword
+                break
         party = "정당 정보 없음"
-        party_info = profile.find("em", string="정    당 : ")
-        if party_info:
-            party = party_info.find_next("span").get_text(strip=True)
-
-        councilors.append(Councilor(name=name, jdName=party))
+        councilors.append(Councilor(name, party))
 
     return ret_local_councilors(cid, councilors)
 
@@ -260,6 +311,32 @@ def scrap_201(
     return ret_local_councilors(cid, councilors)
 
 
+def scrap_202(
+    url,
+    cid,
+    args: ArgsType = None,
+) -> ScrapResult:
+    """경상북도 군위군"""
+    soup = get_soup(url, verify=False, encoding="euc-kr")
+    councilors: List[Councilor] = []
+    for profile in soup.find_all("div", class_="profile"):
+        name_tag = profile.find("li", class_="name")
+        name = name_tag.get_text(strip=True).split("(")[0] if name_tag else "이름 정보 없음"
+        link = profile.find("p", class_="btn").find("a")["href"]
+        parsed_url = urlparse(url)
+        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+        profile_url = base_url + link
+        profile = get_soup(profile_url, verify=False, encoding="euc-kr")
+        party = ""
+        for keyword in party_keywords:
+            if keyword in profile.text:
+                party = keyword
+                break
+        councilors.append(Councilor(name=name, jdName=party))
+
+    return ret_local_councilors(cid, councilors)
+
+
 def scrap_203(
     url,
     cid,
@@ -278,6 +355,57 @@ def scrap_203(
             party = result["party_nm"] if result["party_nm"] else "정당 정보 없음"
 
             councilors.append(Councilor(name=name, jdName=party))
+
+    return ret_local_councilors(cid, councilors)
+
+
+def scrap_204(
+    url,
+    cid,
+    args: ArgsType = None,
+) -> ScrapResult:
+    """경상북도 청송군"""
+    soup = get_soup(url, verify=False)
+    councilors: List[Councilor] = []
+    for profile in soup.find_all("div", class_="box3vm1"):
+        name_tag = profile.find("span", class_="t3")
+        name = name_tag.get_text(strip=True).split()[-1] if name_tag else "이름 정보 없음"
+        link = profile.find("a", class_="button")["href"]
+        parsed_url = urlparse(url)
+        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+        profile_url = base_url + link
+        profile = get_soup(profile_url, verify=False)
+        link = profile.find("a", text="의원소개", href=True)
+        profile_url = base_url + link["href"]
+        profile = get_soup(profile_url, verify=False)
+
+        party = ""
+        for keyword in party_keywords:
+            if keyword in profile.text:
+                party = keyword
+                break
+        councilors.append(Councilor(name=name, jdName=party))
+
+    return ret_local_councilors(cid, councilors)
+
+
+def scrap_205(
+    url,
+    cid,
+    args: ArgsType = None,
+) -> ScrapResult:
+    """경상북도 영양군"""
+    # TODO : gzip 문제 생기니, selenium으로 대체
+    print(url)
+    soup = get_soup(url, verify=False)
+    councilors: List[Councilor] = []
+    profile_list = soup.find("div", id="content_box")
+    for name_tag in profile_list.find_all("h3"):
+        name = name_tag.get_text(strip=True).split("(")[0] if name_tag else "이름 정보 없음"
+        ul = name_tag.find_next("ul")
+        li_party = ul.find("li", string="소속정당")
+        party = li_party.text.split(" : ")[-1].strip()
+    councilors.append(Councilor(name=name, jdName=party))
 
     return ret_local_councilors(cid, councilors)
 
