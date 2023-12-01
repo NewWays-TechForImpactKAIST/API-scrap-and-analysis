@@ -45,6 +45,9 @@ def gender_hist(
     df["wiwName"] = df[["sdName", "wiwName"]].apply(
         lambda x: change_local_name(*x), axis=1
     )
+    df["sdName"] = df[["sdName", "wiwName"]].apply(
+        lambda x: "대구광역시" if x[1] == "군위군" else x[0], axis=1
+    )
 
     if level == 0:
         df = df[["sgId", "name", "gender"]].groupby(by=["sgId", "gender"]).count()
@@ -152,6 +155,9 @@ def party_hist(councilor_type: str, level: int, is_elected: bool, filenames: lis
     )
     df["wiwName"] = df[["sdName", "wiwName"]].apply(
         lambda x: change_local_name(*x), axis=1
+    )
+    df["sdName"] = df[["sdName", "wiwName"]].apply(
+        lambda x: "대구광역시" if x[1] == "군위군" else x[0], axis=1
     )
 
     if level == 0:

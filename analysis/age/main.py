@@ -30,11 +30,15 @@ personDB = client["council"]
 def run_by_excel(cluster_by, filenames, N=5, folder_name="To_be_filled"):
     assert cluster_by in ["sdName", "wiwName"]
     level = 1 if cluster_by == "sdName" else 2
-    datadir = os.path.join(BASE_DIR, "_data", folder_name)
+    # datadir = os.path.join(BASE_DIR, "_data", folder_name)
+    datadir = os.path.join(BASE_DIR, "_data")
     df = pd.DataFrame()
     for d in filenames:
         df_new = pd.read_excel(os.path.join(datadir, d))
         df = pd.concat([df, df_new])
+    df["sdName"] = df[["sdName", "wiwName"]].apply(
+        lambda x: "대구광역시" if x[1] == "군위군" else x[0], axis=1
+    )
     if level == 1:
         df = df[["sgId", "sdName", "name", "age", "gender"]]
     else:
