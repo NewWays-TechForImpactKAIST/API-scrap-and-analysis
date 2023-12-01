@@ -29,12 +29,28 @@ def gini_simpson(data, stair=0, opts=True):
     total = sum(counts.values())
     gs_idx = 1 - sum((n / total) * ((n - 1) / (total - 1)) for n in counts.values())
 
+    bins = None
+    if isinstance(data[0], int):
+        bins = [0 for _ in range(4)]  # 39세 이하, 40대, 50대, 60세 이상
+        for age in data:
+            if age < 40:
+                bins[0] = 1
+            elif age < 50:
+                bins[1] = 1
+            elif age < 60:
+                bins[2] = 1
+            else:
+                bins[3] = 1
+        bins = sum(bins)
+
     if opts:
         num_cats = len([c for c in counts.values() if c > 0])
         if num_cats <= 1:
             return 0.0
         max_gs_idx = (num_cats - 1) / num_cats * total / (total - 1)
         gs_idx /= max_gs_idx
+        if gs_idx > 0.8 and bins and bins < 4:
+            return 0.8
 
     return gs_idx
 
@@ -170,10 +186,12 @@ def save_to_mongo_metro(metroId: int, factor: str, stair=0, opts=True) -> None:
     factor_field = {"age": "age", "gender": "gender", "party": "jdName"}
     data = [
         councilor[factor_field[factor]]
-        for councilor in client["council"]["metro_councilor"].find({"metroId": metroId})
+        for councilor in client["council"]["metropolitan_councilor"].find(
+            {"metroId": metroId}
+        )
     ]
-    # print(f"{metroId} {factor}")
-    # print(data)
+    print(f"{metroId} {factor}")
+    print(data)
     client["stats"].get_collection("diversity_index").update_one(
         {"metroId": metroId},
         {"$set": {f"{factor}DiversityIndex": gini_simpson(data, stair, opts)}},
@@ -371,10 +389,10 @@ def main():
     calculate_rank_metro("party")
     calculate_age_diversity_rank_history_metro()
 
-    save_to_mongo_national("age", stair=10)
-    save_to_mongo_national("gender")
-    save_to_mongo_national("party")
-    calculate_age_diversity_rank_history_national()
+    # save_to_mongo_national("age", stair=10)
+    # save_to_mongo_national("gender")
+    # save_to_mongo_national("party")
+    # calculate_age_diversity_rank_history_national()
 
 
 if __name__ == "__main__":
