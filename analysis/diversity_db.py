@@ -186,10 +186,12 @@ def save_to_mongo_metro(metroId: int, factor: str, stair=0, opts=True) -> None:
     factor_field = {"age": "age", "gender": "gender", "party": "jdName"}
     data = [
         councilor[factor_field[factor]]
-        for councilor in client["council"]["metro_councilor"].find({"metroId": metroId})
+        for councilor in client["council"]["metropolitan_councilor"].find(
+            {"metroId": metroId}
+        )
     ]
-    # print(f"{metroId} {factor}")
-    # print(data)
+    print(f"{metroId} {factor}")
+    print(data)
     client["stats"].get_collection("diversity_index").update_one(
         {"metroId": metroId},
         {"$set": {f"{factor}DiversityIndex": gini_simpson(data, stair, opts)}},
@@ -387,10 +389,10 @@ def main():
     calculate_rank_metro("party")
     calculate_age_diversity_rank_history_metro()
 
-    save_to_mongo_national("age", stair=10)
-    save_to_mongo_national("gender")
-    save_to_mongo_national("party")
-    calculate_age_diversity_rank_history_national()
+    # save_to_mongo_national("age", stair=10)
+    # save_to_mongo_national("gender")
+    # save_to_mongo_national("party")
+    # calculate_age_diversity_rank_history_national()
 
 
 if __name__ == "__main__":
